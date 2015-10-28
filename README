@@ -1,1 +1,8 @@
 Fast adaptive SPSA
+
+This repository contains the folders `tex` and `src`.
+The `src` repository contains the code used to perform
+the speed-accuracy evaluations of Fast Adaptive SPSA.
+
+We performed the evaluations on the `quartic` and `rosenbrock`
+functions.

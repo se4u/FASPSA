@@ -1,0 +1,6 @@
+no_repo/
+*.DS_Store
+\#*
+.\#*
+tex/auto/
+tex/*.pdf
