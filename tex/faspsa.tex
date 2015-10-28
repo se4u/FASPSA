@@ -171,6 +171,8 @@
 \usepackage{tipa}
 \usepackage{lmodern}
 \usepackage{upgreek}
+\usepackage{amsfonts}
+\usepackage{amsmath}
 \usepackage{bm}
 \usepackage{bbm, dsfont}
 \usepackage{upquote}
@@ -219,7 +221,7 @@
 
 % *** SUBFIGURE PACKAGES ***
 %\ifCLASSOPTIONcompsoc
-  \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
 %\else
 %  \usepackage[caption=false,font=footnotesize]{subfig}
 %\fi
@@ -303,6 +305,18 @@
 
 \hyphenation{op-tical net-works semi-conduc-tor}
 
+\newcommand{\bD}{\bm{D}}
+\newcommand{\bG}{\bm{G}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bDelta}{\bm{\Delta}}
+\newcommand{\oH}{\bm{\overline{H}}}
+\newcommand{\ooH}{\bm{\overline{\overline{H}}}}
+\newcommand{\hH}{\bm{\widehat{H}}}
+\newcommand{\hPsi}{\bm{\widehat{\Psi}}}
+\newcommand{\htheta}{\bm{\widehat{\uptheta}}}
+\newcommand{\hSigma}{\bm{\widehat{\Sigma}}}
+\newcommand{\tDelta}{\bm{\widetilde{\Delta}}}
+\newcommand{\tD}{\bm{\widetilde{D}}}
 
 \begin{document}
 
@@ -337,6 +351,7 @@ Email: james.spall@jhuapl.edu}}
 
 \begin{abstract}
 Stochastic approximation has been widely applied in gradient-free optimization (Kiefer-Wolfowitz) and stochastic gradient-based case (Robbins-Monro). The idea of simultaneous perturbation (SP) is now well established. This paper discusses a subtle enhancement of adaptive simultaneous perturbation algorithm incorporating with feedback in using Woodbury matrix identity.
+\textit{Keywords---Adaptive Estimation; Simultaneous Perturbation Stochastic Approximation (SPSA); Matrix Inversion}
 \end{abstract}
 
 % no keywords
@@ -357,19 +372,59 @@ Stochastic approximation has been widely applied in gradient-free optimization (
 
 
 \section{Introduction}
-Spall 1 introduced the idea of simultaneous perturbation and later Spall 2 generalized this idea to adaptive stochastic approximation. Spall 3 incorporated feedback and weighting mechanism so as to further improving the performance of second-order approximation. This paper presents an enhancement to the matrix inversion appeared in such Newton-typed method.
-
+Spall \cite{Spall1992} introduced the idea of simultaneous perturbation and later Spall \cite{Spall2000} generalized this idea to adaptive stochastic approximation. Spall \cite{Spall2009} incorporated feedback and weighting mechanism so as to further improving the performance of second-order approximation. This paper presents an enhancement to the matrix inversion appeared in such Newton-typed method.
 
 \section{Adaptive SPSA Algorithms and Formulation}
 We consider the problem of minimizing a differentiable loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p>=1 $.
 
 For a vector $ \bm{x}\in \mathbbm{R}^p $, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $. Apparently, $ \bm{x}^{-T}\bm{x}=p $.
 
-Typically, we only have access to the noisy measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $. Adative simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in 3 is as following:
+Typically, we only have access to the noisy measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $. Adaptive simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in 3 is as following:
 
-$ \bm{\hat{\uptheta}}_{k+1}=\bm{\hat{\uptheta}}_k-a_k\bm{\overline{\overline{H}}}_k^{-1} \bm{G}_k (\bm{\hat{\uptheta}}_k) $
+$$\begin{cases}
+	\htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),\qquad \bm{\ooH}_k=f_k(\oH_k)\\
+	\oH_k=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k), \qquad k=0,1,\dots
+\end{cases}$$
+where
+\begin{align*}
+\bG_k(\htheta_k)&=\frac{y(\htheta_k+c_k\bDelta_k)-y(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-1}\\
+\hH_k&=\frac{\bG_k^{(1)}(\htheta_k+c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-T}\\
+\bG_k^{(1)}&(\htheta_k\pm c_k\bDelta_k)\\
+&=\frac{y(\htheta_k\pm c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k\pm c_k\bDelta_k)}{\tilde{c}_k}\tDelta_k^{-1}\\
+w_k&=\frac{\tilde{c}_k^2c_k^2}{\sum_{i=0}^{k}\tilde{c}_i^2c_i^2}
+\end{align*}
+$ a_k $ is a non-negative scalar gain coefficient, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and function $ \bm{f}_k $ is to maintain the symmetry and positive-definiteness of $ \ooH_k $.
 
+Now we first consider the update of the inverse of $ \oH_k $, then later consider the restriction of symmetry and positive-definiteness of $ \ooH_k $.
 
+Eq. (3.8) in Spall \cite{Spall2009} provides an symmetrized form of $ \hPsi_k $. Here we first consider the pre-symmetrized procedure, i.e.,
+$$ \hSigma_k=\tD_k^T\hH_k\bD_k+\tD_k^T\hH_k+\hH_k\bD_k $$
+where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
+
+Denote
+
+$ \delta y_k=[y(\htheta_k+c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k+c_k\bDelta_k)]$
+
+$\qquad\qquad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)] $
+
+Then $$ \hH_k=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T} $$
+
+Using the relationship that $ \bm{x}^{-T}\bm{x}=p $, then
+\begin{align*}
+\frac{2c_k\tilde{c}_k}{\delta y_k}\hSigma_k&=(p^2-2p+1)\tDelta_k^{-1}\bDelta_k^{-T}+2(p-1)\tDelta_k^{-1}\bDelta_k^{-T}\\
+&=(p^2-1)\tDelta_k^{-1}\bDelta_k^{-T}
+\end{align*}
+
+Combined,
+\begin{align*}
+\hH_k-\hSigma_k&=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\frac{\delta y_k}{2c_k\tilde{c}_k}(p^2-1)\tDelta_k^{-1}\bDelta_k^{-T}\\
+&=\frac{\delta y_k}{2c_k\tilde{c}_k}(2-p^2)\tDelta_k^{-1}\bDelta_k^{-T}
+\end{align*}
+
+Denote $ s_k=w_k(2-p^2)\frac{\delta y_k}{2c_k\tilde{c}_k} $. By matrix inversion lemma,
+$$ \hH^{-1}=\frac{1}{1-w_k}\left(\oH_{k-1}^{-1}-s_k\frac{\oH_{k-1}^{-1}\tDelta_k^{-1}\bDelta_k^{-T}\oH_{k-1}^{-1}}{1-w_k+s_k\bDelta_k^{-T}\oH_{k-1}^{-1}\tDelta_k^{-1}}\right) $$
+
+Note that Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -466,26 +521,17 @@ $ \bm{\hat{\uptheta}}_{k+1}=\bm{\hat{\uptheta}}_k-a_k\bm{\overline{\overline{H}}
 % \fnbelowfloat command of the stfloats package.
 
 
-
+\section{Numerical Stability Analysis}
+Use quartic function...
 
 \section{Conclusion}
 The conclusion goes here.
 
-
-
-
 % conference papers do not normally have an appendix
-
 
 % use section* for acknowledgment
 \section*{Acknowledgment}
-
-
-The authors would like to thank...
-
-
-
-
+The preferred spelling of the word ``acknowledgment'' in America is without an ``e" after the ``g." Avoid the stilted expression ``one of us (R.B.G.) thanks ...". Instead, try ``R.B.G. thanks...". Put sponsor acknowledgments in the unnumbered footnote on the first page.
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
@@ -511,9 +557,17 @@ The authors would like to thank...
 % (used to reserve space for the reference number labels box)
 \begin{thebibliography}{1}
 
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
+\bibitem{Spall1992}
+Spall, J. C. (1992). Multivariate stochastic approximation using a simultaneous perturbation gradient approximation. \textit{Automatic Control, IEEE Transactions on}, 37(3), 332-341.
+
+\bibitem{Spall2000}
+Spall, J. C. (2000). Adaptive stochastic approximation by the simultaneous perturbation method. \textit{Automatic Control, IEEE Transactions on}, 45(10), 1839-1853.
+
+\bibitem{Spall2009}
+Spall, J. C. (2009). Feedback and weighting mechanisms for improving Jacobian estimates in the adaptive simultaneous perturbation algorithm. \textit{Automatic Control, IEEE Transactions on}, 54(6), 1216-1229.
+
+\bibitem{Bar-Itzhack1998}
+Bar-Itzhack, I.Y. (1998). Matrix symmetrization. \textit{Journal of guidance, control, and dynamics}, 21(1), 178-179.
 
 \end{thebibliography}
 
