@@ -4,5 +4,13 @@ This repository contains the folders `tex` and `src`.
 The `src` repository contains the code used to perform
 the speed-accuracy evaluations of Fast Adaptive SPSA.
 
-We performed the evaluations on the `quartic` and `rosenbrock`
-functions.
+The algorithms are written in the files.
+| SPSA.m                           |
+| Adaptive2SPSA.m                  |
+| FeedbackAdaptive2SPSA.m          |
+| EfficientAdaptive2SPSA.m         |
+| EfficientFeedbackAdaptive2SPSA.m |
+
+These algorithms were called by the main functions in `sso_project.m`
+which were used to generate plots and tables for the paper on the
+`quartic` and `rosenbrock` functions.
