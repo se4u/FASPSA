@@ -1,8 +1,8 @@
 function [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = ...
-    EfficientAdaptive2SPSA(budget, target_fn, init_theta, a_numerator, ...
+    EfficientFeedbackAdaptive2SPSA(budget, target_fn, init_theta, a_numerator, ...
                   c_numerator, true_loss_fn, true_optimal_theta)
 %{
-Filename    : EfficientAdaptive2SPSA.m
+Filename    : EfficientFeedbackAdaptive2SPSA.m
 Description : Basic Version of Adaptive 2SPSA.
 Author      : Pushpendre Rastogi
 Created     : .
@@ -10,8 +10,9 @@ Last-Updated: .
 By: .
 Update #: 0
 
-Efficient Adaptive 2SPSA uses the fact that a matrix inversion can be avoided in
-case of Adaptive 2SPSA by using the Matrix Inversion Lemma.
+Efficient Feedback Adaptive 2SPSA uses the fact that a matrix inversion can
+be avoided in case of Feedback Weighted Adaptive 2SPSA by using the Matrix
+Inversion Lemma.
 
 Inputs
 ======
@@ -87,10 +88,15 @@ for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn);
+
     % Update Bbar
-    tmp = (w_k * h_k) / (1 - w_k);
-    tmp2 = tmp / (1 + tmp * (delta_k' * Bbar * delta_tilda_k))
-    Bbar = (Bbar - (tmp2 * (Bbar * delta_tilda_k)) * (delta_k' * Bbar)) / (1 - w_k);
+    tmp_1 = (h_k - delta_tilda_k' * Hbar * delta_k)
+    tmp_2 = delta_k' * Bbar * delta_tilda_k
+    Bbar = Bbar - (Bbar * delta_tilda_k) * (1/tmp_1 + tmp_2) * (delta_k' * Bbar)
+    % Update Hbar
+    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - (delta_tilda_k' * Hbar) * delta_k);
+    Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
+
     % Update Theta.
     theta = theta - (step_length_fn(k)*g_k_magnitude)(Bbar * delta_k);
 
