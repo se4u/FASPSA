@@ -115,7 +115,7 @@ for k=0:max_iterations
 
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
-    theta = theta - (step_length_fn(k)*g_k_magnitude)(Hbarbar\delta_k);
+    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
 
     time_taken = time_taken + toc;
 

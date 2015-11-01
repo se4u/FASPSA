@@ -98,7 +98,7 @@ for k=0:max_iterations
     Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
 
     % Update Theta.
-    theta = theta - (step_length_fn(k)*g_k_magnitude)(Bbar * delta_k);
+    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
 
     time_taken = time_taken + toc;
 

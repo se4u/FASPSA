@@ -92,7 +92,7 @@ for k=0:max_iterations
     tmp2 = tmp / (1 + tmp * (delta_k' * Bbar * delta_tilda_k))
     Bbar = (Bbar - (tmp2 * (Bbar * delta_tilda_k)) * (delta_k' * Bbar)) / (1 - w_k);
     % Update Theta.
-    theta = theta - (step_length_fn(k)*g_k_magnitude)(Bbar * delta_k);
+    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
 
     time_taken = time_taken + toc;
 
