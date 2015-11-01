@@ -1,7 +1,7 @@
 function [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
           time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, function_eval_per_iteration, init_theta, ...
-               true_optimal_theta, sequence_param_cell)
+               true_optimal_theta, sequence_param_struct)
 %{
 Filename    : spsa_setup.m
 Description : A 'mixin' script that contains the common initialization
@@ -15,7 +15,7 @@ Update #: 0
 See the help of the individual optimization routines which call this
 function to understand the inputs and outputs.
 
-sequence_param_cell : It contains the following keys.
+sequence_param_struct : It contains the following keys.
 
 a_numerator : The constant used in the numerator of the sequence of step
   sizes used in the iteration. This constant is chosen through tuning and
@@ -44,22 +44,23 @@ max_iterations = (budget-function_eval_per_iteration)/function_eval_per_iteratio
 theta = init_theta;
 loss_sequence = NaN(1, 2+max_iterations);
 mad_sequence = NaN(1, 2+max_iterations);
-loss_sequence(1) = true_loss_fn(theta);
+% loss_sequence(1) = true_loss_fn(theta);
 mad_sequence(1) = mad(theta, true_optimal_theta);
 time_taken = 0;
 
 % Set the step - length and perturbation sequence.
 A = min(100, floor(budget/20));
-if isnan(sequence_param_cell)
+if ~isfield(sequence_param_struct, 'alpha')
+    % Use default values.
     alpha = 0.602;
     gamma = .101;
     a_numerator = 1e-5;
     c_numerator = 1e-1;
 else
-    alpha = sequence_param_cell.alpha;
-    gamma = sequence_param_cell.gamma;
-    a_numerator = sequence_param_cell.a_numerator;
-    c_numerator = sequence_param_cell.c_numerator;
+    alpha = sequence_param_struct.alpha;
+    gamma = sequence_param_struct.gamma;
+    a_numerator = sequence_param_struct.a_numerator;
+    c_numerator = sequence_param_struct.c_numerator;
 end
 step_length_fn=@(k) a_numerator /(k+1+A)^alpha;
 perturbation_size_fn=@(k) c_numerator /(k+1)^gamma;

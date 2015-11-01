@@ -108,3 +108,4 @@ for k=0:max_iterations
     loss_sequence(k+2) = true_loss_fn(theta);
     mad_sequence(k+2) = mad(theta, true_optimal_theta);
 end
+iteration_count = k + 1;

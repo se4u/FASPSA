@@ -1,1 +1,1 @@
-matlab -nojvm -nodisplay -nosplash < compare_algorithms.m
+matlab -nojvm -nodisplay -nosplash -singleCompThread -r "run $PWD/compare_algorithms.m"

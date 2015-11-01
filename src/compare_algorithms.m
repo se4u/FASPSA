@@ -22,13 +22,14 @@ sequence_param_cell.gamma = 0.101;
 sequence_param_cell.a_numerator = 1e-5;
 sequence_param_cell.c_numerator = 1e-1;
 budget=2000;
-name_fn_struct.Adaptive2SPSA = Adaptive2SPSA;
-name_fn_struct.FeedbackAdaptive2SPSA = FeedbackAdaptive2SPSA;
-name_fn_struct.EfficientAdaptive2SPSA = EfficientAdaptive2SPSA;
+name_fn_struct = struct();
+name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
+name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
 name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
-    EfficientFeedbackAdaptive2SPSA;
+    @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
-results_struct = cell()
+results_struct = struct();
 % for multiple dimensions.
 % for multiple runs.
 % for different algorithms
@@ -42,14 +43,13 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
     for run_idx=1:50 % for multiple runs.
         for name_fn=name_fn_cell % for different algorithms
             name_fn = name_fn{1};
-            FN = getfield(name_fn_cell, name_fn);
+            FN = getfield(name_fn_struct, name_fn);
             common_prefix = concat_all(name_fn, p, run_idx);
             disp(common_prefix);
             result_setter = @(key, value) setfield(...
                 results_struct, [common_prefix, key], value);
             % Run the algorithm.
-            [iteration_count, theta, time_taken, loss_sequence, mad_sequence] ...
-                = FN(budget, target_fn, init_theta, true_loss_fn, ...
+            [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(budget, target_fn, init_theta, true_loss_fn, ...
                        true_optimal_theta, sequence_param_cell);
             % collate result.
             result_setter('_time_taken', ...
