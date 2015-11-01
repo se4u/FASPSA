@@ -66,3 +66,4 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
     save('sso_project_intermediate.mat', 'results_struct');
 end
 save('sso_project.mat', 'results_struct');
+exit;
