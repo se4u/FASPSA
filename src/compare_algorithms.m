@@ -7,6 +7,10 @@ Last-Updated: .
 By: .
 Update #: 0
 %}
+if maxNumCompThreads() > 1
+    disp('Start matlab with -singleCompThread flag.');
+    exit(1);
+end
 close all; clear; clc;
 rand('seed',31415927);
 randn('seed',3111113);
@@ -38,6 +42,7 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
             name_fn = name_fn{1};
             FN = getfield(name_fn_cell, name_fn);
             common_prefix = concat_all(name_fn, p, run_idx);
+            disp(common_prefix);
             result_setter = @(key, value) setfield(...
                 results_struct, [common_prefix, key], value);
             % Run the algorithm.
@@ -55,5 +60,7 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
                           iteration_count);
         end
     end
+    % Write/Overwrite intermediate result files that can be observed separately.
+    save('sso_project_intermediate.mat', 'results_struct');
 end
-save('sso_project', name_fn_cell);
+save('sso_project.mat', 'results_struct');
