@@ -10,6 +10,8 @@ Update #: 0
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     exit(1);
+else
+    disp(computer());
 end
 close all; clear; clc;
 rand('seed',31415927);
