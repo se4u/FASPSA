@@ -4,3 +4,4 @@ no_repo/
 .\#*
 tex/auto/
 tex/*.pdf
+src/TAGS
