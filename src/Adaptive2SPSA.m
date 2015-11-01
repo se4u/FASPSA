@@ -1,6 +1,6 @@
 function [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = ...
-    Adaptive2SPSA(budget, target_fn, init_theta, a_numerator, ...
-                  c_numerator, true_loss_fn, true_optimal_theta)
+    Adaptive2SPSA(budget, target_fn, init_theta, true_loss_fn, ...
+                  true_optimal_theta, sequence_param_cell)
 %{
 Filename    : Adaptive2SPSA.m
 Description : Basic Version of Adaptive 2SPSA.
@@ -45,21 +45,6 @@ target_fn :  The ``NOISY'' function that we want to ``MINIMIZE''. In
 init_theta : The initial guess of the parameter values. The sequence of
   parameter iterates starts from this point.
 
-a_numerator : The constant used in the numerator of the sequence of step
-  sizes used in the iteration. This constant is chosen through tuning and
-  kept fixed after tuning. The higher this constant is, the longer our step
-  sizes can be.
-
-  a_numerator may be given a `nan` value in which case it would be replaced
-  by a default of 1e-5.
-
-c_numerator : The constant used in the numerator of the sequence of
-  perturbations that are used for gradient approximations. This constant is
-  also chosen through tuning and then fixed. The higher this constant is,
-  the larger perturbations we are allowed to make.
-
-  c_numerator may be given a `nan` value in which case it would be replaced
-  by a default of 1e-1.
 %-- Arguments needed only for comparative purposes. ---------------------%
 % The following arguments are used only to facilitate comparative
 % analysis. Ideally one could just store all the iterates generated in
@@ -74,6 +59,7 @@ true_optimal_theta : The true optimal theta value that minimizes the true
   loss. This parameter only makes sense for those true_loss_fn that have a
   unique global minimizer.
 
+sequence_param_cell : A cell with special values. See `spsa_setup.m`
 Outputs
 =======
 iteration_count : The number of iterations of 2SPSA. In this implementation
@@ -101,7 +87,7 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
 [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, 4, init_theta, ...
-               true_optimal_theta, a_numerator, c_numerator, 1, 0.1667);
+               true_optimal_theta, sequence_param_cell);
 
 Hbar=0;
 
