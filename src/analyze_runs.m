@@ -29,8 +29,9 @@ Please see the documentation for each cell for details.
 % in the readings. For each dimensionality a separate scatter plot is produced.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
 load('sso_project.mat');
-p = 60;
+p = 100;
 runs = 50;
+budget = 2000;
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
@@ -41,17 +42,19 @@ for algorithm_idx=1:length(algorithms)
     time_readings = nan(1, runs);
     loss_readings = nan(1, runs);
     for run_idx=1:runs
-        prefix = [algorithm, '_', num2str(p), '_', num2str(run_idx)];
+        prefix = concat_all(algorithm, p, run_idx, budget);
         time_readings(run_idx) = results_struct.([prefix, '_time_taken']);
-        loss_readings(run_idx) = results_struct.([prefix, '_final_loss']);
+        loss_readings(run_idx) = min(1, results_struct.([prefix, '_final_loss']));
     end
     scatter(time_readings, loss_readings, markup);
     hold on;
 end
+line('YData', [1 1], 'LineStyle', '-', 'LineWidth', 2, 'Color','m');
 title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
        num2str(p)]);
 xlabel('Time');
 ylabel('Loss');
+ylim([0 1.1]);
 legend(algorithms);
 saveas(gcf, 'analyze_runs', 'png');
 exit;

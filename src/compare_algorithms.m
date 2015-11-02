@@ -36,8 +36,10 @@ results_struct = struct();
 % Run algorithm with dimensions.
 % collate result.
 % The total memory of the struct would not exceed 60MB.
+% It takes 77m to run this script. < 2Hr
+% I need to fix the convergence of the algorithms.
 for budget=[2000 10000];
-for p=[10 20 30 40 50 60] % for multiple dimensions.
+for p=10:10:100 % for multiple dimensions.
     init_theta = 0.2 * ones(p, 1);
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
