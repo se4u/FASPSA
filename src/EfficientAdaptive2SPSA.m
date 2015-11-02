@@ -68,16 +68,23 @@ sequence_param_cell : A cell with special values. See `spsa_setup.m`
     spsa_setup(budget, 4, init_theta, ...
                true_optimal_theta, sequence_param_cell);
 
-Bbar=0;
+Bbar=eye(theta_dim);
 % Do the actual work.
 for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn);
     % Update Bbar
-    tmp = (w_k * h_k) / (1 - w_k);
-    tmp2 = tmp / (1 + tmp * (delta_k' * Bbar * delta_tilda_k))
-    Bbar = (Bbar - (tmp2 * (Bbar * delta_tilda_k)) * (delta_k' * Bbar)) / (1 - w_k);
+    if k > 0
+        wkhk = (w_k * h_k);
+        delta_times_Bbar = delta_k' * Bbar;
+        one_m_wk = (1 - w_k);
+        tmp2 = wkhk / (one_m_wk + wkhk * (delta_times_Bbar * ...
+                                          delta_tilda_k));
+
+        Bbar = Bbar/one_m_wk - ...
+               ((tmp2/one_m_wk) * (Bbar * delta_tilda_k)) * delta_times_Bbar;
+    end
     % Update Theta.
     theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
 

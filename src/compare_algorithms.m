@@ -41,8 +41,8 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
     for run_idx=1:50 % for multiple runs.
-        for name_fn=name_fn_cell % for different algorithms
-            name_fn = name_fn{1};
+        for name_fn_idx=1:length(name_fn_cell) % for different algorithms
+            name_fn = name_fn_cell{name_fn_idx};
             FN = getfield(name_fn_struct, name_fn);
             common_prefix = concat_all(name_fn, p, run_idx);
             disp(common_prefix);

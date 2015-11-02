@@ -68,7 +68,8 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
     spsa_setup(budget, 4, init_theta, ...
                true_optimal_theta, sequence_param_cell);
 
-Bbar=0;
+Bbar=eye(theta_dim);
+Hbar=eye(theta_dim);
 % Do the actual work.
 for k=0:max_iterations
     tic;
@@ -76,11 +77,10 @@ for k=0:max_iterations
         k, theta, delta_fn, perturbation_size_fn, target_fn);
 
     % Update Bbar
-    tmp_1 = (h_k - delta_tilda_k' * Hbar * delta_k)
-    tmp_2 = delta_k' * Bbar * delta_tilda_k
-    Bbar = Bbar - (Bbar * delta_tilda_k) * (1/tmp_1 + tmp_2) * (delta_k' * Bbar)
+    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
+    tmp_2 = Bbar * delta_tilda_k;
+    Bbar = Bbar - (tmp_2 / (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmp_2)) * (delta_k' * Bbar);
     % Update Hbar
-    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - (delta_tilda_k' * Hbar) * delta_k);
     Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
 
     % Update Theta.
