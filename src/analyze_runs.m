@@ -52,3 +52,6 @@ title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
        num2str(p)]);
 xlabel('Time');
 ylabel('Loss');
+legend(algorithms);
+saveas(gcf, 'analyze_runs', 'png');
+exit;
