@@ -13,6 +13,12 @@ if maxNumCompThreads() > 1
 else
     disp(computer());
 end
+dir_prefix = '../res';
+if exist(dir_prefix, 'dir') ~= 7
+    disp(['Couldnt find directory ' dir_prefix]);
+    dir_prefix = '';
+    disp(['Saving files to current directory' pwd()]);
+end
 close all; clear; clc;
 rand('seed',31415927);
 randn('seed',3111113);
@@ -68,8 +74,8 @@ for p=10:10:100 % for multiple dimensions.
         end
     end
     % Write/Overwrite intermediate result files that can be observed separately.
-    save('sso_project_intermediate.mat', 'results_struct');
+    save([dir_prefix '/sso_project_intermediate.mat'], 'results_struct');
 end
 end
-save('sso_project.mat', 'results_struct');
+save([dir_prefix '/sso_project.mat'], 'results_struct');
 exit;

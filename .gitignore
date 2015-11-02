@@ -6,5 +6,5 @@ tex/auto/
 tex/*.pdf
 src/TAGS
 src/sso_project.mat
-src/sso_project_intermediate.mat
 src/analyze_runs.png
+*sso_project_intermediate.mat

@@ -28,7 +28,7 @@ Please see the documentation for each cell for details.
 % incurred with a small circle around the point that indicates the variance
 % in the readings. For each dimensionality a separate scatter plot is produced.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
-load('sso_project.mat');
+load('../res/sso_project.mat');
 p = 100;
 runs = 50;
 budget = 2000;
