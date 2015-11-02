@@ -19,7 +19,7 @@ randn('seed',3111113);
 sigma = 0.05;
 sequence_param_cell.alpha = 0.602;
 sequence_param_cell.gamma = 0.101;
-sequence_param_cell.a_numerator = 1e-5;
+sequence_param_cell.a_numerator = 1e-2;
 sequence_param_cell.c_numerator = 1e-1;
 budget=2000;
 name_fn_struct = struct();
