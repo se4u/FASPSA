@@ -21,7 +21,6 @@ sequence_param_cell.alpha = 0.602;
 sequence_param_cell.gamma = 0.101;
 sequence_param_cell.a_numerator = 1e-2;
 sequence_param_cell.c_numerator = 1e-1;
-budget=2000;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
@@ -30,11 +29,14 @@ name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
     @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
+% for multiple budgets.
 % for multiple dimensions.
 % for multiple runs.
 % for different algorithms
 % Run algorithm with dimensions.
 % collate result.
+% The total memory of the struct would not exceed 60MB.
+for budget=[2000 10000];
 for p=[10 20 30 40 50 60] % for multiple dimensions.
     init_theta = 0.2 * ones(p, 1);
     true_loss_fn = quartic_loss_factory(p);
@@ -44,7 +46,7 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
             name_fn = name_fn_cell{name_fn_idx};
             FN = getfield(name_fn_struct, name_fn);
-            common_prefix = concat_all(name_fn, p, run_idx);
+            common_prefix = concat_all(name_fn, p, run_idx, budget);
             disp(common_prefix);
             % Run the algorithm.
             [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(budget, target_fn, init_theta, true_loss_fn, ...
@@ -57,10 +59,15 @@ for p=[10 20 30 40 50 60] % for multiple dimensions.
                 mad_sequence(length(mad_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
                 iteration_count;
+            results_struct.([common_prefix, '_loss_sequence']) = ...
+                loss_sequence;
+            results_struct.([common_prefix, '_mad_sequence']) = ...
+                mad_sequence;
         end
     end
     % Write/Overwrite intermediate result files that can be observed separately.
     save('sso_project_intermediate.mat', 'results_struct');
+end
 end
 save('sso_project.mat', 'results_struct');
 exit;
