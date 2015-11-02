@@ -1,55 +1,54 @@
-%% Mean Absolute Deviation
-mytstat=@(a,b) (mean(a)-mean(b))/sqrt(var(a-b)/length(a));
-critical_value=@(a, thresh) tinv(thresh, length(a)-1);
-% Tell me if a is really better than b
-two_sample_match_pair_one_side = @(a, b, thresh) ~isinf(mytstat(a,b)) && ...
-    mytstat(a,b)>critical_value(a, thresh);
+%{
+Filename    : analyze_runs.m
+Description : A script to analyze the results of `compare_algorithms.m`
+Author      : Pushpendre Rastogi
+Created     : Sun Nov  1 23:29:48 2015 (-0500)
+Last-Updated: .
+By: .
+Update #: 0
 
-%% Code to get 1 sample Error Bars
-t_nm1_alpha_by_2=@(dof, interval) tinv(interval + (1-interval)/2, dof);
-delta = @(len, sd, cival) t_nm1_alpha_by_2(len-1, cival/100)*(sd/sqrt(len));
-get_ci = @(mu, sd, len, cival) delta(len, sd, cival);
-applyToGivenRow = @(func, matrix) @(row) func(matrix(row, :));
-applyToRows = @(func, matrix) arrayfun(applyToGivenRow(func, matrix), ...
-    (1:size(matrix,1))', 'UniformOutput', 1);
-get_ci_per_row = @(m) applyToRows(...
-    @(row) get_ci(mean(row), std(row), length(row), 95), m);
-get_error_bar = @(m) [mean(m, 2) get_ci_per_row(m)];
-%% Comparative Plotting Code
-YLabelCell={'Milliseconds per Iteration', 'Condition Number', ...
-    'Normalized Mean Absolute Deviation From Optimal Theta',...
-    'Normalized Absolute Difference from Optimal Loss'};
-LossTitleCell={'Sum Product Loss','Squared Quartic Loss','Rosenbrock Loss'};
-for loss_idx=2:2
-    figure(loss_idx);
-    for splt=1:4
-        % 4 subplots time/iteration, cond_num_norm, theta_diff_norm,
-        % l_diff_norm
-        subplot(2, 2, splt);
-        hold on;
-        ye=get_error_bar(...
-            reshape(...
-             squeeze(Adaptive2SPSA_results(loss_idx, :, :, splt)),...
-             length(PCell), Realization_Count));
-        errorbar(PCell, ye(:, 1), ye(:, 2), 'bo');
-        ye=get_error_bar(...
-            reshape(...
-             squeeze(EfficientA2SPSA_results(loss_idx, :, :, splt)),...
-             length(PCell), Realization_Count));
-        errorbar(PCell, ye(:, 1), ye(:, 2), 'rx');
-        xlabel('Iterations')
-        ylabel(YLabelCell{splt});
-        legend('Original Adaptive 2SPSA', 'Efficient Adaptive 2SPSA');
-        if splt == 1
-            aa=squeeze(Adaptive2SPSA_results(loss_idx, :, :, splt));
-            bb=squeeze(EfficientA2SPSA_results(loss_idx, :, :, splt));
-            % Perform two-sample matched-pair one-sided t test
-            % to check whether one algo is better than the other.
-            for i=1:length(PCell)
-                disp(PCell(i));
-                disp(two_sample_match_pair_one_side(aa(i,:), bb(i,:), 0.99));
-            end
-        end
+`compare_algorithms.m` produces a mat file called `sso_project.mat` that contains
+the struct `results_struct` that contains keys of the form
+[algorithm]_[dimension]_[runidx] for example:
+
+Adaptive2SPSA_60_49_time_taken
+Adaptive2SPSA_60_49_final_loss
+Adaptive2SPSA_60_49_final_mad
+Adaptive2SPSA_60_49_iteration_count
+
+algorithm may be one of `Adaptive2SPSA`, `FeedbackAdaptive2SPSA`,
+  `EfficientAdaptive2SPSA`, `EfficientFeedbackAdaptive2SPSA`.
+dimension usually ranges between 10 to 100. and the
+run ranges between 1 to 50.
+
+This script can produce many plots depending on the cell ran.
+Please see the documentation for each cell for details.
+%}
+%% 1. a scatter plot of the time_taken versus final_loss
+% incurred with a small circle around the point that indicates the variance
+% in the readings. For each dimensionality a separate scatter plot is produced.
+% Each scatter plot contains 4 points corresponding to the four algorithms.
+load('sso_project.mat');
+p = 60;
+runs = 50;
+algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
+              'EfficientFeedbackAdaptive2SPSA'};
+% O-red, x-blue, square-green, diamond-black.
+markups = {'or', 'xb', 'sg', 'dk'};
+for algorithm_idx=1:length(algorithms)
+    algorithm = algorithms{algorithm_idx};
+    markup = markups{algorithm_idx};
+    time_readings = nan(1, runs);
+    loss_readings = nan(1, runs);
+    for run_idx=1:runs
+        prefix = [algorithm, '_', num2str(p), '_', num2str(run_idx)];
+        time_readings(run_idx) = results_struct.([prefix, '_time_taken']);
+        loss_readings(run_idx) = results_struct.([prefix, '_final_loss']);
     end
-    suptitle(LossTitleCell{loss_idx});
+    scatter(time_readings, loss_readings, markup);
+    hold on;
 end
+title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
+       num2str(p)]);
+xlabel('Time');
+ylabel('Loss');
