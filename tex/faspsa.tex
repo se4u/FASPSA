@@ -311,12 +311,12 @@
 \newcommand{\bDelta}{\bm{\Delta}}
 \newcommand{\oH}{\bm{\overline{H}}}
 \newcommand{\ooH}{\bm{\overline{\overline{H}}}}
-\newcommand{\hH}{\bm{\widehat{H}}}
-\newcommand{\hPsi}{\bm{\widehat{\Psi}}}
-\newcommand{\htheta}{\bm{\widehat{\uptheta}}}
-\newcommand{\hSigma}{\bm{\widehat{\Sigma}}}
-\newcommand{\tDelta}{\bm{\widetilde{\Delta}}}
-\newcommand{\tD}{\bm{\widetilde{D}}}
+\newcommand{\hH}{\bm{\hat{H}}}
+\newcommand{\hPsi}{\bm{\hat{\Psi}}}
+\newcommand{\htheta}{\bm{\hat{\uptheta}}}
+\newcommand{\hPhi}{\bm{\hat{\Phi}}}
+\newcommand{\tDelta}{\bm{\tilde{\Delta}}}
+\newcommand{\tD}{\bm{\tilde{D}}}
 
 \begin{document}
 
@@ -340,7 +340,7 @@ Email: jingyi.zhu@jhu.edu}
 \and
 \IEEEauthorblockN{James C. Spall}
 \IEEEauthorblockA{Applied Physics Laboratory\\
-The Johns HOpkins University\\
+The Johns Hopkins University\\
 Laurel, MD 20723\\
 Email: james.spall@jhuapl.edu}}
 
@@ -372,59 +372,69 @@ Stochastic approximation has been widely applied in gradient-free optimization (
 
 
 \section{Introduction}
-Spall \cite{Spall1992} introduced the idea of simultaneous perturbation and later Spall \cite{Spall2000} generalized this idea to adaptive stochastic approximation. Spall \cite{Spall2009} incorporated feedback and weighting mechanism so as to further improving the performance of second-order approximation. This paper presents an enhancement to the matrix inversion appeared in such Newton-typed method.
+Adaptive stochastic approximation (SA) has long been applied in both minimizing noisy loss function and root finding with noisy input information. Spall \cite{Spall1992} introduced the idea of simultaneous perturbation and later Spall \cite{Spall2000} generalized this idea to adaptive stochastic approximation, a stochastic analogue of Newton-Raphson's algorithm. Spall \cite{Spall2009} incorporated feedback and weighting mechanism so as to further improving the performance of Hessian matrix approximation. This paper presents an enhancement to the matrix inversion appeared in such Newton-typed method.
 
-\section{Adaptive SPSA Algorithms and Formulation}
-We consider the problem of minimizing a differentiable loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p>=1 $.
+\section{Problem Formulation and Adaptive SPSA Algorithms}
+In the following discussion, use the following notation. For a vector $ \bm{x}\in \mathbbm{R}^p $, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $. Apparently, $ \bm{x}^{-T}\bm{x}=p $.
 
-For a vector $ \bm{x}\in \mathbbm{R}^p $, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $. Apparently, $ \bm{x}^{-T}\bm{x}=p $.
 
-Typically, we only have access to the noisy measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $. Adaptive simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in 3 is as following:
+We consider the problem of minimizing a \textit{differentiable} loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote $\bm{g}(\bm{\uptheta})=\frac{\partial L}{\partial \bm{\uptheta}}$. The minimization problem $\underset{\bm{\uptheta}}{\text{min}}L(\bm{\uptheta})$ is equivalent to the root finding problem $\bm{g}(\bm{\uptheta})=\bm{0}$.
+
+
+Typically, we only have access to the noisy measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $, or noisy measurement of gradient evaluation. In this paper we only consider the case where noisy function evaluations are available. Adaptive simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in \cite{Spall2009} is as following:
 
 $$\begin{cases}
 	\htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),\qquad \bm{\ooH}_k=f_k(\oH_k)\\
-	\oH_k=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k), \qquad k=0,1,\dots
+	\oH_k=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k), \quad k=0,1,\dots
 \end{cases}$$
 where
 \begin{align*}
 \bG_k(\htheta_k)&=\frac{y(\htheta_k+c_k\bDelta_k)-y(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-1}\\
 \hH_k&=\frac{\bG_k^{(1)}(\htheta_k+c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-T}\\
-\bG_k^{(1)}&(\htheta_k\pm c_k\bDelta_k)\\
+\bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)
 &=\frac{y(\htheta_k\pm c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k\pm c_k\bDelta_k)}{\tilde{c}_k}\tDelta_k^{-1}\\
 w_k&=\frac{\tilde{c}_k^2c_k^2}{\sum_{i=0}^{k}\tilde{c}_i^2c_i^2}
 \end{align*}
-$ a_k $ is a non-negative scalar gain coefficient, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and function $ \bm{f}_k $ is to maintain the symmetry and positive-definiteness of $ \ooH_k $.
-
-Now we first consider the update of the inverse of $ \oH_k $, then later consider the restriction of symmetry and positive-definiteness of $ \ooH_k $.
-
-Eq. (3.8) in Spall \cite{Spall2009} provides an symmetrized form of $ \hPsi_k $. Here we first consider the pre-symmetrized procedure, i.e.,
-$$ \hSigma_k=\tD_k^T\hH_k\bD_k+\tD_k^T\hH_k+\hH_k\bD_k $$
-where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
+$ a_k $ is a non-negative scalar gain coefficient, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and the pre-conditioning function $ \bm{f}_k $ is to maintain the symmetry and positive-definiteness of $ \ooH_k $.
 
 Denote
-
-$ \delta y_k=[y(\htheta_k+c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k+c_k\bDelta_k)]$
-
-$\qquad\qquad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)] $
-
-Then $$ \hH_k=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T} $$
-
-Using the relationship that $ \bm{x}^{-T}\bm{x}=p $, then
 \begin{align*}
-\frac{2c_k\tilde{c}_k}{\delta y_k}\hSigma_k&=(p^2-2p+1)\tDelta_k^{-1}\bDelta_k^{-T}+2(p-1)\tDelta_k^{-1}\bDelta_k^{-T}\\
-&=(p^2-1)\tDelta_k^{-1}\bDelta_k^{-T}
+\delta y_k&=[y(\htheta_k+c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k+c_k\bDelta_k)]\\
+&\quad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)]
 \end{align*}
 
-Combined,
+Immediately, $$ \hH_k=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T} $$
+
+Eq. (3.8) in Spall \cite{Spall2009} provides an symmetrized form of $ \hPsi_k $. Now we first consider the update of the inverse of $ \oH_k $, then later do the symmetrization and conditioning on $ \oH_k $ to obtain $ \ooH_k $. Below is the pre-symmetrized procedure:
+$$ \hPhi_k=\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k $$
+where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
+
+Notice that
 \begin{align*}
-\hH_k-\hSigma_k&=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\frac{\delta y_k}{2c_k\tilde{c}_k}(p^2-1)\tDelta_k^{-1}\bDelta_k^{-T}\\
-&=\frac{\delta y_k}{2c_k\tilde{c}_k}(2-p^2)\tDelta_k^{-1}\bDelta_k^{-T}
+&\quad\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k\\
+&=(\tDelta_k\tDelta_k^{-T})^T\oH_{k-1}\bDelta_k\bDelta_k^{-T}-\oH_{k-1}\\
+&=\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T}-\oH_{k-1}
 \end{align*}
 
-Denote $ s_k=w_k(2-p^2)\frac{\delta y_k}{2c_k\tilde{c}_k} $. By matrix inversion lemma,
-$$ \hH^{-1}=\frac{1}{1-w_k}\left(\oH_{k-1}^{-1}-s_k\frac{\oH_{k-1}^{-1}\tDelta_k^{-1}\bDelta_k^{-T}\oH_{k-1}^{-1}}{1-w_k+s_k\bDelta_k^{-T}\oH_{k-1}^{-1}\tDelta_k^{-1}}\right) $$
+Therefore, the Hessian estimate update is
+\begin{align*}
+\oH_k&=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPhi_k)\\
+&=\oH_{k-1}+w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T})\\
+&=\oH_{k-1}+\tDelta_k^{-1}\left(w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}-\tDelta_k^{T}\oH_{k-1}\bDelta_k)\right)\bDelta_k^{-T}
+\end{align*}
 
-Note that Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $
+By Woodbury matrix identity,
+\begin{equation*}
+(\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{VA^{-1}U})^{-1}\bm{V}\bm{A}^{-1}
+\end{equation*}
+we can obtain a recursion of the $ \oH_k^{-1} $ as following:
+\begin{equation*}
+\oH_k^{-1}=\oH_{k-1}^{-1}-\oH_{k-1}^{-1}\tDelta_k^{-1}\left[ \left(w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}-\tDelta_k^{T}\oH_{k-1}\bDelta_k)\right)^{-1} + \bDelta_k^{-T}\oH_{k-1}^{-1}\tDelta_k^{-1} \right]^{-1}\bDelta_k^{-T}\oH_{k-1}^{-1}
+\end{equation*}
+
+Note that we still have to store $ \oH_{k} $ to proceed above less computational-costly recursion on $ \oH_k^{-1} $.
+
+Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $. We can guarantee the symmetry of the inverse of the Hessian update simply by updating $ \oH_k^{-1} $ by $ (\oH_k^{-1}+\oH_k^{-T})/2 $.
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -522,7 +532,7 @@ Note that Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\
 
 
 \section{Numerical Stability Analysis}
-Use quartic function...
+Use quartic function, the test function in \cite{Spall2009}.
 
 \section{Conclusion}
 The conclusion goes here.
