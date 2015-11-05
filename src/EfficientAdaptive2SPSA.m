@@ -73,7 +73,8 @@ Bbar=eye(theta_dim);
 for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
-        k, theta, delta_fn, perturbation_size_fn, target_fn);
+        k, theta, delta_fn, perturbation_size_fn, target_fn, ...
+        sequence_param_cell.c_tilda_k_multiplier);
     % Update Bbar
     if k > 0
         wkhk = (w_k * h_k);

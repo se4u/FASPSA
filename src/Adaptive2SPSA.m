@@ -90,12 +90,12 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
                true_optimal_theta, sequence_param_cell);
 
 Hbar=0;
-
 % Do the actual work.
 for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
-        k, theta, delta_fn, perturbation_size_fn, target_fn);
+        k, theta, delta_fn, perturbation_size_fn, target_fn, ...
+        sequence_param_cell.c_tilda_k_multiplier);
     % Update Hbar
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k*delta_k');
 

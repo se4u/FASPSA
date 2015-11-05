@@ -61,6 +61,19 @@ loss_sequence : A `iteration_count + 1` length sequence that contains the true
 mad_sequence : A `iteration count + 1` length sequence that contains the `mean
   absolute difference` between the global optimal parameters of the true
   loss function and the parameter estimate at the kth-step in the iteration.
+
+% Glossary for FLOPS analysis:      (Multi, Addition)
+% MVM  = Matrix * Vector            (p^2 , p^2)
+% VTVM = Vector' * Vector           (p,    p)
+% VSD  = Vector Scalar Division     (p,    0)
+% MMS  = MMA = Matrix Matrix Substraction/Addition (0, p^2)
+% VVOP = Vector Vector Outer Product (p^2, 0)
+% MSD  = MAtrix Scalar Division      (P^2, 0)
+% SSD/SSM = Scalar Scalar Multiplic  (1,   0)
+% SSA/SSA = Scalar Scalar Addition   (0,   1)
+% So the total cost of
+4 MVM + 2 VTVM + 2 VSD + 3 SSD + 2 SSA + 3 MMS + 1 VVOP + 1 MSD
+= (5p^2 + 4p + 3, 5p^2 + 2p + 2)
 %}
 
 [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
@@ -70,22 +83,30 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
 
 Bbar=eye(theta_dim);
 Hbar=eye(theta_dim);
+settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations
     tic;
-    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
-        k, theta, delta_fn, perturbation_size_fn, target_fn);
-
-    % Update Bbar
+    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude, sum_ccs_update] = ...
+        adaptivespsa_common(k, theta, delta_fn, perturbation_size_fn, ...
+                            target_fn, sequence_param_cell.c_tilda_k_multiplier, ...
+                            settings);
+    settings.sum_ck_square_ck_tilda_square = ...
+        sum_ccs_update.sum_ck_square_ck_tilda_square;
+    %% Update Bbar
+    % 1 MVM + 1 VTVM + 1 SSM + 1 SSA + 1 MVM
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
-    tmp_2 = Bbar * delta_tilda_k;
-    Bbar = Bbar - (tmp_2 / (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmp_2)) * (delta_k' * Bbar);
-    % Update Hbar
-    Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
-
-    % Update Theta.
+    tmpvector_2 = Bbar * delta_tilda_k;
+    % 1 VTVM + 1 VSD + 1 SSD + 1 SSA + 1 MVM + 1 MMS
+    tmpscalar_2 = (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmpvector_2);
+    Bbar = Bbar - (tmpvector_2 / tmpscalar_2) * (delta_k' * Bbar);
+    %% Update Hbar
+    % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
+    tmpmatrix_3 = (delta_tilda_k * delta_k');
+    Hbar = Hbar + (Hk_hat_minus_Phi_hat_scalar/2) * (tmpmatrix_3 + tmpmatrix_3');
+    %% Update Theta.
+    % 1 MVM + 1 SSM + 1 VSM
     theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
-
     time_taken = time_taken + toc;
 
     loss_sequence(k+2) = true_loss_fn(theta);

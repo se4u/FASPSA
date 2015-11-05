@@ -49,18 +49,18 @@ mad_sequence(1) = mad(theta, true_optimal_theta);
 time_taken = 0;
 
 % Set the step - length and perturbation sequence.
-A = min(100, floor(budget/20));
 if ~isfield(sequence_param_struct, 'alpha')
-    % Use default values.
     alpha = 0.602;
     gamma = .101;
-    a_numerator = 1e-5;
-    c_numerator = 1e-1;
+    a_numerator = 100;
+    c_numerator = .05;
+    A = 100;
 else
     alpha = sequence_param_struct.alpha;
     gamma = sequence_param_struct.gamma;
     a_numerator = sequence_param_struct.a_numerator;
     c_numerator = sequence_param_struct.c_numerator;
+    A = sequence_param_struct.A;
 end
 step_length_fn=@(k) a_numerator /(k+1+A)^alpha;
 perturbation_size_fn=@(k) c_numerator /(k+1)^gamma;

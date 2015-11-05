@@ -85,17 +85,21 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, 4, init_theta, true_optimal_theta, sequence_param_cell);
 Hbar=0;
+settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations
     tic;
-    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
-        k, theta, delta_fn, perturbation_size_fn, target_fn);
-
+    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude, sum_ccs_update] = ...
+        adaptivespsa_common(k, theta, delta_fn, perturbation_size_fn, ...
+                            target_fn, sequence_param_cell.c_tilda_k_multiplier, ...
+                            settings);
+    settings.sum_ck_square_ck_tilda_square = ...
+        sum_ccs_update.sum_ck_square_ck_tilda_square;
     % Update Hbar
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - (delta_tilda_k' * Hbar) * delta_k);
     Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
 
-    % Update Theta % This step can be made faster.
+    % Update Theta
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
     theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
 

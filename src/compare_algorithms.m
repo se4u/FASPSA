@@ -23,10 +23,13 @@ close all; clear; clc;
 rand('seed',31415927);
 randn('seed',3111113);
 sigma = 0.05;
-sequence_param_cell.alpha = 0.602;
-sequence_param_cell.gamma = 0.101;
-sequence_param_cell.a_numerator = 1e-2;
-sequence_param_cell.c_numerator = 1e-1;
+sequence_param_struct.alpha = 0.602;
+sequence_param_struct.gamma = 0.101;
+% a_numerator should be tuned. In section VIII of the 2009 paper
+% professor spall said that he used a = 100.
+sequence_param_struct.a_numerator = 100;
+% set c to be equal to the std of the noise.
+sequence_param_struct.c_numerator = sigma;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
@@ -52,13 +55,15 @@ for p=10:10:100 % for multiple dimensions.
     true_optimal_theta = zeros(p, 1);
     for run_idx=1:50 % for multiple runs.
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
+            % Set A to be 10% of the number of iterations performed.
+            sequence_param_struct.A = (budget / 4)/ 10;
             name_fn = name_fn_cell{name_fn_idx};
-            FN = getfield(name_fn_struct, name_fn);
+            FN = name_fn_struct.(name_fn);
             common_prefix = concat_all(name_fn, p, run_idx, budget);
             disp(common_prefix);
             % Run the algorithm.
             [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(budget, target_fn, init_theta, true_loss_fn, ...
-                       true_optimal_theta, sequence_param_cell);
+                       true_optimal_theta, sequence_param_struct);
             % collate result.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
