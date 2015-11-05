@@ -95,6 +95,8 @@ for k=0:max_iterations
                             settings);
     settings.sum_ck_square_ck_tilda_square = ...
         sum_ccs_update.sum_ck_square_ck_tilda_square;
+
+    % TODO: fix this update.
     % Update Hbar
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - (delta_tilda_k' * Hbar) * delta_k);
     Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
