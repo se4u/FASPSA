@@ -32,6 +32,10 @@ sequence_param_struct.a_numerator = 100;
 sequence_param_struct.c_numerator = sigma;
 % Set c_tilda to be slightly higher than c_tilda.
 sequence_param_struct.c_tilda_k_multiplier = 1.1;
+sequence_param_struct.use_greedy_algorithm_b = 1;
+sequence_param_struct.greedy_algorithm_b_threshold = 2;
+sequence_param_struct.bound_iterate = 1;
+sequence_param_struct.clip_threshold = 10;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;

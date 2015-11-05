@@ -67,7 +67,7 @@ sequence_param_cell : A cell with special values. See `spsa_setup.m`
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, 4, init_theta, ...
                true_optimal_theta, sequence_param_cell);
-
+cur_loss_estimate = target_fn(theta);
 Bbar=eye(theta_dim);
 % Do the actual work.
 for k=0:max_iterations
@@ -87,8 +87,10 @@ for k=0:max_iterations
                ((tmp2/one_m_wk) * (Bbar * delta_tilda_k)) * delta_times_Bbar;
     end
     % Update Theta.
-    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
-
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
+    [theta, cur_loss_estimate] = greedy_algorithm_b(...
+        proposed_theta, target_fn, theta, cur_loss_estimate, ...
+        sequence_param_struct);
     time_taken = time_taken + toc;
 
     loss_sequence(k+2) = true_loss_fn(theta);

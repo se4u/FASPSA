@@ -89,6 +89,7 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
     spsa_setup(budget, 4, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 
+cur_loss_estimate = target_fn(theta);
 Hbar=0;
 % Do the actual work.
 for k=0:max_iterations
@@ -101,7 +102,11 @@ for k=0:max_iterations
 
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
-    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
+
+    [theta, cur_loss_estimate] = greedy_algorithm_b(...
+        proposed_theta, target_fn, theta, cur_loss_estimate, ...
+        sequence_param_struct);
 
     time_taken = time_taken + toc;
 

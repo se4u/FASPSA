@@ -80,7 +80,7 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, 4, init_theta, ...
                true_optimal_theta, sequence_param_cell);
-
+cur_loss_estimate = target_fn(theta);
 Bbar=eye(theta_dim);
 Hbar=eye(theta_dim);
 settings.sum_ck_square_ck_tilda_square = 0;
@@ -106,7 +106,10 @@ for k=0:max_iterations
     Hbar = Hbar + (Hk_hat_minus_Phi_hat_scalar/2) * (tmpmatrix_3 + tmpmatrix_3');
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
-    theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
+    [theta, cur_loss_estimate] = greedy_algorithm_b(...
+        proposed_theta, target_fn, theta, cur_loss_estimate, ...
+        sequence_param_struct);
     time_taken = time_taken + toc;
 
     loss_sequence(k+2) = true_loss_fn(theta);
