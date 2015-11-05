@@ -81,6 +81,7 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
+loss_sequence(1) = true_loss_fn(theta);
 Bbar=eye(theta_dim);
 Hbar=eye(theta_dim);
 settings.sum_ck_square_ck_tilda_square = 0;

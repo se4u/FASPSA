@@ -68,6 +68,7 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
+loss_sequence(1) = true_loss_fn(theta);
 Bbar=eye(theta_dim);
 % Do the actual work.
 for k=0:max_iterations

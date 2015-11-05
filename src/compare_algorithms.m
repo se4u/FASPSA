@@ -8,11 +8,10 @@ By: .
 Update #: 0
 %}
 close all; clear; clc;
+warning('off','MATLAB:maxNumCompThreads:Deprecated');
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     exit(1);
-else
-    disp(computer());
 end
 dir_prefix = '../res';
 if exist(dir_prefix, 'dir') ~= 7
@@ -78,8 +77,7 @@ for p=10:10:100 % for multiple dimensions.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
-            disp('final_loss');
-            disp(results_struct.([common_prefix, '_final_loss']));
+            fprintf(1, 'final_loss %f\n', results_struct.([common_prefix, '_final_loss']));
             results_struct.([common_prefix, '_final_mad']) = ...
                 mad_sequence(length(mad_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
