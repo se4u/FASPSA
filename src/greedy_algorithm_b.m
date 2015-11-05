@@ -14,7 +14,7 @@ else
 end
 
 if sequence_param_struct.bound_iterate
-    ct = sequence_param_struct.clip_threshold
+    ct = sequence_param_struct.clip_threshold;
     theta(theta > ct) = ct;
     theta(theta < -ct) = -ct;
 end

@@ -36,6 +36,8 @@ sequence_param_struct.use_greedy_algorithm_b = 1;
 sequence_param_struct.greedy_algorithm_b_threshold = 2;
 sequence_param_struct.bound_iterate = 1;
 sequence_param_struct.clip_threshold = 10;
+sequence_param_struct.function_eval_per_iteration = 4 + ...
+    sequence_param_struct.use_greedy_algorithm_b;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
@@ -54,6 +56,9 @@ results_struct = struct();
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
 for budget=[2000 10000];
+    % Set A to be 10% of the number of iterations performed.
+    sequence_param_struct.A = ...
+        (budget / sequence_param_struct.function_eval_per_iteration) / 10;
 for p=10:10:100 % for multiple dimensions.
     init_theta = 0.2 * ones(p, 1);
     true_loss_fn = quartic_loss_factory(p);
@@ -61,8 +66,6 @@ for p=10:10:100 % for multiple dimensions.
     true_optimal_theta = zeros(p, 1);
     for run_idx=1:50 % for multiple runs.
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
-            % Set A to be 10% of the number of iterations performed.
-            sequence_param_struct.A = (budget / 4)/ 10;
             name_fn = name_fn_cell{name_fn_idx};
             FN = name_fn_struct.(name_fn);
             common_prefix = concat_all(name_fn, p, run_idx, budget);

@@ -1,6 +1,6 @@
 function [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
           time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
-    spsa_setup(budget, function_eval_per_iteration, init_theta, ...
+    spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct)
 %{
 Filename    : spsa_setup.m
@@ -37,10 +37,11 @@ alpha : The decay rate of the step length sequence.
 
 gamma : The decay rate of the perturbation sequence.
 %}
-assert(mod(budget, function_eval_per_iteration)==0);
+fepi = sequence_param_struct.function_eval_per_iteration;
+assert(mod(budget, fepi)==0);
 % Set various counters, loop length and other containers.
 theta_dim = length(init_theta);
-max_iterations = (budget-function_eval_per_iteration)/function_eval_per_iteration;
+max_iterations = (budget-fepi)/fepi;
 theta = init_theta;
 loss_sequence = NaN(1, 2+max_iterations);
 mad_sequence = NaN(1, 2+max_iterations);
