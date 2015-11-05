@@ -75,6 +75,9 @@ del_yk_part1 = target_fn(theta_plus_tilda) - target_fn(theta_minus_tilda);
 % del_yk_part2 will be reused later to compute the gradient estimate.
 del_yk_part2 = target_fn(theta_plus) - target_fn(theta_minus);
 del_yk = del_yk_part1 - del_yk_part2;
+% Note that if del_yk does not become small as quickly as c_k^2 then
+% h_k would rise fast. If h_k rises faster than w_k can compensate
+% then the matrix would become more and more ill-conditioned.
 h_k = del_yk / (2 * c_k * c_tilda_k);
 
 if length(varargin) == 0
@@ -83,8 +86,9 @@ if length(varargin) == 0
 else
     % The optimal weighting in case of feedback weighted adaptive SPSA is
     % given in professor Spall's 2009 paper in the equation (4.2)
+    ck_square_ck_tilda_square = (c_k * c_tilda_k)^2;
     sum_ck_square_ck_tilda_square = varargin{1}.sum_ck_square_ck_tilda_square + ...
-        (c_k * c_tilda_k)^2;
+        ck_square_ck_tilda_square;
     varargout{1}.sum_ck_square_ck_tilda_square = sum_ck_square_ck_tilda_square;
     w_k = ck_square_ck_tilda_square / sum_ck_square_ck_tilda_square;
 end

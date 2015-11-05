@@ -98,7 +98,8 @@ for k=0:max_iterations
 
     % TODO: fix this update.
     % Update Hbar
-    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - (delta_tilda_k' * Hbar) * delta_k);
+    hbar_scalar_contrib = (delta_tilda_k' * Hbar * delta_k);
+    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - hbar_scalar_contrib);
     Hbar = Hbar + Hk_hat_minus_Phi_hat_scalar * symmetric(delta_tilda_k * delta_k');
 
     % Update Theta

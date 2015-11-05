@@ -7,6 +7,7 @@ Last-Updated: .
 By: .
 Update #: 0
 %}
+close all; clear; clc;
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     exit(1);
@@ -19,7 +20,6 @@ if exist(dir_prefix, 'dir') ~= 7
     dir_prefix = '';
     disp(['Saving files to current directory' pwd()]);
 end
-close all; clear; clc;
 rand('seed',31415927);
 randn('seed',3111113);
 sigma = 0.05;
@@ -30,6 +30,8 @@ sequence_param_struct.gamma = 0.101;
 sequence_param_struct.a_numerator = 100;
 % set c to be equal to the std of the noise.
 sequence_param_struct.c_numerator = sigma;
+% Set c_tilda to be slightly higher than c_tilda.
+sequence_param_struct.c_tilda_k_multiplier = 1.1;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
@@ -62,12 +64,15 @@ for p=10:10:100 % for multiple dimensions.
             common_prefix = concat_all(name_fn, p, run_idx, budget);
             disp(common_prefix);
             % Run the algorithm.
-            [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(budget, target_fn, init_theta, true_loss_fn, ...
-                       true_optimal_theta, sequence_param_struct);
+            [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(...
+                budget, target_fn, init_theta, true_loss_fn, ...
+                true_optimal_theta, sequence_param_struct);
             % collate result.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
+            disp('final_loss');
+            disp(results_struct.([common_prefix, '_final_loss']));
             results_struct.([common_prefix, '_final_mad']) = ...
                 mad_sequence(length(mad_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...

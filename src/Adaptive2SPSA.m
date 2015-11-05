@@ -1,6 +1,6 @@
 function [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = ...
     Adaptive2SPSA(budget, target_fn, init_theta, true_loss_fn, ...
-                  true_optimal_theta, sequence_param_cell)
+                  true_optimal_theta, sequence_param_struct)
 %{
 Filename    : Adaptive2SPSA.m
 Description : Basic Version of Adaptive 2SPSA.
@@ -59,7 +59,7 @@ true_optimal_theta : The true optimal theta value that minimizes the true
   loss. This parameter only makes sense for those true_loss_fn that have a
   unique global minimizer.
 
-sequence_param_cell : A cell with special values. See `spsa_setup.m`
+sequence_param_struct : A cell with special values. See `spsa_setup.m`
 Outputs
 =======
 iteration_count : The number of iterations of 2SPSA. In this implementation
@@ -87,7 +87,7 @@ mad_sequence : A `iteration count + 1` length sequence that contains the `mean
 [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, 4, init_theta, ...
-               true_optimal_theta, sequence_param_cell);
+               true_optimal_theta, sequence_param_struct);
 
 Hbar=0;
 % Do the actual work.
@@ -95,7 +95,7 @@ for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
-        sequence_param_cell.c_tilda_k_multiplier);
+        sequence_param_struct.c_tilda_k_multiplier);
     % Update Hbar
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k*delta_k');
 
