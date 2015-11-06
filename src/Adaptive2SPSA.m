@@ -97,6 +97,7 @@ for k=0:max_iterations
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct.c_tilda_k_multiplier);
+    fprintf(2, '\n w_k %f h_k %f |g_k| %f', w_k, h_k, g_k_magnitude);
     % Update Hbar
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k*delta_k');
 

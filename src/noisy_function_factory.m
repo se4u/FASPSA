@@ -19,4 +19,6 @@ Outputs
 noise_fn : A function that takes vector input and returns noisy scalar loss.
 
 %}
-noisy_fn = @(t) loss_fn(t) + randn(1)*noise_std;
+noisy_fn = @(t) loss_fn(t) ...
+    + randn(1) * noise_std ...
+    + randn(1, length(t)) * t * noise_std;

@@ -21,9 +21,9 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 0.05;
-sequence_param_struct.alpha = 0.602;
-sequence_param_struct.gamma = 0.101;
+sigma = 5e-2;
+sequence_param_struct.alpha = 1;
+sequence_param_struct.gamma = 0.49;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
 sequence_param_struct.a_numerator = 100;
@@ -31,9 +31,11 @@ sequence_param_struct.a_numerator = 100;
 sequence_param_struct.c_numerator = sigma;
 % Set c_tilda to be slightly higher than c_tilda.
 sequence_param_struct.c_tilda_k_multiplier = 1.1;
-sequence_param_struct.use_greedy_algorithm_b = 1;
-sequence_param_struct.greedy_algorithm_b_threshold = 2;
-sequence_param_struct.bound_iterate = 1;
+sequence_param_struct.use_greedy_algorithm_a = 1;
+sequence_param_struct.greedy_algorithm_a_threshold = 1;
+sequence_param_struct.use_greedy_algorithm_b = 0;
+sequence_param_struct.greedy_algorithm_b_threshold = 0;
+sequence_param_struct.bound_iterate = 0;
 sequence_param_struct.clip_threshold = 10;
 sequence_param_struct.function_eval_per_iteration = 4 + ...
     sequence_param_struct.use_greedy_algorithm_b;
@@ -68,7 +70,7 @@ for p=10:10:100 % for multiple dimensions.
             name_fn = name_fn_cell{name_fn_idx};
             FN = name_fn_struct.(name_fn);
             common_prefix = concat_all(name_fn, p, run_idx, budget);
-            disp(common_prefix);
+            fprintf(1, '\n %s ', common_prefix);
             % Run the algorithm.
             [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = FN(...
                 budget, target_fn, init_theta, true_loss_fn, ...
@@ -77,7 +79,15 @@ for p=10:10:100 % for multiple dimensions.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
-            fprintf(1, 'final_loss %f\n', results_struct.([common_prefix, '_final_loss']));
+            fprintf(1, '\nIteration Count %d Final MAD %f Init loss %f Final loss %f\n', ...
+                    iteration_count, ...
+                    mad_sequence(length(mad_sequence)), ...
+                    loss_sequence(1), ...
+                    loss_sequence(length(loss_sequence)));
+            fprintf(2, '%f ', loss_sequence(max(1, iteration_count - 19):iteration_count +1));
+            fprintf(2, '\n');
+            fprintf(2, '%f ', mad_sequence(max(1, iteration_count - 19):iteration_count +1));
+            fprintf(2, '\n');
             results_struct.([common_prefix, '_final_mad']) = ...
                 mad_sequence(length(mad_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
