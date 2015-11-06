@@ -21,7 +21,7 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 1e-2;
+sigma = 5e-2;
 sequence_param_struct.alpha = .602;
 sequence_param_struct.gamma = 0.499; % .101 or 0.499
 % a_numerator should be tuned. In section VIII of the 2009 paper
@@ -42,6 +42,8 @@ sequence_param_struct.function_eval_per_iteration = 4 + ...
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+% TODO: right now the efficient methods and the adaptive methods have different
+% conditioning. Their gain sequences are not different in the way that matters.
 name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
 name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
      @EfficientFeedbackAdaptive2SPSA;
