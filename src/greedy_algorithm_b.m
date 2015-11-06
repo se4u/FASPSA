@@ -35,6 +35,7 @@ end
 
 bound_block = 0;
 if sequence_param_struct.bound_iterate
+    ct = sequence_param_struct.clip_threshold;
     bound_block = (sum(theta > ct) > 0) || (sum(theta < -ct) > 0);
 end
 
