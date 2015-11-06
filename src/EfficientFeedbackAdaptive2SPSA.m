@@ -41,6 +41,7 @@ true_optimal_theta : The true optimal theta value that minimizes the true
   unique global minimizer.
 
 sequence_param_struct : A cell with special values. See `spsa_setup.m`
+
 Outputs
 =======
 iteration_count : The number of iterations of 2SPSA. In this implementation
@@ -58,9 +59,10 @@ loss_sequence : A `iteration_count + 1` length sequence that contains the true
   loss value of the sequence of iterates that was produced during
   optimization. The first value if the loss of the initial value of theta.
 
-mad_sequence : A `iteration count + 1` length sequence that contains the `mean
-  absolute difference` between the global optimal parameters of the true
-  loss function and the parameter estimate at the kth-step in the iteration.
+mad_sequence : A `iteration count + 1` length sequence that contains the
+  `mean absolute difference` between the global optimal parameters of the
+  true loss function and the parameter estimate at the kth-step in the
+  iteration.
 
 % Glossary for FLOPS analysis:      (Multi, Addition)
 % MVM  = Matrix * Vector            (p^2 , p^2)
@@ -90,17 +92,20 @@ for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude, sum_ccs_update] = ...
         adaptivespsa_common(k, theta, delta_fn, perturbation_size_fn, ...
-                            target_fn, sequence_param_struct.c_tilda_k_multiplier, ...
+                            target_fn, ...
+                            sequence_param_struct.c_tilda_k_multiplier, ...
                             settings);
     settings.sum_ck_square_ck_tilda_square = ...
         sum_ccs_update.sum_ck_square_ck_tilda_square;
     %% Update Bbar
     % 1 MVM + 1 VTVM + 1 SSM + 1 SSA + 1 MVM
-    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
+    Hk_hat_minus_Phi_hat_scalar = w_k * ...
+        (h_k - delta_tilda_k' * Hbar * delta_k);
     tmpvector_2 = Bbar * delta_tilda_k;
     % 1 VTVM + 1 VSD + 1 SSD + 1 SSA + 1 MVM + 1 MMS
     tmpscalar_2 = (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmpvector_2);
-    Bbar = Bbar - (tmpvector_2 / tmpscalar_2) * (delta_k' * Bbar);
+    Bbar_update = (tmpvector_2 / tmpscalar_2) * (delta_k' * Bbar);
+    Bbar = Bbar - Bbar_update;
     %% Update Hbar
     % Note that Hbar must be updated with exactly this rank one update.
     % Anything else breaks the iteration because then Bar is not an
@@ -109,9 +114,16 @@ for k=0:max_iterations
     % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
     Hbar_update = (Hk_hat_minus_Phi_hat_scalar) * (delta_tilda_k * delta_k');
     Hbar = Hbar + Hbar_update;
+    fprintf(2, ...
+            ['\n EFA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
+             'rcond(Bbar) %f rcond(Bbar_update) %f rcond(sym_Hbar_update) %f'], ...
+            w_k, h_k, g_k_magnitude, Hk_hat_minus_Phi_hat_scalar, ...
+            rcond(Bbar), rcond(Bbar_update), rcond(Hbar_update));
+
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
+    proposed_theta = theta - ...
+        (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
