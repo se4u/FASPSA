@@ -102,9 +102,13 @@ for k=0:max_iterations
     tmpscalar_2 = (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmpvector_2);
     Bbar = Bbar - (tmpvector_2 / tmpscalar_2) * (delta_k' * Bbar);
     %% Update Hbar
+    % Note that Hbar must be updated with exactly this rank one update.
+    % Anything else breaks the iteration because then Bar is not an
+    % exact replica of Hbar.
+    % TODO: Fix the FLOPS analysis.
     % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
-    tmpmatrix_3 = (delta_tilda_k * delta_k');
-    Hbar = Hbar + (Hk_hat_minus_Phi_hat_scalar/2) * (tmpmatrix_3 + tmpmatrix_3');
+    Hbar_update = (Hk_hat_minus_Phi_hat_scalar) * (delta_tilda_k * delta_k');
+    Hbar = Hbar + Hbar_update;
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
