@@ -21,30 +21,30 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 1e-4;
-sequence_param_struct.alpha = 1;
-sequence_param_struct.gamma = 0.499;
+sigma = 1e-2;
+sequence_param_struct.alpha = .602;
+sequence_param_struct.gamma = 0.499; % .101 or 0.499
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
-sequence_param_struct.a_numerator = 10;
+sequence_param_struct.a_numerator = 1;
 % set c to be equal to the std of the noise.
-sequence_param_struct.c_numerator = .01 ;
+sequence_param_struct.c_numerator = 1 ;
 % Set c_tilda to be slightly higher than c_tilda.
-sequence_param_struct.c_tilda_k_multiplier = 2;
+sequence_param_struct.c_tilda_k_multiplier = 1.1; % 2
 sequence_param_struct.use_greedy_algorithm_a = 1;
-sequence_param_struct.greedy_algorithm_a_threshold = 1;
+sequence_param_struct.greedy_algorithm_a_threshold = sigma * 3;
 sequence_param_struct.use_greedy_algorithm_b = 0;
 sequence_param_struct.greedy_algorithm_b_threshold = 0;
-sequence_param_struct.bound_iterate = 0;
+sequence_param_struct.bound_iterate = 1;
 sequence_param_struct.clip_threshold = 10;
 sequence_param_struct.function_eval_per_iteration = 4 + ...
     sequence_param_struct.use_greedy_algorithm_b;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
-% name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
-% name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
-% name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
-%     @EfficientFeedbackAdaptive2SPSA;
+name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
+name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
+     @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
 % for multiple budgets.
@@ -56,7 +56,7 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=2000
+for budget=10000
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A = (budget / sequence_param_struct.function_eval_per_iteration) / 10;
 for p=10 % for multiple dimensions.
@@ -65,7 +65,10 @@ for p=10 % for multiple dimensions.
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
     for run_idx=1:2 % for multiple runs.
+                    % seed_for_this_run = randint(1,1,1e6);
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
+            % rand('seed', seed_for_this_run);
+            % randn('seed', seed_for_this_run);
             name_fn = name_fn_cell{name_fn_idx};
             FN = name_fn_struct.(name_fn);
             common_prefix = concat_all(name_fn, p, run_idx, budget);
@@ -84,9 +87,11 @@ for p=10 % for multiple dimensions.
                     mad_sequence(length(mad_sequence)), ...
                     loss_sequence(1), ...
                     loss_sequence(length(loss_sequence)));
-            fprintf(2, '%f ', loss_sequence(max(1, iteration_count - 19):iteration_count +1));
+            start_at = max(1, iteration_count - 19);
+            start_at = 1;
+            fprintf(2, '%f ', loss_sequence(start_at:iteration_count +1));
             fprintf(2, '\n');
-            fprintf(2, '%f ', mad_sequence(max(1, iteration_count - 19):iteration_count +1));
+            fprintf(2, '%f ', mad_sequence(start_at:iteration_count +1));
             fprintf(2, '\n');
             results_struct.([common_prefix, '_final_mad']) = ...
                 mad_sequence(length(mad_sequence));
