@@ -97,13 +97,17 @@ for k=0:max_iterations
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct.c_tilda_k_multiplier);
-    fprintf(2, '\n w_k %f h_k %f |g_k| %f', w_k, h_k, g_k_magnitude);
+    M = symmetric(delta_tilda_k * delta_k');
+    fprintf(2, '\n w_k %f h_k %f |g_k| %f rcond(M) %f', w_k, h_k, g_k_magnitude,rcond(M));
     % Update Hbar
-    Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k*delta_k');
+    Hbar = (1 - w_k) * Hbar + (w_k * h_k) * M;
 
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
+    solution_of_linsolve = (Hbarbar\delta_k);
+    fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
+    proposed_theta = theta - ...
+        (step_length_fn(k)*g_k_magnitude) * solution_of_linsolve;
 
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...

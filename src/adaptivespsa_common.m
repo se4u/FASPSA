@@ -78,9 +78,9 @@ del_yk = del_yk_part1 - del_yk_part2;
 % Note that if del_yk does not become small as quickly as c_k^2 then
 % h_k would rise fast. If h_k rises faster than w_k can compensate
 % then the matrix would become more and more ill-conditioned.
-h_k = del_yk / (2 * c_k * c_tilda_k);
 ck_ctk = c_k * c_tilda_k;
 fprintf(2, '\n ck_ctk %f del_yk %f ', ck_ctk, del_yk);
+h_k = del_yk / (1e-4 + 2 * ck_ctk);
 
 if length(varargin) == 0
     % The w_k sequence 1/(k+1) should be used for the basic Adaptive2SPSA.

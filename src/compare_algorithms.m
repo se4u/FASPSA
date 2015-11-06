@@ -21,16 +21,16 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 5e-2;
+sigma = 1e-4;
 sequence_param_struct.alpha = 1;
-sequence_param_struct.gamma = 0.49;
+sequence_param_struct.gamma = 0.499;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
-sequence_param_struct.a_numerator = 100;
+sequence_param_struct.a_numerator = 10;
 % set c to be equal to the std of the noise.
-sequence_param_struct.c_numerator = sigma;
+sequence_param_struct.c_numerator = .01 ;
 % Set c_tilda to be slightly higher than c_tilda.
-sequence_param_struct.c_tilda_k_multiplier = 1.1;
+sequence_param_struct.c_tilda_k_multiplier = 2;
 sequence_param_struct.use_greedy_algorithm_a = 1;
 sequence_param_struct.greedy_algorithm_a_threshold = 1;
 sequence_param_struct.use_greedy_algorithm_b = 0;
@@ -41,10 +41,10 @@ sequence_param_struct.function_eval_per_iteration = 4 + ...
     sequence_param_struct.use_greedy_algorithm_b;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
-name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
-name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
-name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
-    @EfficientFeedbackAdaptive2SPSA;
+% name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+% name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
+% name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
+%     @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
 % for multiple budgets.
@@ -56,16 +56,15 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=[2000 10000];
+for budget=2000
     % Set A to be 10% of the number of iterations performed.
-    sequence_param_struct.A = ...
-        (budget / sequence_param_struct.function_eval_per_iteration) / 10;
-for p=10:10:100 % for multiple dimensions.
+    sequence_param_struct.A = (budget / sequence_param_struct.function_eval_per_iteration) / 10;
+for p=10 % for multiple dimensions.
     init_theta = 0.2 * ones(p, 1);
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:50 % for multiple runs.
+    for run_idx=1:2 % for multiple runs.
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
             name_fn = name_fn_cell{name_fn_idx};
             FN = name_fn_struct.(name_fn);
@@ -79,8 +78,9 @@ for p=10:10:100 % for multiple dimensions.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
-            fprintf(1, '\nIteration Count %d Final MAD %f Init loss %f Final loss %f\n', ...
+            fprintf(1, '\nIteration Count %d Init MAD %f Final MAD %f Init loss %f Final loss %f\n', ...
                     iteration_count, ...
+                    mad_sequence(1), ...
                     mad_sequence(length(mad_sequence)), ...
                     loss_sequence(1), ...
                     loss_sequence(length(loss_sequence)));
@@ -103,4 +103,4 @@ for p=10:10:100 % for multiple dimensions.
 end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
-exit;
+exit(1);
