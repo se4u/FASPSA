@@ -23,7 +23,17 @@ rand('seed',31415927);
 randn('seed',3111113);
 sigma = 5e-2;
 sequence_param_struct.alpha = .602;
-sequence_param_struct.gamma = 0.499; % .101 or 0.499
+% .101 or 0.499
+% setting gamma = 0.101 makes the performance of the non-efficient code
+% much better than the efficient code. Setting gamma = 0.49 improves the
+% performance of the efficient code more. High gamma means quick decrease
+% in perturbation size, somehow the efficient method wants the
+% perturbations to decay quickly? That seems counter-intuitive, what
+% happens actually is that the method simply keeps hitting the ceiling of
+% the greedy_algorithm_a and never actually makes a step. So the
+% algorithm is not really working at all if I set gamma = 0.49. I should
+% set it to gamma = 0.101 if I want the method to actually make progress.
+sequence_param_struct.gamma = 0.101;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
 sequence_param_struct.a_numerator = 1;
