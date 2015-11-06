@@ -36,6 +36,7 @@ sequence_param_struct.alpha = .602;
 sequence_param_struct.gamma = 0.101;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
+% sequence_param_struct.a_numerator = 1 * sigma;
 sequence_param_struct.a_numerator = 1;
 % set c to be equal to the std of the noise.
 sequence_param_struct.c_numerator = 1 ;
@@ -53,7 +54,14 @@ name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
 % TODO: right now the efficient methods and the adaptive methods have different
-% conditioning. Their gain sequences are not different in the way that matters.
+% conditioning. Their gain sequences are not different in the way that
+% matters. But the conditioning - HEAVY conditioning - seems to be
+% extremely important for the convergence of the method, infact the
+% second order information seems to be mostly crap !! But it does seem
+% like my original plots did show that the FW2SPSA performs better than
+% 2SPSA at least in the un-regulated case.
+% TODO: Remove the heavy regularization since right now its just the
+% regularization that's carrying the show forward.
 name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
 name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
      @EfficientFeedbackAdaptive2SPSA;
