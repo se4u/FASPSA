@@ -43,7 +43,7 @@ sequence_param_struct.c_numerator = 1 ;
 % Set c_tilda to be slightly higher than c_tilda.
 sequence_param_struct.c_tilda_k_multiplier = 1.1; % 2
 sequence_param_struct.use_greedy_algorithm_a = 1;
-sequence_param_struct.greedy_algorithm_a_threshold = sigma * 3;
+sequence_param_struct.greedy_algorithm_a_threshold = 1e-2 / sigma;
 sequence_param_struct.use_greedy_algorithm_b = 0;
 sequence_param_struct.greedy_algorithm_b_threshold = 0;
 sequence_param_struct.bound_iterate = 1;
