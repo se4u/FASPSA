@@ -57,8 +57,8 @@ theta_0=.2*ones(p,1);
 B=triu(ones(p,p))/p;        %matrix used as part of 4th-order loss function
 Hbar_0=0*1.05*2*B'*B;       %Not relevant unless setting prior on H for standard 2SG (see also line 110)
 Hbarbar_0=0*1.05*2*B'*B;    %Does not enter calculations except with n=0
-EHbar_0=1.05*2*B'*B;      %.1*eye(p);%1.05*2*B'*B;      %relevant when w < 1
-EHbarbar_0=1.05*2*B'*B;
+EHbar_0=0*1.05*2*B'*B;      %.1*eye(p);%1.05*2*B'*B;      %relevant when w < 1
+EHbarbar_0=0*1.05*2*B'*B;
 Hhat=eye(p); %dummy statement (sets dimension)
 norm=zeros(cases,1); %vector for storing the norms of diff. between 2SG estimated and true Hessian
 norm_enh=zeros(cases,1); %vector for storing the norms of diff. between enhanced 2SG estimated and true Hessian
@@ -77,7 +77,7 @@ for j=1:cases
 %
 % START 2SPSA ITERATIONS FOLLOWING INITIALIZATION
 %
-  lossold=loss4thorder(theta_0); %lossold for use in loss-based blocking
+  lossold=loss(theta_0); %lossold for use in loss-based blocking
   for k=0:n-1
     ak=a/(k+1+A)^alpha;
     ck=c/(k+1)^gamma;
@@ -138,7 +138,7 @@ for j=1:cases
 %
 % ENHANCED 2SPSA
 %
-  lossold=loss4thorder(theta_0); %lossold for use in loss-based blocking
+  lossold=loss(theta_0); %lossold for use in loss-based blocking
   for k=0:n-1
     ak=a/(k+1+A)^alpha;
     ck=c/(k+1)^gamma;
@@ -215,6 +215,7 @@ for j=1:cases
   norm(j)=((max(eig((Hbarbar-2*B'*B)*(Hbarbar-2*B'*B))))^0.5)/.895321; %.895321 is norm of H*=2*B'*B for loss4thorder
   norm_enh(j)=((max(eig((EHbarbar-2*B'*B)*(EHbarbar-2*B'*B))))^0.5)/.895321;
 end
+
 % normalized results of standard 2SPSA and enhanced 2SPSA
 norm_thetaH=((errthetaH/cases)^.5)/((theta_0-truetheta)'*(theta_0-truetheta))^.5
 norm_theta=((errtheta/cases)^.5)/((theta_0-truetheta)'*(theta_0-truetheta))^.5
