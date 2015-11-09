@@ -102,7 +102,11 @@ for k=0:max_iterations
     stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
     Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
     % Update Theta.
-    proposed_direction = (Bbar * delta_k);
+    % It is critical to use this modified newton step of converting
+    % the negative eigen values of Bbar to positive.
+    % Right now we are doing an expensive operation but this can be sped
+    % up considerably.
+    proposed_direction = ( sqrtm(Bbar * Bbar) * delta_k);
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
     fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
             norm(Hbar * Bbar - eye(length(init_theta))));

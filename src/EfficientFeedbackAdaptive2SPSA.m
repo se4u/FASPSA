@@ -137,7 +137,7 @@ for k=0:max_iterations
 
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
-    proposed_update = (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
+    proposed_update = (step_length_fn(k) * g_k_magnitude) * (sqrtm(Bbar*Bbar) * delta_k);
     fprintf(2, '\n max(abs(proposed_update)) %f ', max(abs(proposed_update)));
     proposed_theta = theta - proposed_update;
     % proposed_theta = theta - (step_length_fn(k) * g_k_magnitude) * ...
