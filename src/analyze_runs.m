@@ -30,7 +30,7 @@ Please see the documentation for each cell for details.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
 clear; clc; close all;
 load('../res/sso_project.mat');
-p = 10;
+p = 50;
 runs = 2;
 budget = 25000;
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
