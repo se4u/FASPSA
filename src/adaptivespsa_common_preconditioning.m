@@ -1,8 +1,5 @@
 function Hbarbar = adaptivespsa_common_preconditioning(Hbar, k)
-% High values of conditioner just mean that we are not using hessian
-% information at all in the initial iteration when k is small.
-% conditioner = ((1e-2)/(k+1));
-conditioner = ((1e+2)/(k+1)^0.5);
-Hbarbar = Hbar + conditioner * eye(size(Hbar));
-fprintf(2, '\n conditioner %f rcond(Hbar) %f rcond(Hbarbar) %f', ...
-        conditioner, rcond(Hbar), rcond(Hbarbar));
+delta_eye = 1e-8 * exp(-k) * eye(size(Hbar));
+Hbarbar = sqrtm(Hbar * Hbar + delta_eye);
+fprintf(2, '\n rcond(Hbar) %f rcond(Hbarbar) %f', ...
+        rcond(Hbar), rcond(Hbarbar));
