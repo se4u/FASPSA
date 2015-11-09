@@ -69,8 +69,8 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
-Bbar = eye(length(init_theta));
-Hbar = eye(length(init_theta));
+Bbar = 0;
+% Hbar = 0;
 % Do the actual work.
 for k=0:max_iterations
     tic;
@@ -92,23 +92,28 @@ for k=0:max_iterations
     %% Prep
     a = 1 - w_k;
     b = w_k * h_k / 2;
-    % Stage 1 update
-    Bbar_by_a = Bbar / a;
-    tmp_stage_1 = Bbar_by_a * delta_tilda_k;
-    stage1_deno = 1 + b * (delta_k' * tmp_stage_1);
-    Binv = Bbar_by_a - tmp_stage_1 * ((delta_k' * Bbar_by_a)*(b/stage1_deno));
-    % Stage 2 update
-    tmp_stage_2 = Binv * delta_k;
-    stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
-    Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
+    if k == 0
+        Bbar = inv(adaptivespsa_common_preconditioning(...
+            b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
+    else
+        % Stage 1 update
+        Bbar_by_a = Bbar / a;
+        tmp_stage_1 = Bbar_by_a * delta_tilda_k;
+        stage1_deno = 1 + b * (delta_k' * tmp_stage_1);
+        Binv = Bbar_by_a - tmp_stage_1 * ((delta_k' * Bbar_by_a)*(b/stage1_deno));
+        % Stage 2 update
+        tmp_stage_2 = Binv * delta_k;
+        stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
+        Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
+    end
     % Update Theta.
     % It is critical to use this modified newton step of converting
     % the negative eigen values of Bbar to positive.
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
     proposed_direction = ( sqrtm(Bbar * Bbar) * delta_k);
-    Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
 
+    % Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
     % fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
     %         norm(Hbar * Bbar - eye(length(init_theta))));
     % fprintf(2, '\n norm(Bbar * Hbar - eye(length(init_theta))) %f ', ...

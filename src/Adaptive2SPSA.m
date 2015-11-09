@@ -90,7 +90,7 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the `mea
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
-Hbar=eye(length(init_theta));
+Hbar = 0;
 % Do the actual work.
 for k=0:max_iterations
     tic;
