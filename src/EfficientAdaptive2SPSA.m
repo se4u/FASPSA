@@ -69,7 +69,8 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
-Bbar=eye(length(init_theta));
+Bbar = eye(length(init_theta));
+Hbar = eye(length(init_theta));
 % Do the actual work.
 for k=0:max_iterations
     tic;
@@ -101,7 +102,22 @@ for k=0:max_iterations
     stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
     Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
     % Update Theta.
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
+    proposed_direction = (Bbar * delta_k);
+    Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
+    fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
+            norm(Hbar * Bbar - eye(length(init_theta))));
+    fprintf(2, '\n norm(Bbar * Hbar - eye(length(init_theta))) %f ', ...
+            norm(Bbar * Hbar - eye(length(init_theta))));
+
+    linsolve_direction = adaptivespsa_common_preconditioning(Hbar, k) \ ...
+        delta_k;
+    angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
+    fprintf(1, '\n Preconditioned angle %f, norm(linsolve_direction) %f, norm(proposed_direction) %f', angle,norm(linsolve_direction),norm(proposed_direction) );
+    linsolve_direction = Hbar \ delta_k;
+    angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
+    fprintf(2, '\n Unconditioned angle %f ', angle);
+
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);

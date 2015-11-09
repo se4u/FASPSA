@@ -19,8 +19,8 @@ if exist(dir_prefix, 'dir') ~= 7
     dir_prefix = '';
     disp(['Saving files to current directory' pwd()]);
 end
-rand('seed',31415927);
-randn('seed',3111113);
+% rand('seed',31415927);
+% randn('seed',3111113);
 sigma = 0; % 5e-2; % sigma = 0
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
@@ -39,7 +39,7 @@ sequence_param_struct.weight_sequence_numerator = 1/10;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
 % sequence_param_struct.a_numerator = 1 * sigma;
-sequence_param_struct.a_numerator = 1;
+sequence_param_struct.a_numerator = 1; % a = 1 worked pretty good till now.
 % set c to be equal to the std of the noise.
 sequence_param_struct.c_numerator = 0.01; % c = 1 ;   % c = 0.01
 % Set c_tilda to be slightly higher than c_tilda.
@@ -55,9 +55,9 @@ sequence_param_struct.function_eval_per_iteration = 4 + ...
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
-name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
-name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
-     @EfficientFeedbackAdaptive2SPSA;
+% name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+% name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
+%      @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
 % for multiple budgets.
@@ -74,7 +74,7 @@ for budget=25000
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
 for p=10 % for multiple dimensions.
-    init_theta = 0.2 * ones(p, 1);
+    init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);

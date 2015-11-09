@@ -84,7 +84,7 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
-Bbar=eye(theta_dim);
+Bbar=0;
 Hbar=0;
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
@@ -113,7 +113,12 @@ for k=0:max_iterations
     % Then Hbar^-1 = B^-1 - (B^-1 bvu' B^-1) / (1 + b u' B^-1 v)
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
     b = Hk_hat_minus_Phi_hat_scalar / 2;
-    if k > 0
+    Hbar_update_half = (b * delta_tilda_k) * delta_k';
+    Hbar = Hbar + (Hbar_update_half + Hbar_update_half');
+    if k == 0
+        Hbar = adaptivespsa_common_preconditioning(Hbar, k);
+        Bbar = inv(Hbar);
+    else
         stage1_temp = Bbar * delta_tilda_k;
         stage1_deno = 1 + b * (delta_k' * stage1_temp);
         Binv = Bbar - stage1_temp * ((delta_k' * Bbar) * (b/stage1_deno));
@@ -124,8 +129,6 @@ for k=0:max_iterations
     %% Update Hbar
     % TODO: Fix the FLOPS analysis.
     % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
-    Hbar_update_half = (b * delta_tilda_k) * delta_k';
-    Hbar = Hbar + (Hbar_update_half + Hbar_update_half');
     fprintf(2, ...
             ['\n EFA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
              'rcond(Bbar) %f rcond(Hbar_update_half) %f'], ...
@@ -134,7 +137,11 @@ for k=0:max_iterations
 
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
-    proposed_theta = theta - (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
+    proposed_update = (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
+    fprintf(2, '\n max(abs(proposed_update)) %f ', max(abs(proposed_update)));
+    proposed_theta = theta - proposed_update;
+    % proposed_theta = theta - (step_length_fn(k) * g_k_magnitude) * ...
+    %     (adaptivespsa_common_preconditioning(Hbar, k) \ delta_k);
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);

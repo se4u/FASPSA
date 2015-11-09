@@ -32,4 +32,7 @@ if size(B, 1) ~= p
 end
 % M = (B'*B) ; % We could do this but making the quartic loss function
 % efficient is not the point of the paper.
-loss_fn = @(t) t'*(B'*B)*t + 0.1 * sum((B*t).^3) + 0.01 * sum((B * t).^4);
+minima = rand(p,1);
+loss_fn = @(t) (t-minima)'*(B'*B)*(t-minima) ...
+          + 0.1 * sum((B*(t-minima)).^3) ...
+          + 0.01 * sum((B * (t - minima)).^4);
