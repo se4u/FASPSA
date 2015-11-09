@@ -85,7 +85,7 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Bbar=eye(theta_dim);
-Hbar=eye(theta_dim);
+Hbar=0;
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations
@@ -98,31 +98,43 @@ for k=0:max_iterations
     %     sum_ccs_update.sum_ck_square_ck_tilda_square;
     %% Update Bbar
     % 1 MVM + 1 VTVM + 1 SSM + 1 SSA + 1 MVM
-    Hk_hat_minus_Phi_hat_scalar = w_k * ...
-        (h_k - delta_tilda_k' * Hbar * delta_k);
-    tmpvector_2 = Bbar * delta_tilda_k;
-    % 1 VTVM + 1 VSD + 1 SSD + 1 SSA + 1 MVM + 1 MMS
-    tmpscalar_2 = (1/Hk_hat_minus_Phi_hat_scalar + delta_k' * tmpvector_2);
-    Bbar_update = (tmpvector_2 / tmpscalar_2) * (delta_k' * Bbar);
-    Bbar = Bbar - Bbar_update;
+    % The true update is
+    % Hbar = Hbar + (Hk_hat_minus_Phi_hat_scalar/2) * (uv' + vu')
+    %      = Hbar + b uv' + b vu'
+    % Where : b = (Hk_hat_minus_Phi_hat_scalar/2)
+    %         u = delta_tilda_k; v = delta_k
+    % This implies we can expedite the inverse calculation by two
+    % applications of the MIL.
+    % The update to Bbar requires the current value of Hbar therefore
+    % compute the new Bbar before updating Hbar to save memory.
+    % Let B = Hbar + buv'
+    % Then B^-1 = Hbar^-1 - (Hbar^-1 buv' Hbar^-1)/(1+bv' Hbar^-1 u)
+    % And  Hbar = B + b vu'
+    % Then Hbar^-1 = B^-1 - (B^-1 bvu' B^-1) / (1 + b u' B^-1 v)
+    Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
+    b = Hk_hat_minus_Phi_hat_scalar / 2;
+    if k > 0
+        stage1_temp = Bbar * delta_tilda_k;
+        stage1_deno = 1 + b * (delta_k' * stage1_temp);
+        Binv = Bbar - stage1_temp * ((delta_k' * Bbar) * (b/stage1_deno));
+        stage2_temp = Binv * delta_k;
+        stage2_deno = 1 + b * (delta_tilda_k' * stage2_temp);
+        Bbar = Binv - stage2_temp * ((delta_tilda_k' * Binv) * (b/stage2_deno));
+    end
     %% Update Hbar
-    % Note that Hbar must be updated with exactly this rank one update.
-    % Anything else breaks the iteration because then Bar is not an
-    % exact replica of Hbar.
     % TODO: Fix the FLOPS analysis.
     % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
-    Hbar_update = (Hk_hat_minus_Phi_hat_scalar) * (delta_tilda_k * delta_k');
-    Hbar = Hbar + Hbar_update;
+    Hbar_update_half = (b * delta_tilda_k) * delta_k';
+    Hbar = Hbar + (Hbar_update_half + Hbar_update_half');
     fprintf(2, ...
             ['\n EFA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
-             'rcond(Bbar) %f rcond(Bbar_update) %f rcond(sym_Hbar_update) %f'], ...
+             'rcond(Bbar) %f rcond(Hbar_update_half) %f'], ...
             w_k, h_k, g_k_magnitude, Hk_hat_minus_Phi_hat_scalar, ...
-            rcond(Bbar), rcond(Bbar_update), rcond(Hbar_update));
+            rcond(Bbar), rcond(Hbar_update_half));
 
     %% Update Theta.
     % 1 MVM + 1 SSM + 1 VSM
-    proposed_theta = theta - ...
-        (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
+    proposed_theta = theta - (step_length_fn(k) * g_k_magnitude) * (Bbar * delta_k);
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);

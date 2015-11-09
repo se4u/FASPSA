@@ -69,24 +69,37 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
-Bbar=eye(theta_dim);
+Bbar=eye(length(init_theta));
 % Do the actual work.
 for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
-    % Update Bbar
-    if k > 0
-        wkhk = (w_k * h_k);
-        delta_times_Bbar = delta_k' * Bbar;
-        one_m_wk = (1 - w_k);
-        tmp2 = wkhk / (one_m_wk + wkhk * (delta_times_Bbar * ...
-                                          delta_tilda_k));
-
-        Bbar = Bbar/one_m_wk - ...
-               ((tmp2/one_m_wk) * (Bbar * delta_tilda_k)) * delta_times_Bbar;
-    end
+    %% Update Bbar
+    % The primal update is
+    % Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k')
+    % This is the same as:
+    % Hbar = a Hbar + b uv' + b vu';
+    % Where: a = 1 - w_k; b = (w_k * h_k)/2
+    %        u = delta_tilda_k; v = delta_k
+    % And we would implement the inversion as a series of two rank 1 updates.
+    % Let  B = a Hbar + b uv'
+    % B^-1  = Hbar^-1 / a  - ((Hbar^-1/a) buv' (Hbar^-1/a))/(1 + bv'(Hbar^-1/a)u)
+    % Then Hbar = B + b vu'
+    % Then Hbar^-1 = B^-1 - (B^-1 bvu' B^-1)/(1 + b u' B^-1 v)
+    %% Prep
+    a = 1 - w_k;
+    b = w_k * h_k / 2;
+    % Stage 1 update
+    Bbar_by_a = Bbar / a;
+    tmp_stage_1 = Bbar_by_a * delta_tilda_k;
+    stage1_deno = 1 + b * (delta_k' * tmp_stage_1);
+    Binv = Bbar_by_a - tmp_stage_1 * ((delta_k' * Bbar_by_a)*(b/stage1_deno));
+    % Stage 2 update
+    tmp_stage_2 = Binv * delta_k;
+    stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
+    Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
     % Update Theta.
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Bbar * delta_k);
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
