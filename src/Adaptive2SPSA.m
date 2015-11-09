@@ -98,14 +98,12 @@ for k=0:max_iterations
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
     M = symmetric(delta_tilda_k * delta_k');
-    fprintf(2, '\n w_k %f h_k %f |g_k| %f rcond(M) %f', w_k, h_k, g_k_magnitude,rcond(M));
     % Update Hbar
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * M;
 
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
     solution_of_linsolve = (Hbarbar\delta_k);
-    fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
     proposed_theta = theta - ...
         (step_length_fn(k)*g_k_magnitude) * solution_of_linsolve;
 
@@ -114,7 +112,8 @@ for k=0:max_iterations
         sequence_param_struct);
 
     time_taken = time_taken + toc;
-
+    fprintf(2, '\n w_k %f h_k %f |g_k| %f rcond(M) %f', w_k, h_k, g_k_magnitude,rcond(M));
+    fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end

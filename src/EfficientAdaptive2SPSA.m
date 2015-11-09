@@ -70,7 +70,6 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Bbar = 0;
-% Hbar = 0;
 % Do the actual work.
 for k=0:max_iterations
     tic;
@@ -112,20 +111,6 @@ for k=0:max_iterations
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
     proposed_direction = ( sqrtm(Bbar * Bbar) * delta_k);
-
-    % Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
-    % fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
-    %         norm(Hbar * Bbar - eye(length(init_theta))));
-    % fprintf(2, '\n norm(Bbar * Hbar - eye(length(init_theta))) %f ', ...
-    %         norm(Bbar * Hbar - eye(length(init_theta))));
-    % pd_Hbar = adaptivespsa_common_preconditioning(Hbar, k);
-    % linsolve_direction =  pd_Hbar \ delta_k;
-    % angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
-    % fprintf(2, '\n Preconditioned angle %f, norm(linsolve_direction) %f, norm(proposed_direction) %f', angle,norm(linsolve_direction),norm(proposed_direction) );
-    % linsolve_direction = Hbar \ delta_k;
-    % angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
-    % fprintf(2, '\n Unconditioned angle %f ', angle);
-
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...

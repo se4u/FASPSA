@@ -126,27 +126,20 @@ for k=0:max_iterations
         stage2_deno = 1 + b * (delta_tilda_k' * stage2_temp);
         Bbar = Binv - stage2_temp * ((delta_tilda_k' * Binv) * (b/stage2_deno));
     end
-    %% Update Hbar
     % TODO: Fix the FLOPS analysis.
-    % 1 VVOP + 1 MMA + 1 MSD + 1 MMA
+    %% Update Theta.
+    proposed_update = (step_length_fn(k) * g_k_magnitude) * (sqrtm(Bbar*Bbar) * delta_k);
+    proposed_theta = theta - proposed_update;
+    [theta, cur_loss_estimate] = greedy_algorithm_b(...
+        proposed_theta, target_fn, theta, cur_loss_estimate, ...
+        sequence_param_struct);
+    time_taken = time_taken + toc;
     fprintf(2, ...
             ['\n EFA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
              'rcond(Bbar) %f rcond(Hbar_update_half) %f'], ...
             w_k, h_k, g_k_magnitude, Hk_hat_minus_Phi_hat_scalar, ...
             rcond(Bbar), rcond(Hbar_update_half));
-
-    %% Update Theta.
-    % 1 MVM + 1 SSM + 1 VSM
-    proposed_update = (step_length_fn(k) * g_k_magnitude) * (sqrtm(Bbar*Bbar) * delta_k);
     fprintf(2, '\n max(abs(proposed_update)) %f ', max(abs(proposed_update)));
-    proposed_theta = theta - proposed_update;
-    % proposed_theta = theta - (step_length_fn(k) * g_k_magnitude) * ...
-    %     (adaptivespsa_common_preconditioning(Hbar, k) \ delta_k);
-    [theta, cur_loss_estimate] = greedy_algorithm_b(...
-        proposed_theta, target_fn, theta, cur_loss_estimate, ...
-        sequence_param_struct);
-    time_taken = time_taken + toc;
-
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
