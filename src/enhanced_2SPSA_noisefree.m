@@ -112,8 +112,8 @@ for j=1:cases
     end
     Hhatinput=.5*(Hhat+Hhat');
     %temp(k+1,1)=Hhatinput(1,1);
-    Hbar=(k/(k+1))*Hbar+Hhatinput/(k+1);%No Prior: Hbar=(k/(k+1))*Hbar+Hhatinput/(k+1); if including prior on H, set Hbar=((k+1)/(k+2))*Hbar+Hhatinput/(k+2)
-    %Hbar=(1-wk)*Hbar+wk*Hhatinput; %temp
+    % Hbar=(k/(k+1))*Hbar+Hhatinput/(k+1);%No Prior: Hbar=(k/(k+1))*Hbar+Hhatinput/(k+1); if including prior on H, set Hbar=((k+1)/(k+2))*Hbar+Hhatinput/(k+2)
+    Hbar=(1-wk)*Hbar+wk*Hhatinput; %temp
 %   THE THETA UPDATE (FORM BELOW USES GAUSSIAN ELIMINATION TO AVOID DIRECT
 %   COMPUTATION OF HESSIAN INVERSE)
     Hbarbar=sqrtm(Hbar*Hbar+.00000001*exp(-k)*eye(p));%Hbarbar(1,1)
@@ -210,7 +210,8 @@ for j=1:cases
     end
   end
   %theta
-  errthetaH=errthetaH+(thetaH-truetheta)'*(thetaH-truetheta);   %Sum of error in thetaH values
+  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta)
+  errthetaH=errthetaH+errthetaH_case;   %Sum of error in thetaH values
   errtheta=errtheta+(theta-truetheta)'*(theta-truetheta);       %Sum of error in theta values
   lossthetaHsq=lossthetaHsq+feval(loss,thetaH)^2;               %Sum of squared L(thetaH)values
   lossthetasq=lossthetasq+feval(loss,theta)^2;                  %Sum of squared L(theta)values
@@ -232,6 +233,7 @@ norm_theta=((errtheta/cases)^.5)/((theta_0-truetheta)'*(theta_0-truetheta))^.5
 % standard dev. of mean of normalized loss values; these are by multiplied by
 % (cases/(cases-1))^.5 to account for loss of degree of freedom in standard
 % deviation calculation before using with t-test
+lossthetaH
 norm_lossthetaH=lossthetaH/(cases*loss4thorder(theta_0));
 norm_losstheta=losstheta/(cases*loss4thorder(theta_0));
 % Test statistic (t-value) comparing loss values;
