@@ -21,7 +21,7 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 0; % 5e-2; % sigma = 0
+sigma = 5e-2; % sigma = 0
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
 % setting gamma = 0.101 makes the performance of the non-efficient code
@@ -73,11 +73,11 @@ for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=10 % for multiple dimensions.
+for p=50 % for multiple dimensions.
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:2 % for multiple runs.
+    for run_idx=1:5 % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
         % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
