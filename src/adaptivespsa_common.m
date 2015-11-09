@@ -81,8 +81,11 @@ fprintf(2, '\n ck_ctk %f del_yk %f ', ck_ctk, del_yk);
 h_k = del_yk / (2 * ck_ctk);
 
 if length(varargin) == 0
-    % The w_k sequence 1/(k+1) should be used for the basic Adaptive2SPSA.
-    w_k = 1/(k+1);
+    % The w_k sequence 1/(k+1) should be used for the basic
+    % Adaptive2SPSA.
+    d = sequence_param_struct.weight_decay_rate;
+    w = sequence_param_struct.weight_sequence_numerator;
+    w_k = w/((k+1) ^ d);
 else
     % The optimal weighting in case of feedback weighted adaptive SPSA is
     % given in professor Spall's 2009 paper in the equation (4.2)

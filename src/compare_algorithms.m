@@ -34,6 +34,8 @@ sequence_param_struct.alpha = .602;
 % algorithm is not really working at all if I set gamma = 0.49. I should
 % set it to gamma = 0.101 if I want the method to actually make progress.
 sequence_param_struct.gamma = 0.101;
+sequence_param_struct.weight_decay_rate = 0.501;
+sequence_param_struct.weight_sequence_numerator = 1/10;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
 % sequence_param_struct.a_numerator = 1 * sigma;
