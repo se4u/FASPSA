@@ -210,9 +210,10 @@ for j=1:cases
     end
   end
   %theta
-  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta)
+  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta);
+  errtheta_case = (theta-truetheta)'*(theta-truetheta)
   errthetaH=errthetaH+errthetaH_case;   %Sum of error in thetaH values
-  errtheta=errtheta+(theta-truetheta)'*(theta-truetheta);       %Sum of error in theta values
+  errtheta=errtheta+errtheta_case;       %Sum of error in theta values
   lossthetaHsq=lossthetaHsq+feval(loss,thetaH)^2;               %Sum of squared L(thetaH)values
   lossthetasq=lossthetasq+feval(loss,theta)^2;                  %Sum of squared L(theta)values
   lossthetaH=lossthetaH+feval(loss,thetaH);                     %Sum of L(thetaH)values

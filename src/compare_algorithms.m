@@ -80,7 +80,8 @@ for p=10 % for multiple dimensions.
     for run_idx=1:2 % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
-        init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
+        % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
+        init_theta = 0.2 * ones(p, 1);
         for name_fn_idx=1:length(name_fn_cell) % for different algorithms
             rand('seed', seed_for_this_run);
             randn('seed', seed_for_this_run);
@@ -104,10 +105,6 @@ for p=10 % for multiple dimensions.
                     loss_sequence(length(loss_sequence)));
             start_at = max(1, iteration_count - 19);
             start_at = 1;
-            fprintf(2, '%f ', loss_sequence(start_at:iteration_count +1));
-            fprintf(2, '\n');
-            fprintf(2, '%f ', sqdist_sequence(start_at:iteration_count +1));
-            fprintf(2, '\n');
             results_struct.([common_prefix, '_final_sqdist']) = ...
                 sqdist_sequence(length(sqdist_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
@@ -123,4 +120,4 @@ for p=10 % for multiple dimensions.
 end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
-exit(1);
+exit;

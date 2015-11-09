@@ -28,33 +28,54 @@ Please see the documentation for each cell for details.
 % incurred with a small circle around the point that indicates the variance
 % in the readings. For each dimensionality a separate scatter plot is produced.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
+clear; clc; close all;
 load('../res/sso_project.mat');
-p = 100;
-runs = 50;
-budget = 2000;
+p = 10;
+runs = 2;
+budget = 25000;
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
 markups = {'or', 'xb', 'sg', 'dk'};
 for algorithm_idx=1:length(algorithms)
-    algorithm = algorithms{algorithm_idx};
+    algorithm = algorithms{algorithm_idx}
     markup = markups{algorithm_idx};
     time_readings = nan(1, runs);
     loss_readings = nan(1, runs);
+    errtheta_readings = nan(1, runs);
+    losssq_readings = nan(1, runs);
+    errtheta_init = nan;
+    losssq_init = nan;
     for run_idx=1:runs
         prefix = concat_all(algorithm, p, run_idx, budget);
-        time_readings(run_idx) = results_struct.([prefix, '_time_taken']);
-        loss_readings(run_idx) = min(1, results_struct.([prefix, '_final_loss']));
+        time_taken = results_struct.([prefix, '_time_taken']);
+        loss_seq = results_struct.([prefix, '_loss_sequence']);
+        sqdist_seq = results_struct.([prefix, '_sqdist_sequence']);
+
+        time_readings(run_idx) = time_taken;
+        loss_readings(run_idx) = loss_seq(length(loss_seq));
+        errtheta_readings(run_idx) = sqdist_seq(length(sqdist_seq));
+        losssq_readings(run_idx) = loss_seq(length(loss_seq))^2;
+
+        if isnan(losssq_init)
+            losssq_init = loss_seq(1);
+        else
+            assert(losssq_init == loss_seq(1));
+        end
+        if isnan(errtheta_init)
+            errtheta_init = sqdist_seq(1);
+        else
+            assert(errtheta_init == sqdist_seq(1));
+        end
     end
+    norm_sqloss = mean(losssq_readings)/losssq_init
+    norm_theta = sqrt(mean(errtheta_readings)/errtheta_init)
     scatter(time_readings, loss_readings, markup);
     hold on;
 end
-line('YData', [1 1], 'LineStyle', '-', 'LineWidth', 2, 'Color','m');
 title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
        num2str(p)]);
 xlabel('Time');
 ylabel('Loss');
-ylim([0 1.1]);
-legend(algorithms);
-saveas(gcf, 'analyze_runs', 'png');
-exit;
+legend(algorithms, 'Location','NorthEastOutside');
+saveas(gcf, '../res/analyze_runs', 'png');
