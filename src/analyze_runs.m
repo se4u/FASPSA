@@ -13,7 +13,7 @@ the struct `results_struct` that contains keys of the form
 
 Adaptive2SPSA_60_49_time_taken
 Adaptive2SPSA_60_49_final_loss
-Adaptive2SPSA_60_49_final_mad
+Adaptive2SPSA_60_49_final_sqdist
 Adaptive2SPSA_60_49_iteration_count
 
 algorithm may be one of `Adaptive2SPSA`, `FeedbackAdaptive2SPSA`,

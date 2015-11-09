@@ -1,4 +1,4 @@
-function [theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
+function [theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
           time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct)
@@ -44,9 +44,9 @@ theta_dim = length(init_theta);
 max_iterations = (budget-fepi)/fepi;
 theta = init_theta;
 loss_sequence = NaN(1, 2+max_iterations);
-mad_sequence = NaN(1, 2+max_iterations);
+sqdist_sequence = NaN(1, 2+max_iterations);
 % loss_sequence(1) = true_loss_fn(theta);
-mad_sequence(1) = mad(theta, true_optimal_theta);
+sqdist_sequence(1) = sqdist(theta, true_optimal_theta);
 time_taken = 0;
 
 % Set the step - length and perturbation sequence.

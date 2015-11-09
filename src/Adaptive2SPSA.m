@@ -1,4 +1,4 @@
-function [iteration_count, theta, time_taken, loss_sequence, mad_sequence] = ...
+function [iteration_count, theta, time_taken, loss_sequence, sqdist_sequence] = ...
     Adaptive2SPSA(budget, target_fn, init_theta, true_loss_fn, ...
                   true_optimal_theta, sequence_param_struct)
 %{
@@ -48,7 +48,7 @@ init_theta : The initial guess of the parameter values. The sequence of
 %-- Arguments needed only for comparative purposes. ---------------------%
 % The following arguments are used only to facilitate comparative
 % analysis. Ideally one could just store all the iterates generated in
-% memory and compute the outputs `loss_sequence` and `mad_sequence` but depending on the number of
+% memory and compute the outputs `loss_sequence` and `sqdist_sequence` but depending on the number of
 % iterations and the dimensionality of the problem it may not be possible
 % to store the sequence of parameter iterates that are generated.
 true_loss_fn : The true loss function. In reality we would never know this
@@ -79,12 +79,12 @@ loss_sequence : A `iteration_count + 1` length sequence that contains the true
   loss value of the sequence of iterates that was produced during
   optimization. The first value if the loss of the initial value of theta.
 
-mad_sequence : A `iteration count + 1` length sequence that contains the `mean
+sqdist_sequence : A `iteration count + 1` length sequence that contains the `mean
   absolute difference` between the global optimal parameters of the true
   loss function and the parameter estimate at the kth-step in the iteration.
 %}
 
-[theta_dim, max_iterations, theta, loss_sequence, mad_sequence, ...
+[theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
  time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
@@ -96,7 +96,7 @@ for k=0:max_iterations
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
-        sequence_param_struct.c_tilda_k_multiplier);
+        sequence_param_struct);
     M = symmetric(delta_tilda_k * delta_k');
     fprintf(2, '\n w_k %f h_k %f |g_k| %f rcond(M) %f', w_k, h_k, g_k_magnitude,rcond(M));
     % Update Hbar
@@ -116,6 +116,6 @@ for k=0:max_iterations
     time_taken = time_taken + toc;
 
     loss_sequence(k+2) = true_loss_fn(theta);
-    mad_sequence(k+2) = mad(theta, true_optimal_theta);
+    sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
 iteration_count = k + 1;

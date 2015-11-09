@@ -1,5 +1,5 @@
 function [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude, varargout] = adaptivespsa_common(...
-    k, theta, delta_fn, perturbation_size_fn, target_fn, c_tilda_k_multiplier, ...
+    k, theta, delta_fn, perturbation_size_fn, target_fn, sequence_param_struct, ...
     varargin)
 %{
 Filename    : adaptivespsa_common.m
@@ -25,16 +25,14 @@ perturbation_size_fn : The function that produces the value of c_k at iteration 
 
 target_fn : The noisy target function.
 
-c_tilda_k_multiplier : the paper "SPSA by simultaneous perturbation method"
-  says that setting c_tilda > c is better. That leaves open the possibility
-  that c_tilda may be set higher to something like c_tilda =  1.1 * c
-  or 2 * c ?
+sequence_param_struct : It contains the following fields:
+  c_tilda_k_multiplier : the paper "SPSA by simultaneous perturbation method"
+    says that setting c_tilda > c is better. That leaves open the possibility
+    that c_tilda may be set higher to something like c_tilda =  1.1 * c
+    or 2 * c ?
+  weight_decay_rate : A way to set the decay rate of the weights.
 varargin
 ========
-varargin{1}.use_adaptive2SPSA_update
-use_adaptive2SPSA_update : Should we use the adaptive2SPSA update sequence
-  or some other update sequence?
-
 varargin{1}.sum_ck_square_ck_tilda_square
 sum_ck_square_ck_tilda_square : The optimal gain sequence in the case of
   feedback weighted adaptive SPSA requires the computation of a sequence of
@@ -59,7 +57,7 @@ varargout : return the updated sum_ck_square_ck_tilda_square.
 delta_k = delta_fn();
 delta_tilda_k = delta_fn();
 c_k = perturbation_size_fn(k);
-c_tilda_k = c_k * c_tilda_k_multiplier;
+c_tilda_k = c_k * sequence_param_struct.c_tilda_k_multiplier;
 
 % Compute the perturbations in theta.
 ck_deltak = c_k * delta_k;
