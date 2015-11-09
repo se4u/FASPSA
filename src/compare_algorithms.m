@@ -55,9 +55,9 @@ sequence_param_struct.function_eval_per_iteration = 4 + ...
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
-% name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
-% name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
-%      @EfficientFeedbackAdaptive2SPSA;
+name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
+name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
+     @EfficientFeedbackAdaptive2SPSA;
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
 % for multiple budgets.

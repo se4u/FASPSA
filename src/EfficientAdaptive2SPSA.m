@@ -108,18 +108,18 @@ for k=0:max_iterations
     % up considerably.
     proposed_direction = ( sqrtm(Bbar * Bbar) * delta_k);
     Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k');
-    fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
-            norm(Hbar * Bbar - eye(length(init_theta))));
-    fprintf(2, '\n norm(Bbar * Hbar - eye(length(init_theta))) %f ', ...
-            norm(Bbar * Hbar - eye(length(init_theta))));
 
-    linsolve_direction = adaptivespsa_common_preconditioning(Hbar, k) \ ...
-        delta_k;
-    angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
-    fprintf(1, '\n Preconditioned angle %f, norm(linsolve_direction) %f, norm(proposed_direction) %f', angle,norm(linsolve_direction),norm(proposed_direction) );
-    linsolve_direction = Hbar \ delta_k;
-    angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
-    fprintf(2, '\n Unconditioned angle %f ', angle);
+    % fprintf(2, '\n norm(Hbar * Bbar - eye(length(init_theta))) %f ', ...
+    %         norm(Hbar * Bbar - eye(length(init_theta))));
+    % fprintf(2, '\n norm(Bbar * Hbar - eye(length(init_theta))) %f ', ...
+    %         norm(Bbar * Hbar - eye(length(init_theta))));
+    % pd_Hbar = adaptivespsa_common_preconditioning(Hbar, k);
+    % linsolve_direction =  pd_Hbar \ delta_k;
+    % angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
+    % fprintf(2, '\n Preconditioned angle %f, norm(linsolve_direction) %f, norm(proposed_direction) %f', angle,norm(linsolve_direction),norm(proposed_direction) );
+    % linsolve_direction = Hbar \ delta_k;
+    % angle = (linsolve_direction'*proposed_direction)/norm(linsolve_direction)/norm(proposed_direction);
+    % fprintf(2, '\n Unconditioned angle %f ', angle);
 
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
