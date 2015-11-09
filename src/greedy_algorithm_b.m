@@ -8,7 +8,7 @@ if sequence_param_struct.use_greedy_algorithm_a
                 'sequence_param_struct.greedy_algorithm_a_threshold %f'], ...
             norm(theta - proposed_theta), ...
             sequence_param_struct.greedy_algorithm_a_threshold);
-    algo_a_block = norm(theta - proposed_theta) > ...
+    algo_a_block = max(abs(theta - proposed_theta)) > ...
         sequence_param_struct.greedy_algorithm_a_threshold;
 end
 
@@ -19,27 +19,22 @@ if sequence_param_struct.use_greedy_algorithm_b
     algo_b_block = (new_loss > cur_loss_estimate + sequence_param_struct.greedy_algorithm_b_threshold);
 end
 
-% if sequence_param_struct.bound_iterate
-%     ct = sequence_param_struct.clip_threshold;
-%     proposed_theta(proposed_theta > ct) = ct;
-%     proposed_theta(proposed_theta < -ct) = -ct;
-% end
-% if (algo_a_block || algo_b_block)
-%     % Make no changes
-%     % theta returned is same as theta input.
-%     % cur_loss_estimate output is same as input.
-% else
-%     theta = proposed_theta;
-%     cur_loss_estimate = new_loss;
-% end
-
-bound_block = 0;
 if sequence_param_struct.bound_iterate
     ct = sequence_param_struct.clip_threshold;
-    bound_block = (sum(theta > ct) > 0) || (sum(theta < -ct) > 0);
+    proposed_theta(proposed_theta > ct) = ct;
+    proposed_theta(proposed_theta < -ct) = -ct;
 end
-
-if ~(algo_a_block || algo_b_block || bound_block)
+if ~(algo_a_block || algo_b_block)
     theta = proposed_theta;
     cur_loss_estimate = new_loss;
 end
+
+% bound_block = 0;
+% if sequence_param_struct.bound_iterate
+%     ct = sequence_param_struct.clip_threshold;
+%     bound_block = (sum(theta > ct) > 0) || (sum(theta < -ct) > 0);
+% end
+% if ~(algo_a_block || algo_b_block || bound_block)
+%     theta = proposed_theta;
+%     cur_loss_estimate = new_loss;
+% end
