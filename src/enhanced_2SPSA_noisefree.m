@@ -78,11 +78,14 @@ for j=1:cases
 % START 2SPSA ITERATIONS FOLLOWING INITIALIZATION
 %
   lossold=loss(theta_0); %lossold for use in loss-based blocking
+  sum_ck_ctildakH = 0;
   for k=0:n-1
     ak=a/(k+1+A)^alpha;
     ck=c/(k+1)^gamma;
     ctilda_k=ctilda/(k+1)^gamma;
     wk=w/(k+1)^d;
+    % sum_ck_ctildakH = (ck * ctilda_k)^2 + sum_ck_ctildakH;
+    % wk = (ck * ctilda_k)^2 / sum_ck_ctildakH;
     ghatinput=0;
     Hhatinput=0;
 % Generation of gradient and Hessian estimates
@@ -139,11 +142,15 @@ for j=1:cases
 % ENHANCED 2SPSA
 %
   lossold=loss(theta_0); %lossold for use in loss-based blocking
+  sum_ck_ctildak = 0;
   for k=0:n-1
     ak=a/(k+1+A)^alpha;
     ck=c/(k+1)^gamma;
     ctilda_k=ctilda/(k+1)^gamma;
     wk=w/(k+1)^d;
+    % sum_ck_ctildak = (ck * ctilda_k)^2 + sum_ck_ctildak;
+    % wk = (ck * ctilda_k)^2 / sum_ck_ctildak;
+
     Hhatinput=0;
 % Generation of gradient and Hessian estimates
     delta=2*round(rand(p,1))-1;
