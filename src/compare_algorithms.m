@@ -9,6 +9,7 @@ Update #: 0
 %}
 close all; clear; clc;
 warning('off','MATLAB:maxNumCompThreads:Deprecated');
+warning('off', 'comm:system:warnobsolete:obsoleteReplace');
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     exit(1);
