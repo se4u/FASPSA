@@ -26,8 +26,9 @@ gamma=.166667;     %c_k decay rate for 2SPSA
 w=1/10;         %numerator in weight sequence for Hessian averaging
 d=.501;         %decay rate in weight sequence
 n=5000;        %no. of iterations
-loss=quartic_loss_factory(p);    %loss function for evaluation of algorithm (no noise)
-loss4thorder = loss;
+loss4thorder = quartic_loss_factory(p);
+sigma=5e-4; %
+loss=noisy_function_factory(loss4thorder, sigma);    %loss function for evaluation of algorithm (no noise)
 cases=5;               %number of cases (replications)
 % cases=50;               %number of cases (replications)
 tolerancetheta=1;		%max. allowable change in elements of theta
@@ -37,7 +38,6 @@ rand('seed',31415297)
 %randn('seed',3111113)
 thetamin=-10*ones(p,1);   %Lower bounds on theta (in unconstrained, set to large neg. no.)
 thetamax=10*ones(p,1);    %Upper bounds on theta (in unconstrained, set to large pos. no.)2*B'*B
-%sigma=2;
 %
 %lines below initialize various recursions for the gradient/Hess. averaging
 %and for final error reporting based on the average of the solutions for
