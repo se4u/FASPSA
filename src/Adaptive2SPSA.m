@@ -97,9 +97,9 @@ for k=0:max_iterations
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
-    M = symmetric(delta_tilda_k * delta_k');
+    half_update = (((w_k * h_k)/2) * delta_tilda_k) * delta_k';
     % Update Hbar
-    Hbar = (1 - w_k) * Hbar + (w_k * h_k) * M;
+    Hbar = (1 - w_k) * Hbar +  half_update + half_update';
 
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
