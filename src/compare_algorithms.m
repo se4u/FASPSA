@@ -22,7 +22,7 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 5e-2; % sigma = 0
+sigma = 0; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
 % setting gamma = 0.101 makes the performance of the non-efficient code
@@ -40,10 +40,6 @@ sequence_param_struct.weight_sequence_numerator = 1/10;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
 % sequence_param_struct.a_numerator = 1 * sigma;
-sequence_param_struct.a_numerator = 1;
-% set c to be equal to the std of the noise.
-sequence_param_struct.c_numerator = 0.01; % c = 1 ;   % c = 0.01
-% Set c_tilda to be slightly higher than c_tilda.
 sequence_param_struct.c_tilda_k_multiplier = 1; % 1.1; % 1
 sequence_param_struct.use_greedy_algorithm_a = 1;
 sequence_param_struct.greedy_algorithm_a_threshold = 1;
@@ -74,7 +70,14 @@ for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=50 % for multiple dimensions.
+for p=[100]% for multiple dimensions.
+    if p == 10
+        sequence_param_struct.a_numerator = 1;
+        sequence_param_struct.c_numerator = 0.01;
+    else
+        sequence_param_struct.a_numerator = 1;
+        sequence_param_struct.c_numerator = 1;
+    end
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
