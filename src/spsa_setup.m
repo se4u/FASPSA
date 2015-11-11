@@ -41,28 +41,28 @@ fepi = sequence_param_struct.function_eval_per_iteration;
 assert(mod(budget, fepi)==0);
 % Set various counters, loop length and other containers.
 theta_dim = length(init_theta);
-max_iterations = (budget-fepi)/fepi;
+max_iterations = budget/fepi;
 theta = init_theta;
-loss_sequence = NaN(1, 2+max_iterations);
-sqdist_sequence = NaN(1, 2+max_iterations);
+loss_sequence = NaN(1, 1 + max_iterations);
+sqdist_sequence = NaN(size(loss_sequence));
 % loss_sequence(1) = true_loss_fn(theta);
 sqdist_sequence(1) = sqdist(theta, true_optimal_theta);
 time_taken = 0;
 
 % Set the step - length and perturbation sequence.
-if ~isfield(sequence_param_struct, 'alpha')
-    alpha = 0.602;
-    gamma = .101;
-    a_numerator = 100;
-    c_numerator = .05;
-    A = 100;
-else
-    alpha = sequence_param_struct.alpha;
-    gamma = sequence_param_struct.gamma;
-    a_numerator = sequence_param_struct.a_numerator;
-    c_numerator = sequence_param_struct.c_numerator;
-    A = sequence_param_struct.A;
-end
+% if ~isfield(sequence_param_struct, 'alpha')
+%     alpha = 0.602;
+%     gamma = .101;
+%     a_numerator = 100;
+%     c_numerator = .05;
+%     A = 100;
+% else
+alpha = sequence_param_struct.alpha;
+gamma = sequence_param_struct.gamma;
+a_numerator = sequence_param_struct.a_numerator;
+c_numerator = sequence_param_struct.c_numerator;
+A = sequence_param_struct.A;
+% end
 step_length_fn=@(k) a_numerator /(k+1+A)^alpha;
 perturbation_size_fn=@(k) c_numerator /(k+1)^gamma;
 delta_fn=@() 2*(rand(theta_dim, 1) >= 0.5)-1;

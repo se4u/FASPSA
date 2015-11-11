@@ -1,0 +1,35 @@
+-*- markdown -*-
+Algorithms
+===========
+Adaptive2SPSA.m
+EfficientAdaptive2SPSA.m
+EfficientFeedbackAdaptive2SPSA.m
+FeedbackAdaptive2SPSA.m
+SPSA.m
+
+Commons
+=======
+adaptivespsa_common.m
+adaptivespsa_common_preconditioning.m
+concat_all.m
+greedy_algorithm_b.m
+spsa_setup.m
+sqdist.m
+
+Loss Function
+=============
+noisy_function_factory.m
+quartic_loss_factory.m
+
+Drivers/Mscripts
+=================
+enhanced_2SPSA_noisefree.m
+analyze_runs.m
+compare_algorithms.m
+
+Scripts
+=======
+analyze_runs.sh
+clean.sh
+compare_algorithms.sh
+enhanced_2SPSA_noisefree.sh
