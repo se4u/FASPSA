@@ -77,7 +77,6 @@ del_yk = del_yk_part1 - del_yk_part2;
 % h_k would rise fast. If h_k rises faster than w_k can compensate
 % then the matrix would become more and more ill-conditioned.
 ck_ctk = c_k * c_tilda_k;
-fprintf(2, '\n ck_ctk %f del_yk %f ', ck_ctk, del_yk);
 h_k = del_yk / (2 * ck_ctk);
 
 if length(varargin) == 0

@@ -92,7 +92,7 @@ cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Hbar = 0;
 % Do the actual work.
-for k=0:max_iterations
+for k=0:max_iterations-1
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...

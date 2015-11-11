@@ -81,7 +81,7 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the `mea
                true_optimal_theta, sequence_param_cell);
 
 % Do the actual work.
-for k=0:max_iterations
+for k=0:max_iterations-1
     tic;
     c_k = perturbation_size_fn(k);
     delta_k = delta_fn();
