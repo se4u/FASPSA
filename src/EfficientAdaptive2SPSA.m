@@ -110,7 +110,7 @@ for k=0:max_iterations-1
     % the negative eigen values of Bbar to positive.
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
-    proposed_direction = ( sqrtm(Bbar * Bbar) * delta_k);
+    proposed_direction = ( adaptivespsa_common_preconditioning(Bbar, k) * delta_k);
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...

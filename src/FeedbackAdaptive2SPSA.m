@@ -100,17 +100,22 @@ for k=0:max_iterations-1
     % Update Hbar
     hbar_scalar_contrib = (delta_tilda_k' * Hbar * delta_k);
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - hbar_scalar_contrib);
-    half_update = ((Hk_hat_minus_Phi_hat_scalar/2) * delta_tilda_k) * delta_k';
-    Hbar = Hbar +  half_update + half_update';
+    Hbar_update_half = ((Hk_hat_minus_Phi_hat_scalar/2) * delta_tilda_k) * delta_k';
+    Hbar = Hbar +  Hbar_update_half + Hbar_update_half';
 
     % Update Theta
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
+    proposed_update = (step_length_fn(k)*g_k_magnitude) * (Hbarbar\delta_k);
+    proposed_theta = theta - proposed_update;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
     time_taken = time_taken + toc;
-
+    fprintf(2, ...
+            ['\n FA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
+             'rcond(Hbar) %f max(max(abs(Hbar))) %f max(abs(proposed_update)) %f'], ...
+            w_k, h_k, g_k_magnitude, Hk_hat_minus_Phi_hat_scalar, ...
+            rcond(Hbar), max(max(abs(Hbar))), max(abs(proposed_update)));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end

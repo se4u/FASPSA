@@ -27,6 +27,8 @@ end
 if ~(algo_a_block || algo_b_block)
     theta = proposed_theta;
     cur_loss_estimate = new_loss;
+else
+    fprintf(2, '\n Blocked Iteration \n');
 end
 
 % bound_block = 0;
