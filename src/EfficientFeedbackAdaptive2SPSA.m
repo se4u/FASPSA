@@ -79,13 +79,17 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the
 %}
 
 [theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
- time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
+ step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Bbar=0;
 Hbar=0;
+time_taken = 0;
+time_preconditioning = 0;
+time_blocking = 0;
+time_setup = 0;
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations-1
@@ -93,7 +97,8 @@ for k=0:max_iterations-1
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = ... %, sum_ccs_update] = ...
         adaptivespsa_common(k, theta, delta_fn, perturbation_size_fn, ...
                             target_fn, ...
-                            sequence_param_struct); %, settings);
+                            sequence_param_struct);
+    time_setup = time_setup + toc;
     % settings.sum_ck_square_ck_tilda_square = ...
     %     sum_ccs_update.sum_ck_square_ck_tilda_square;
     %% Update Bbar
@@ -111,6 +116,7 @@ for k=0:max_iterations-1
     % Then B^-1 = Hbar^-1 - (Hbar^-1 buv' Hbar^-1)/(1+bv' Hbar^-1 u)
     % And  Hbar = B + b vu'
     % Then Hbar^-1 = B^-1 - (B^-1 bvu' B^-1) / (1 + b u' B^-1 v)
+    tic
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - delta_tilda_k' * Hbar * delta_k);
     b = Hk_hat_minus_Phi_hat_scalar / 2;
     Hbar_update_half = (b * delta_tilda_k) * delta_k';
@@ -124,14 +130,18 @@ for k=0:max_iterations-1
     % TODO: Fix the FLOPS analysis.
     %% Update Theta.
     time_taken = time_taken + toc;
+    tic
     cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+    time_preconditioning = time_preconditioning + toc;
     tic
     proposed_update = (step_length_fn(k) * g_k_magnitude) * (cond_bbar * delta_k);
     proposed_theta = theta - proposed_update;
+    time_taken = time_taken + toc;
+    tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
-    time_taken = time_taken + toc;
+    time_blocking = time_blocking + toc;
     my_fprintf(2, ...
             ['\n EFA w_k %f h_k %f |g_k| %f Hk_hat_minus_Phi_hat_scalar %f ' ...
              'rcond(Bbar) %f max(abs(Bbar)) %f max(abs(proposed_update)) %f'], ...
@@ -141,3 +151,8 @@ for k=0:max_iterations-1
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
 iteration_count = k + 1;
+timing.time_taken = time_taken;
+timing.time_preconditioning = time_preconditioning;
+timing.time_blocking = time_blocking;
+timing.time_setup = time_setup;
+time_taken = timing;

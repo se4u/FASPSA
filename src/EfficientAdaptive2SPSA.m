@@ -64,18 +64,23 @@ sequence_param_struct : A cell with special values. See `spsa_setup.m`
 %}
 
 [theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
- time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
+ step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Bbar = 0;
+time_taken = 0;
+time_preconditioning = 0;
+time_blocking = 0;
+time_setup = 0;
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
+    time_setup = time_setup + toc;
     %% Update Bbar
     % The primal update is
     % Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k')
@@ -89,6 +94,7 @@ for k=0:max_iterations-1
     % Then Hbar = B + b vu'
     % Then Hbar^-1 = B^-1 - (B^-1 bvu' B^-1)/(1 + b u' B^-1 v)
     %% Prep
+    tic
     a = 1 - w_k;
     b = w_k * h_k / 2;
     if k == 0
@@ -103,15 +109,24 @@ for k=0:max_iterations-1
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
     time_taken = time_taken + toc;
+    tic
     cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+    time_preconditioning = time_preconditioning + toc;
     tic
     proposed_direction = ( cond_bbar * delta_k);
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
+    time_taken = time_taken + toc;
+    tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
-    time_taken = time_taken + toc;
+    time_blocking = time_blocking + toc;
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
 iteration_count = k + 1;
+timing.time_taken = time_taken;
+timing.time_preconditioning = time_preconditioning;
+timing.time_blocking = time_blocking;
+timing.time_setup = time_setup;
+time_taken = timing;

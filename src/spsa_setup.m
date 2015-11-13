@@ -1,7 +1,6 @@
 function [theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
-          time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
-    spsa_setup(budget, init_theta, ...
-               true_optimal_theta, sequence_param_struct)
+          step_length_fn, perturbation_size_fn, delta_fn]  =  spsa_setup( ...
+              budget, init_theta, true_optimal_theta, sequence_param_struct)
 %{
 Filename    : spsa_setup.m
 Description : A 'mixin' script that contains the common initialization
@@ -47,7 +46,6 @@ loss_sequence = NaN(1, 1 + max_iterations);
 sqdist_sequence = NaN(size(loss_sequence));
 % loss_sequence(1) = true_loss_fn(theta);
 sqdist_sequence(1) = sqdist(theta, true_optimal_theta);
-time_taken = 0;
 
 % Set the step - length and perturbation sequence.
 % if ~isfield(sequence_param_struct, 'alpha')

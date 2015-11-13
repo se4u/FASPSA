@@ -85,34 +85,42 @@ sqdist_sequence : A `iteration count + 1` length sequence that contains the `mea
 %}
 
 [theta_dim, max_iterations, theta, loss_sequence, sqdist_sequence, ...
- time_taken, step_length_fn, perturbation_size_fn, delta_fn] = ...
+ step_length_fn, perturbation_size_fn, delta_fn] = ...
     spsa_setup(budget, init_theta, ...
                true_optimal_theta, sequence_param_struct);
 cur_loss_estimate = target_fn(theta);
 loss_sequence(1) = true_loss_fn(theta);
 Hbar = 0;
+time_taken = 0;
+time_preconditioning = 0;
+time_blocking = 0;
+time_setup = 0;
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
     [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
-    half_update = (((w_k * h_k)/2) * delta_tilda_k) * delta_k';
+    time_setup = time_setup + toc;
+    tic
     % Update Hbar
+    half_update = (((w_k * h_k)/2) * delta_tilda_k) * delta_k';
     Hbar = (1 - w_k) * Hbar +  (half_update + half_update');
     time_taken = time_taken + toc;
     % Update Theta % This step can be made faster.
+    tic
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
+    time_preconditioning = time_preconditioning + toc;
     tic
     solution_of_linsolve = (Hbarbar\delta_k);
     proposed_theta = theta - ...
         (step_length_fn(k)*g_k_magnitude) * solution_of_linsolve;
-
+    time_taken = time_taken + toc;
+    tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
-    time_taken = time_taken + toc;
-
+    time_blocking = time_blocking + toc;
     my_fprintf(2, '\n w_k %f h_k %f |g_k| %f ', ...
             w_k, h_k, g_k_magnitude);
     my_fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
@@ -120,3 +128,8 @@ for k=0:max_iterations-1
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
 iteration_count = k + 1;
+timing.time_taken = time_taken;
+timing.time_preconditioning = time_preconditioning;
+timing.time_blocking = time_blocking;
+timing.time_setup = time_setup;
+time_taken = timing;
