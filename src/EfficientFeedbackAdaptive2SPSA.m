@@ -135,10 +135,15 @@ for k=0:max_iterations-1
     tmp_bbar_max = max(max(abs(Bbar)));
     Bbar = Bbar / tmp_bbar_max;
     bbar_max = bbar_max * tmp_bbar_max;
-    cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+    % cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic
-    proposed_update = (step_length_fn(k) * g_k_magnitude * bbar_max) * (cond_bbar * delta_k);
+    step_direction = (Bbar * delta_k);
+    step_size = (step_length_fn(k) * g_k_magnitude * bbar_max);
+    if step_direction'*delta_k < 0
+        step_size = -step_size;
+    end
+    proposed_update =  step_size*step_direction;
     proposed_theta = theta - proposed_update;
     time_taken = time_taken + toc;
     tic

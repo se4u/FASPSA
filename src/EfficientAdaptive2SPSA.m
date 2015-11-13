@@ -114,11 +114,14 @@ for k=0:max_iterations-1
     tmp_bbar_max = max(max(abs(Bbar)));
     Bbar = Bbar / tmp_bbar_max;
     bbar_max = bbar_max * tmp_bbar_max;
-    cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic
-    proposed_direction = ( cond_bbar * delta_k);
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude*bbar_max) * proposed_direction;
+    step_size = (step_length_fn(k)*g_k_magnitude*bbar_max);
+    step_direction = Bbar * delta_k;
+    if step_direction'*delta_k < 0
+        step_size = -step_size;
+    end
+    proposed_theta = theta - step_size * step_direction;
     time_taken = time_taken + toc;
     tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
