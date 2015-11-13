@@ -80,7 +80,7 @@ for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[50]% for multiple dimensions.
+for p=[30]% for multiple dimensions.
     if p == 10
         sequence_param_struct.a_numerator = 1;
         sequence_param_struct.c_numerator = 0.01;
@@ -144,4 +144,4 @@ end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
-exit;
+% exit;
