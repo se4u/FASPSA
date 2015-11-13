@@ -74,6 +74,7 @@ time_taken = 0;
 time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
+bbar_max = 1;
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
@@ -101,7 +102,7 @@ for k=0:max_iterations-1
         Bbar = inv(adaptivespsa_common_preconditioning(...
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
-        Bbar = rank_two_update(Bbar/a, b, delta_tilda_k, delta_k);
+        Bbar = rank_two_update_v2(Bbar, a/bbar_max, b, delta_tilda_k, delta_k);
     end
     % Update Theta.
     % It is critical to use this modified newton step of converting
@@ -110,11 +111,14 @@ for k=0:max_iterations-1
     % up considerably.
     time_taken = time_taken + toc;
     tic
+    tmp_bbar_max = max(max(abs(Bbar)));
+    Bbar = Bbar / tmp_bbar_max;
+    bbar_max = bbar_max * tmp_bbar_max;
     cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic
     proposed_direction = ( cond_bbar * delta_k);
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude*bbar_max) * proposed_direction;
     time_taken = time_taken + toc;
     tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
