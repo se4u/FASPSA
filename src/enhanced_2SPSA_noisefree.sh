@@ -1,1 +1,1 @@
-matlab -nojvm -nosplash -nodesktop -r "run $PWD/enhanced_2SPSA_noisefree.m "
+time matlab  -nojvm -nodisplay -nosplash  -singleCompThread -nodesktop -r "run $PWD/enhanced_2SPSA_noisefree.m "

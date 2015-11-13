@@ -210,7 +210,7 @@ for j=1:cases
     end
   end
   %theta
-  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta);
+  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta)
   errtheta_case = (theta-truetheta)'*(theta-truetheta)
   errthetaH=errthetaH+errthetaH_case;   %Sum of error in thetaH values
   errtheta=errtheta+errtheta_case;       %Sum of error in theta values
