@@ -10,9 +10,19 @@ Update #: 0
 close all; clear; clc;
 warning('off','MATLAB:maxNumCompThreads:Deprecated');
 warning('off', 'comm:system:warnobsolete:obsoleteReplace');
+global disable_print;
+disable_print = 2; % disable_print = 2 disables printing of stderr.
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
-    exit(1);
+    % Check if display is available.
+    if usejava('jvm') && ~feature('ShowFigureWindows')
+        exit(1);
+    else
+        if input('Exit now?')
+            exit(1);
+        end
+    end
+
 end
 dir_prefix = '../res';
 if exist(dir_prefix, 'dir') ~= 7
@@ -70,13 +80,13 @@ for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[100]% for multiple dimensions.
+for p=[50]% for multiple dimensions.
     if p == 10
         sequence_param_struct.a_numerator = 1;
         sequence_param_struct.c_numerator = 0.01;
     else
         sequence_param_struct.a_numerator = 1;
-        sequence_param_struct.c_numerator = 1;
+        sequence_param_struct.c_numerator = 0.01;
     end
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
@@ -92,7 +102,7 @@ for p=[100]% for multiple dimensions.
             name_fn = name_fn_cell{name_fn_idx};
             FN = name_fn_struct.(name_fn);
             common_prefix = concat_all(name_fn, p, run_idx, budget);
-            fprintf(1, '\n %s ', common_prefix);
+            my_fprintf(1, '\n %s ', common_prefix);
             % Run the algorithm.
             [iteration_count, theta, time_taken, loss_sequence, sqdist_sequence] = FN(...
                 budget, target_fn, init_theta, true_loss_fn, ...
@@ -101,12 +111,14 @@ for p=[100]% for multiple dimensions.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
-            fprintf(1, '\nIteration Count %d Init SQDIST %f Final SQDIST %f Init loss %f Final loss %f\n', ...
+            my_fprintf(1, ['\nIteration Count %d Init SQDIST %f Final SQDIST ' ...
+                        '%f Init loss %f Final loss %f time_taken %f \n'], ...
                     iteration_count, ...
                     sqdist_sequence(1), ...
                     sqdist_sequence(length(sqdist_sequence)), ...
                     loss_sequence(1), ...
-                    loss_sequence(length(loss_sequence)));
+                    loss_sequence(length(loss_sequence)),...
+                    time_taken);
             start_at = max(1, iteration_count - 19);
             start_at = 1;
             results_struct.([common_prefix, '_final_sqdist']) = ...
@@ -124,4 +136,5 @@ for p=[100]% for multiple dimensions.
 end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
+my_fprintf(1, 'Comparison Successfully Complete');
 exit;

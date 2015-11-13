@@ -95,28 +95,22 @@ for k=0:max_iterations-1
         Bbar = inv(adaptivespsa_common_preconditioning(...
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
-        % Stage 1 update
-        Bbar_by_a = Bbar / a;
-        tmp_stage_1 = Bbar_by_a * delta_tilda_k;
-        stage1_deno = 1 + b * (delta_k' * tmp_stage_1);
-        Binv = Bbar_by_a - tmp_stage_1 * ((delta_k' * Bbar_by_a)*(b/stage1_deno));
-        % Stage 2 update
-        tmp_stage_2 = Binv * delta_k;
-        stage2_deno = 1 + b * (delta_tilda_k' * tmp_stage_2);
-        Bbar = Binv - tmp_stage_2 * ((delta_tilda_k' * Binv)*(b/stage2_deno));
+        Bbar = rank_two_update(Bbar/a, b, delta_tilda_k, delta_k);
     end
     % Update Theta.
     % It is critical to use this modified newton step of converting
     % the negative eigen values of Bbar to positive.
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
-    proposed_direction = ( adaptivespsa_common_preconditioning(Bbar, k) * delta_k);
+    time_taken = time_taken + toc;
+    cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+    tic
+    proposed_direction = ( cond_bbar * delta_k);
     proposed_theta = theta - (step_length_fn(k)*g_k_magnitude) * proposed_direction;
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
     time_taken = time_taken + toc;
-
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end

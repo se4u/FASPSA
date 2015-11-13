@@ -4,7 +4,7 @@ function [theta, cur_loss_estimate] = greedy_algorithm_b(...
 
 algo_a_block = 0;
 if sequence_param_struct.use_greedy_algorithm_a
-    fprintf(2, ['\n norm(theta - proposed_theta) %f ' ...
+    my_fprintf(2, ['\n norm(theta - proposed_theta) %f ' ...
                 'sequence_param_struct.greedy_algorithm_a_threshold %f'], ...
             norm(theta - proposed_theta), ...
             sequence_param_struct.greedy_algorithm_a_threshold);
@@ -28,7 +28,7 @@ if ~(algo_a_block || algo_b_block)
     theta = proposed_theta;
     cur_loss_estimate = new_loss;
 else
-    fprintf(2, '\n Blocked Iteration \n');
+    my_fprintf(2, '\n Blocked Iteration \n');
 end
 
 % bound_block = 0;

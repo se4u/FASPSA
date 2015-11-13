@@ -99,10 +99,11 @@ for k=0:max_iterations-1
         sequence_param_struct);
     half_update = (((w_k * h_k)/2) * delta_tilda_k) * delta_k';
     % Update Hbar
-    Hbar = (1 - w_k) * Hbar +  half_update + half_update';
-
+    Hbar = (1 - w_k) * Hbar +  (half_update + half_update');
+    time_taken = time_taken + toc;
     % Update Theta % This step can be made faster.
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
+    tic
     solution_of_linsolve = (Hbarbar\delta_k);
     proposed_theta = theta - ...
         (step_length_fn(k)*g_k_magnitude) * solution_of_linsolve;
@@ -110,11 +111,11 @@ for k=0:max_iterations-1
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
-
     time_taken = time_taken + toc;
-    fprintf(2, '\n w_k %f h_k %f |g_k| %f ', ...
+
+    my_fprintf(2, '\n w_k %f h_k %f |g_k| %f ', ...
             w_k, h_k, g_k_magnitude);
-    fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
+    my_fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
 end
