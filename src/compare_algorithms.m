@@ -59,6 +59,12 @@ sequence_param_struct.bound_iterate = 1;
 sequence_param_struct.clip_threshold = 10;
 sequence_param_struct.function_eval_per_iteration = 4 + ...
     sequence_param_struct.use_greedy_algorithm_b;
+% hacky_preconditioning just reverses the step_direction if its dot
+% product with the gradient direction is less than zero.
+sequence_param_struct.use_hacky_preconditioning = 0;
+% eps=1 is essentially gradient descent.
+% eps=0 is neton descent.
+sequence_param_struct.hacky_preconditioning_eps = 0;
 name_fn_struct = struct();
 name_fn_struct.Adaptive2SPSA = @Adaptive2SPSA;
 name_fn_struct.EfficientAdaptive2SPSA = @EfficientAdaptive2SPSA;
@@ -84,7 +90,7 @@ for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[10]% for multiple dimensions.
+for p=[25]% for multiple dimensions.
     if p == 10
         sequence_param_struct.a_numerator = 1;
         sequence_param_struct.c_numerator = 0.01;

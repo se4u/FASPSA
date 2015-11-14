@@ -138,17 +138,25 @@ for k=0:max_iterations-1
     Bbar = Bbar / tmp_bbar_max;
     bbar_max = bbar_max * tmp_bbar_max;
     time_taken = time_taken + toc;
-    tic
-    cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
-    time_preconditioning = time_preconditioning + toc;
+    if ~sequence_param_struct.use_hacky_preconditioning
+        tic
+        cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+        time_preconditioning = time_preconditioning + toc;
+    end
     tic
     step_size = (step_length_fn(k) * g_k_magnitude * bbar_max);
-    %% No Preconditioning Solution
-    % step_direction = (Bbar * delta_k);
-    % if step_direction'*delta_k < 0
-    %     step_size = -step_size;
-    % end
-    step_direction = cond_bbar * delta_k;
+    if sequence_param_struct.use_hacky_preconditioning
+        step_direction = (Bbar * delta_k);
+        dot_prod = (step_direction'*delta_k)/norm(step_direction)/norm(delta_k);
+        my_eps = sequence_param_struct.hacky_preconditioning_eps;
+        if dot_prod <= -my_eps
+            step_size = -step_size;
+        elseif dot_prod > -my_eps && dot_prod < my_eps
+            step_direction = delta_k;
+        end
+    else
+        step_direction = cond_bbar * delta_k;
+    end
     proposed_update = step_size * step_direction;
     proposed_theta = theta - proposed_update;
     time_taken = time_taken + toc;
