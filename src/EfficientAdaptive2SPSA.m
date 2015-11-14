@@ -74,6 +74,7 @@ time_taken = 0;
 time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
+time_rank_two_update = 0;
 bbar_max = 1;
 % Do the actual work.
 for k=0:max_iterations-1
@@ -102,18 +103,20 @@ for k=0:max_iterations-1
         Bbar = inv(adaptivespsa_common_preconditioning(...
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
+        tic
         Bbar = rank_two_update_v2(Bbar, a/bbar_max, b, delta_tilda_k, delta_k);
+        time_rank_two_update = time_rank_two_update + toc;
     end
     % Update Theta.
     % It is critical to use this modified newton step of converting
     % the negative eigen values of Bbar to positive.
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
-    time_taken = time_taken + toc;
-    tic
     tmp_bbar_max = max(max(abs(Bbar)));
     Bbar = Bbar / tmp_bbar_max;
     bbar_max = bbar_max * tmp_bbar_max;
+    time_taken = time_taken + toc;
+    tic
     time_preconditioning = time_preconditioning + toc;
     tic
     step_size = (step_length_fn(k)*g_k_magnitude*bbar_max);
@@ -136,4 +139,5 @@ timing.time_taken = time_taken;
 timing.time_preconditioning = time_preconditioning;
 timing.time_blocking = time_blocking;
 timing.time_setup = time_setup;
+timing.time_rank_two_update = time_rank_two_update;
 time_taken = timing;

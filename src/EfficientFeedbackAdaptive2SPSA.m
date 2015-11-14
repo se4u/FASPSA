@@ -130,11 +130,11 @@ for k=0:max_iterations-1
     end
     % TODO: Fix the FLOPS analysis.
     %% Update Theta.
-    time_taken = time_taken + toc;
-    tic
     tmp_bbar_max = max(max(abs(Bbar)));
     Bbar = Bbar / tmp_bbar_max;
     bbar_max = bbar_max * tmp_bbar_max;
+    time_taken = time_taken + toc;
+    tic
     % cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic

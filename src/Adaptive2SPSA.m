@@ -95,6 +95,7 @@ time_taken = 0;
 time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
+time_linsolve = 0;
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
@@ -112,7 +113,9 @@ for k=0:max_iterations-1
     Hbarbar = adaptivespsa_common_preconditioning(Hbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic
+    tic
     solution_of_linsolve = (Hbarbar\delta_k);
+    time_linsolve = time_linsolve + toc;
     proposed_theta = theta - ...
         (step_length_fn(k)*g_k_magnitude) * solution_of_linsolve;
     time_taken = time_taken + toc;
@@ -132,4 +135,5 @@ timing.time_taken = time_taken;
 timing.time_preconditioning = time_preconditioning;
 timing.time_blocking = time_blocking;
 timing.time_setup = time_setup;
+timing.time_linsolve = time_linsolve;
 time_taken = timing;
