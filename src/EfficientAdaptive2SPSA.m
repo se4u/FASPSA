@@ -104,7 +104,7 @@ for k=0:max_iterations-1
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
         tic
-        Bbar = rank_two_update_v2(Bbar, a/bbar_max, b, delta_tilda_k, delta_k);
+        Bbar = rank_two_update_v2_fast(Bbar, a/bbar_max, b, delta_tilda_k, delta_k);
         time_rank_two_update = time_rank_two_update + toc;
     end
     % Update Theta.

@@ -1,6 +1,6 @@
 clc; clear;
 SAFE = '-DSAFE '; % ''
-SUPERSAFE = ''; %'-DSUPERSAFE '; % ''
+SUPERSAFE = '-DSUPERSAFE '; % ''
 mex('-largeArrayDims', ['-lmwblas ', SAFE, SUPERSAFE], 'rank_two_update_v2_fast.c');
 rand('seed',31415927);
 randn('seed',3111113);
