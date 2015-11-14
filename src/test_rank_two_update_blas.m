@@ -1,9 +1,10 @@
 clc; clear;
-mex('-v', '-largeArrayDims', '-lmwblas', '-DSAFE', 'rank_two_update_v2_fast.c');
+SAFE = '-DSAFE '; % ''
+SUPERSAFE = ''; %'-DSUPERSAFE '; % ''
+mex('-largeArrayDims', ['-lmwblas ', SAFE, SUPERSAFE], 'rank_two_update_v2_fast.c');
 rand('seed',31415927);
 randn('seed',3111113);
-p_arr = 10:10:200;
-p_arr = 10;
+p_arr = [1 10:10:100];
 time_old_arr = [];
 time_new_arr = [];
 ndiff = 0;
@@ -13,6 +14,9 @@ for p = p_arr
     time_old = 0;
     time_new = 0;
     trials = 100;
+    tmp_stage = zeros(1,p);
+    tmp_stage_b = zeros(1,p);
+
     for i = 1:trials
         Bbar = rand(p);
         Bbar = (Bbar + Bbar');
@@ -28,18 +32,22 @@ for p = p_arr
 
         tic
         Bbar_fast = rank_two_update_v2_fast(...
-            Bbar, a, b, delta_tilda_k, delta_k);
+            Bbar, a, b, delta_tilda_k, delta_k, tmp_stage, tmp_stage_b);
         time_new = time_new + toc;
         nsym_new = max(nsym_new, max(max(abs(Bbar_fast - Bbar_fast'))));
         ndiff = max(ndiff, norm(Bbar_fast - Bbar_gold));
     end
-    time_new_arr = [time_new_arr time_new/trials];
-    time_old_arr = [time_old_arr time_old/trials];
+    time_new_arr = [time_new_arr time_new];
+    time_old_arr = [time_old_arr time_old];
 end
+time_new_arr = time_new_arr(2:end);
+time_old_arr = time_old_arr(2:end);
 fprintf(2, ...
-        '\n ndiff %g, nsym_old %g, nsym_new %g ', ...
+        ['\n ndiff %g, nsym_old %g, nsym_new %g \n'], ...
         ndiff, nsym_old, nsym_new);
 if ~usejava('jvm')
+    fprintf('%f ', time_old_arr./time_new_arr);
+    fprintf('\n');
     exit(~(ndiff < 1e-10));
 else
     figure();
