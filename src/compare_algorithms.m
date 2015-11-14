@@ -15,7 +15,7 @@ disable_print = 2; % disable_print = 2 disables printing of stderr.
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     % Check if display is available.
-    if usejava('jvm') && ~feature('ShowFigureWindows')
+    if ~usejava('jvm') && ~feature('ShowFigureWindows')
         exit(1);
     else
         if input('Exit now?')
@@ -66,7 +66,9 @@ name_fn_struct.FeedbackAdaptive2SPSA = @FeedbackAdaptive2SPSA;
 name_fn_struct.EfficientFeedbackAdaptive2SPSA = ...
      @EfficientFeedbackAdaptive2SPSA;
 fn_fine_struct.Adaptive2SPSA = 'time_linsolve';
+fn_fine_struct.FeedbackAdaptive2SPSA = 'time_linsolve';
 fn_fine_struct.EfficientAdaptive2SPSA = 'time_rank_two_update';
+fn_fine_struct.EfficientFeedbackAdaptive2SPSA = 'time_rank_two_update';
 name_fn_cell = fieldnames(name_fn_struct);
 results_struct = struct();
 % for multiple budgets.
@@ -78,11 +80,11 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=25000
+for budget=10000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[30]% for multiple dimensions.
+for p=[10]% for multiple dimensions.
     if p == 10
         sequence_param_struct.a_numerator = 1;
         sequence_param_struct.c_numerator = 0.01;
@@ -149,4 +151,4 @@ end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
-% exit;
+exit(1);

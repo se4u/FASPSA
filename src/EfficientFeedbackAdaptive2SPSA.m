@@ -90,6 +90,7 @@ time_taken = 0;
 time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
+time_rank_two_update = 0;
 bbar_max = 1;
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
@@ -126,7 +127,9 @@ for k=0:max_iterations-1
         Hbar = adaptivespsa_common_preconditioning(Hbar, k);
         Bbar = inv(Hbar);
     else
+        tic
         Bbar = rank_two_update_v2_fast(Bbar, 1/bbar_max, b, delta_tilda_k, delta_k);
+        time_rank_two_update = time_rank_two_update + toc;
     end
     % TODO: Fix the FLOPS analysis.
     %% Update Theta.
@@ -135,15 +138,17 @@ for k=0:max_iterations-1
     bbar_max = bbar_max * tmp_bbar_max;
     time_taken = time_taken + toc;
     tic
-    % cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
+    cond_bbar = adaptivespsa_common_preconditioning(Bbar, k);
     time_preconditioning = time_preconditioning + toc;
     tic
-    step_direction = (Bbar * delta_k);
     step_size = (step_length_fn(k) * g_k_magnitude * bbar_max);
-    if step_direction'*delta_k < 0
-        step_size = -step_size;
-    end
-    proposed_update =  step_size*step_direction;
+    %% No Preconditioning Solution
+    % step_direction = (Bbar * delta_k);
+    % if step_direction'*delta_k < 0
+    %     step_size = -step_size;
+    % end
+    step_direction = cond_bbar * delta_k;
+    proposed_update = step_size * step_direction;
     proposed_theta = theta - proposed_update;
     time_taken = time_taken + toc;
     tic
@@ -164,4 +169,5 @@ timing.time_taken = time_taken;
 timing.time_preconditioning = time_preconditioning;
 timing.time_blocking = time_blocking;
 timing.time_setup = time_setup;
+timing.time_rank_two_update = time_rank_two_update;
 time_taken = timing;
