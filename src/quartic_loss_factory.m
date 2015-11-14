@@ -30,6 +30,5 @@ if size(B, 1) ~= p
     error('Exiting in quartic_loss_factory.m. The size of B != p');
     exit(1);
 end
-% M = (B'*B) ; % We could do this but making the quartic loss function
-% efficient is not the point of the paper.
-loss_fn = @(t) t'*(B'*B)*t + 0.1 * sum((B*t).^3) + 0.01 * sum((B * t).^4);
+M = (B'*B) ;
+loss_fn = @(t) t'*M*t + 0.1 * sum((B*t).^3) + 0.01 * sum((B * t).^4);
