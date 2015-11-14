@@ -129,6 +129,7 @@ for k=0:max_iterations-1
     else
         tic
         Bbar = rank_two_update_v2_fast(Bbar, 1/bbar_max, b, delta_tilda_k, delta_k);
+        Bbar = (Bbar + Bbar')/2;
         time_rank_two_update = time_rank_two_update + toc;
     end
     % TODO: Fix the FLOPS analysis.

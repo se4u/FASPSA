@@ -80,7 +80,7 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=10000
+for budget=25000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
