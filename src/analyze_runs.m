@@ -98,6 +98,14 @@ end
 for  i = 1:3
 figure(i); legend(algorithms);
 end
+
+filenames = {'normalized_loss_per_iteration', ...
+    'normalized_squared_distance_per_iteration', ...
+    'loglogplot_of_asymptotic_convergence'};
+for i = 1:3
+    figure(i);
+    saveas(gca(), ['../res/NoNoise_' filenames{i} '.png']);
+end
 title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
        num2str(p)]);
 xlabel('Time');
