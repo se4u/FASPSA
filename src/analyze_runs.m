@@ -32,7 +32,7 @@ clear; clc; close all;
 load('../res/sso_project.mat');
 p = 10;
 runs = 5;
-budget = 25000;
+budget = 50000;
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
@@ -75,25 +75,25 @@ for algorithm_idx=1:length(algorithms)
     end
     norm_loss_per_iter = mean(lossseq_arr)/loss_init;
     sqdist_per_iter = mean(sqdist_arr)/sqdist_init;
-    figure(1); 
-    plot(log(norm_loss_per_iter), loss_per_iter_markup(algorithm_idx)); 
+    figure(1);
+    plot(log(norm_loss_per_iter), loss_per_iter_markup(algorithm_idx));
     title('Normalized Loss Per Iteration');
     set(gca(), 'XGrid', 'on');
     hold on;
-    
+
     figure(2);
-    plot(sqrt(sqdist_per_iter), loss_per_iter_markup(algorithm_idx)); 
+    plot(sqrt(sqdist_per_iter), loss_per_iter_markup(algorithm_idx));
     title('Normalized Squared Distance Per Iteration');
     set(gca(), 'XGrid', 'on');
     hold on;
-    
+
     figure(3);
-    loglog(1000:length(sqdist_per_iter), sqdist_per_iter(1000:end), ...
+    plot(log(1000:length(sqdist_per_iter)), log(sqdist_per_iter(1000:end)), ...
         loss_per_iter_markup(algorithm_idx));
     title('LogLog plot of Asymptotic convergence');
     grid minor;
     hold on;
-    
+
 %     norm_theta = sqrt(mean(errtheta_readings)/errtheta_init)
 %     scatter(time_readings, loss_readings, markup);
 %     hold on;

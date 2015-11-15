@@ -32,7 +32,7 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 0; % Noise higher than 5e-4 we can't handle.
+sigma = 1e-4; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
 % setting gamma = 0.101 makes the performance of the non-efficient code
@@ -86,14 +86,14 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=25000
+for budget=50000
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
 for p=[10]% for multiple dimensions.
     if p == 10
-        sequence_param_struct.a_numerator = 1;
-        sequence_param_struct.c_numerator = 0.01;
+        sequence_param_struct.a_numerator = .09;
+        sequence_param_struct.c_numerator = 0.003;
     else
         sequence_param_struct.a_numerator = 1;
         sequence_param_struct.c_numerator = 0.01;
