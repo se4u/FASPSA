@@ -78,17 +78,20 @@ for algorithm_idx=1:length(algorithms)
     figure(1); 
     plot(log(norm_loss_per_iter), loss_per_iter_markup(algorithm_idx)); 
     title('Normalized Loss Per Iteration');
+    set(gca(), 'XGrid', 'on');
     hold on;
     
     figure(2);
     plot(sqrt(sqdist_per_iter), loss_per_iter_markup(algorithm_idx)); 
     title('Normalized Squared Distance Per Iteration');
+    set(gca(), 'XGrid', 'on');
     hold on;
     
     figure(3);
-    plot(log(1000:length(sqdist_per_iter)), log(sqdist_per_iter(1000:end)), ...
+    loglog(1000:length(sqdist_per_iter), sqdist_per_iter(1000:end), ...
         loss_per_iter_markup(algorithm_idx));
     title('LogLog plot of Asymptotic convergence');
+    grid minor;
     hold on;
     
 %     norm_theta = sqrt(mean(errtheta_readings)/errtheta_init)
@@ -106,9 +109,9 @@ for i = 1:3
     figure(i);
     saveas(gca(), ['../res/NoNoise_' filenames{i} '.png']);
 end
-title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
-       num2str(p)]);
-xlabel('Time');
-ylabel('Loss');
-legend(algorithms, 'Location','NorthEastOutside');
-saveas(gcf, '../res/analyze_runs', 'png');
+% title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
+%        num2str(p)]);
+% xlabel('Time');
+% ylabel('Loss');
+% legend(algorithms, 'Location','NorthEastOutside');
+% saveas(gcf, '../res/analyze_runs', 'png');
