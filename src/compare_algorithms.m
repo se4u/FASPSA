@@ -101,12 +101,15 @@ for p=[10]% for multiple dimensions.
     true_loss_fn = quartic_loss_factory(p);
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:5 % for multiple runs.
+    for run_idx=1:50 % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
         % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
         init_theta = 0.2 * ones(p, 1);
-        for name_fn_idx=1:length(name_fn_cell) % for different algorithms
+        % Shuffle the order of the different algorithms that we try
+        % for fair timing experiments.
+        algorithm_sequence_to_try = randperm(length(name_fn_cell));
+        for name_fn_idx=algorithm_sequence_to_try
             rand('seed', seed_for_this_run);
             randn('seed', seed_for_this_run);
             name_fn = name_fn_cell{name_fn_idx};
@@ -121,7 +124,6 @@ for p=[10]% for multiple dimensions.
             results_struct.([common_prefix, '_time_taken']) = time_taken;
             results_struct.([common_prefix, '_final_loss']) = ...
                 loss_sequence(length(loss_sequence));
-
             my_fprintf(...
                 1, ...
                 ['\nIteration Count %d Init SQDIST %f Final SQDIST ' ...
@@ -138,9 +140,6 @@ for p=[10]% for multiple dimensions.
                 time_taken.time_blocking, ...
                 time_taken.time_taken, ...
                 time_taken.(fn_fine_struct.(name_fn)));
-
-            start_at = max(1, iteration_count - 19);
-            start_at = 1;
             results_struct.([common_prefix, '_final_sqdist']) = ...
                 sqdist_sequence(length(sqdist_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
@@ -149,6 +148,8 @@ for p=[10]% for multiple dimensions.
                 loss_sequence;
             results_struct.([common_prefix, '_sqdist_sequence']) = ...
                 sqdist_sequence;
+            results_struct.([common_prefix, '_sequence_param_struct']) = ...
+                sequence_param_struct;
         end
     end
     % Write/Overwrite intermediate result files that can be observed separately.
