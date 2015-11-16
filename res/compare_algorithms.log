@@ -1,0 +1,611 @@
+[?1h=
+                                                                             < M A T L A B (R) >
+                                                                   Copyright 1984-2010 The MathWorks, Inc.
+                                                                 Version 7.10.0.499 (R2010a) 64-bit (maci64)
+                                                                               February 5, 2010
+
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> [H[2J
+ FeedbackAdaptive2SPSA_10_1_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.059441 Init loss 0.156461 Final loss 0.000469 time_setup 2.004206 time_preconditioning 1.863700  time_blocking 0.527462 time_taken 0.511003 time_linsolve 0.205962 
+
+ EfficientAdaptive2SPSA_10_1_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.470459 Init loss 0.156461 Final loss 0.027915 time_setup 2.002481 time_preconditioning 1.763333  time_blocking 0.517645 time_taken 0.393919 time_rank_two_update 0.193326 
+
+ EfficientFeedbackAdaptive2SPSA_10_1_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.043519 Init loss 0.156461 Final loss 0.000221 time_setup 1.993349 time_preconditioning 1.715792  time_blocking 0.519830 time_taken 0.389094 time_rank_two_update 0.139811 
+
+ Adaptive2SPSA_10_1_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.071324 Init loss 0.156461 Final loss 0.004715 time_setup 1.983736 time_preconditioning 1.708874  time_blocking 0.519218 time_taken 0.396799 time_linsolve 0.168391 
+
+ FeedbackAdaptive2SPSA_10_2_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014150 Init loss 0.156461 Final loss 0.000058 time_setup 1.986331 time_preconditioning 1.696336  time_blocking 0.522484 time_taken 0.481991 time_linsolve 0.173738 
+
+ EfficientFeedbackAdaptive2SPSA_10_2_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003225 Init loss 0.156461 Final loss 0.000014 time_setup 1.982504 time_preconditioning 1.718914  time_blocking 0.521702 time_taken 0.384388 time_rank_two_update 0.141823 
+
+ Adaptive2SPSA_10_2_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.916031 Init loss 0.156461 Final loss 0.004241 time_setup 1.973280 time_preconditioning 1.701428  time_blocking 0.516786 time_taken 0.395460 time_linsolve 0.167368 
+
+ EfficientAdaptive2SPSA_10_2_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.745111 Init loss 0.156461 Final loss 0.005037 time_setup 1.988132 time_preconditioning 1.704029  time_blocking 0.515627 time_taken 0.366179 time_rank_two_update 0.173703 
+
+ FeedbackAdaptive2SPSA_10_3_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.031689 Init loss 0.156461 Final loss 0.000108 time_setup 1.979376 time_preconditioning 1.685576  time_blocking 0.520821 time_taken 0.484136 time_linsolve 0.177731 
+
+ EfficientFeedbackAdaptive2SPSA_10_3_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014723 Init loss 0.156461 Final loss 0.000051 time_setup 1.990367 time_preconditioning 1.719173  time_blocking 0.520471 time_taken 0.384406 time_rank_two_update 0.141226 
+
+ Adaptive2SPSA_10_3_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.157442 Init loss 0.156461 Final loss 0.010923 time_setup 1.980265 time_preconditioning 1.705693  time_blocking 0.520578 time_taken 0.399929 time_linsolve 0.169526 
+
+ EfficientAdaptive2SPSA_10_3_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.306401 Init loss 0.156461 Final loss 0.013681 time_setup 1.985183 time_preconditioning 1.722280  time_blocking 0.516653 time_taken 0.365688 time_rank_two_update 0.173310 
+
+ EfficientFeedbackAdaptive2SPSA_10_4_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.038670 Init loss 0.156461 Final loss 0.000226 time_setup 1.989635 time_preconditioning 1.723362  time_blocking 0.519985 time_taken 0.383506 time_rank_two_update 0.141019 
+
+ Adaptive2SPSA_10_4_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.548325 Init loss 0.156461 Final loss 0.004861 time_setup 1.975661 time_preconditioning 1.702619  time_blocking 0.518667 time_taken 0.395690 time_linsolve 0.167184 
+
+ FeedbackAdaptive2SPSA_10_4_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.203415 Init loss 0.156461 Final loss 0.001178 time_setup 1.984901 time_preconditioning 1.704773  time_blocking 0.522951 time_taken 0.476281 time_linsolve 0.169303 
+
+ EfficientAdaptive2SPSA_10_4_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.534611 Init loss 0.156461 Final loss 0.003039 time_setup 1.986920 time_preconditioning 1.717951  time_blocking 0.516950 time_taken 0.365724 time_rank_two_update 0.173543 
+
+ EfficientAdaptive2SPSA_10_5_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.660346 Init loss 0.156461 Final loss 0.003103 time_setup 1.997676 time_preconditioning 1.755524  time_blocking 0.521940 time_taken 0.368553 time_rank_two_update 0.174694 
+
+ FeedbackAdaptive2SPSA_10_5_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000717 Init loss 0.156461 Final loss 0.000004 time_setup 1.991721 time_preconditioning 1.707653  time_blocking 0.523696 time_taken 0.481097 time_linsolve 0.172749 
+
+ Adaptive2SPSA_10_5_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 9.315429 Init loss 0.156461 Final loss 0.054233 time_setup 1.982605 time_preconditioning 1.724200  time_blocking 0.522941 time_taken 0.400059 time_linsolve 0.169622 
+
+ EfficientFeedbackAdaptive2SPSA_10_5_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.038256 Init loss 0.156461 Final loss 0.000166 time_setup 1.997019 time_preconditioning 1.738524  time_blocking 0.525318 time_taken 0.385387 time_rank_two_update 0.141386 
+
+ Adaptive2SPSA_10_6_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.349356 Init loss 0.156461 Final loss 0.011264 time_setup 1.987819 time_preconditioning 1.723863  time_blocking 0.522412 time_taken 0.398484 time_linsolve 0.169005 
+
+ EfficientAdaptive2SPSA_10_6_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.588504 Init loss 0.156461 Final loss 0.010824 time_setup 1.992222 time_preconditioning 1.717516  time_blocking 0.524034 time_taken 0.367613 time_rank_two_update 0.173686 
+
+ FeedbackAdaptive2SPSA_10_6_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014104 Init loss 0.156461 Final loss 0.000060 time_setup 1.992041 time_preconditioning 1.712067  time_blocking 0.526082 time_taken 0.484386 time_linsolve 0.175139 
+
+ EfficientFeedbackAdaptive2SPSA_10_6_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.009492 Init loss 0.156461 Final loss 0.000053 time_setup 1.996301 time_preconditioning 1.738156  time_blocking 0.524899 time_taken 0.384832 time_rank_two_update 0.141414 
+
+ FeedbackAdaptive2SPSA_10_7_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.013640 Init loss 0.156461 Final loss 0.000085 time_setup 1.986281 time_preconditioning 1.708330  time_blocking 0.525299 time_taken 0.482602 time_linsolve 0.173769 
+
+ EfficientFeedbackAdaptive2SPSA_10_7_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.004640 Init loss 0.156461 Final loss 0.000030 time_setup 1.988340 time_preconditioning 1.729504  time_blocking 0.520218 time_taken 0.382157 time_rank_two_update 0.139779 
+
+ EfficientAdaptive2SPSA_10_7_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.635665 Init loss 0.156461 Final loss 0.003861 time_setup 1.989455 time_preconditioning 1.728996  time_blocking 0.518702 time_taken 0.366061 time_rank_two_update 0.173386 
+
+ Adaptive2SPSA_10_7_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 19.962462 Init loss 0.156461 Final loss 0.099741 time_setup 1.980902 time_preconditioning 1.723206  time_blocking 0.519672 time_taken 0.397092 time_linsolve 0.168131 
+
+ FeedbackAdaptive2SPSA_10_8_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.016131 Init loss 0.156461 Final loss 0.000098 time_setup 1.982152 time_preconditioning 1.710531  time_blocking 0.523269 time_taken 0.478297 time_linsolve 0.171132 
+
+ EfficientAdaptive2SPSA_10_8_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.770766 Init loss 0.156461 Final loss 0.004046 time_setup 1.983027 time_preconditioning 1.723070  time_blocking 0.517225 time_taken 0.365876 time_rank_two_update 0.173146 
+
+ EfficientFeedbackAdaptive2SPSA_10_8_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.009776 Init loss 0.156461 Final loss 0.000035 time_setup 1.992972 time_preconditioning 1.739443  time_blocking 0.521676 time_taken 0.383807 time_rank_two_update 0.140658 
+
+ Adaptive2SPSA_10_8_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.331520 Init loss 0.156461 Final loss 0.009683 time_setup 1.982566 time_preconditioning 1.732603  time_blocking 0.522068 time_taken 0.399814 time_linsolve 0.168446 
+
+ FeedbackAdaptive2SPSA_10_9_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.031390 Init loss 0.156461 Final loss 0.000118 time_setup 1.986949 time_preconditioning 1.715196  time_blocking 0.523176 time_taken 0.481202 time_linsolve 0.173753 
+
+ EfficientAdaptive2SPSA_10_9_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.284801 Init loss 0.156461 Final loss 0.008616 time_setup 1.995613 time_preconditioning 1.752032  time_blocking 0.521093 time_taken 0.366689 time_rank_two_update 0.172945 
+
+ EfficientFeedbackAdaptive2SPSA_10_9_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.053936 Init loss 0.156461 Final loss 0.000196 time_setup 1.994682 time_preconditioning 1.748457  time_blocking 0.524292 time_taken 0.384283 time_rank_two_update 0.140325 
+
+ Adaptive2SPSA_10_9_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.083870 Init loss 0.156461 Final loss 0.000240 time_setup 1.985550 time_preconditioning 1.728898  time_blocking 0.522008 time_taken 0.398505 time_linsolve 0.167677 
+
+ FeedbackAdaptive2SPSA_10_10_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.010359 Init loss 0.156461 Final loss 0.000082 time_setup 1.989223 time_preconditioning 1.717265  time_blocking 0.524948 time_taken 0.476319 time_linsolve 0.168647 
+
+ Adaptive2SPSA_10_10_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.962502 Init loss 0.156461 Final loss 0.014848 time_setup 1.984127 time_preconditioning 1.737978  time_blocking 0.520666 time_taken 0.399331 time_linsolve 0.168367 
+
+ EfficientAdaptive2SPSA_10_10_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.235127 Init loss 0.156461 Final loss 0.008893 time_setup 1.995420 time_preconditioning 1.722104  time_blocking 0.521297 time_taken 0.365657 time_rank_two_update 0.173015 
+
+ EfficientFeedbackAdaptive2SPSA_10_10_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.020179 Init loss 0.156461 Final loss 0.000088 time_setup 2.002984 time_preconditioning 1.745235  time_blocking 0.526797 time_taken 0.385916 time_rank_two_update 0.141902 
+
+ Adaptive2SPSA_10_11_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.106050 Init loss 0.156461 Final loss 0.009688 time_setup 1.992657 time_preconditioning 1.727822  time_blocking 0.524381 time_taken 0.397908 time_linsolve 0.167965 
+
+ FeedbackAdaptive2SPSA_10_11_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007358 Init loss 0.156461 Final loss 0.000032 time_setup 1.992227 time_preconditioning 1.720438  time_blocking 0.524888 time_taken 0.480448 time_linsolve 0.172262 
+
+ EfficientFeedbackAdaptive2SPSA_10_11_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.011128 Init loss 0.156461 Final loss 0.000047 time_setup 1.998021 time_preconditioning 1.748966  time_blocking 0.522667 time_taken 0.383328 time_rank_two_update 0.140916 
+
+ EfficientAdaptive2SPSA_10_11_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.289703 Init loss 0.156461 Final loss 0.001868 time_setup 1.994061 time_preconditioning 1.745100  time_blocking 0.521846 time_taken 0.364493 time_rank_two_update 0.171965 
+
+ EfficientAdaptive2SPSA_10_12_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 4.401335 Init loss 0.156461 Final loss 0.039050 time_setup 1.993789 time_preconditioning 1.750783  time_blocking 0.519628 time_taken 0.367080 time_rank_two_update 0.173591 
+
+ FeedbackAdaptive2SPSA_10_12_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.020947 Init loss 0.156461 Final loss 0.000123 time_setup 1.992677 time_preconditioning 1.728606  time_blocking 0.524575 time_taken 0.481037 time_linsolve 0.172071 
+
+ EfficientFeedbackAdaptive2SPSA_10_12_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007752 Init loss 0.156461 Final loss 0.000039 time_setup 1.998043 time_preconditioning 1.747774  time_blocking 0.522281 time_taken 0.385047 time_rank_two_update 0.141825 
+
+ Adaptive2SPSA_10_12_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.021566 Init loss 0.156461 Final loss 0.010143 time_setup 1.985933 time_preconditioning 1.733434  time_blocking 0.523114 time_taken 0.397498 time_linsolve 0.167679 
+
+ Adaptive2SPSA_10_13_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.711924 Init loss 0.156461 Final loss 0.003418 time_setup 1.983630 time_preconditioning 1.736541  time_blocking 0.523213 time_taken 0.398105 time_linsolve 0.168220 
+
+ EfficientAdaptive2SPSA_10_13_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.742719 Init loss 0.156461 Final loss 0.006860 time_setup 1.992500 time_preconditioning 1.747586  time_blocking 0.522558 time_taken 0.366820 time_rank_two_update 0.173812 
+
+ EfficientFeedbackAdaptive2SPSA_10_13_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.025384 Init loss 0.156461 Final loss 0.000084 time_setup 1.999259 time_preconditioning 1.752099  time_blocking 0.524110 time_taken 0.385024 time_rank_two_update 0.141313 
+
+ FeedbackAdaptive2SPSA_10_13_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.078013 Init loss 0.156461 Final loss 0.000378 time_setup 1.992084 time_preconditioning 1.722551  time_blocking 0.526981 time_taken 0.480388 time_linsolve 0.170808 
+
+ Adaptive2SPSA_10_14_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.364739 Init loss 0.156461 Final loss 0.001246 time_setup 1.986582 time_preconditioning 1.736803  time_blocking 0.522246 time_taken 0.398364 time_linsolve 0.168074 
+
+ EfficientFeedbackAdaptive2SPSA_10_14_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003089 Init loss 0.156461 Final loss 0.000015 time_setup 1.996081 time_preconditioning 1.749817  time_blocking 0.524005 time_taken 0.383514 time_rank_two_update 0.141229 
+
+ EfficientAdaptive2SPSA_10_14_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.307546 Init loss 0.156461 Final loss 0.008439 time_setup 1.995028 time_preconditioning 1.728645  time_blocking 0.519958 time_taken 0.365137 time_rank_two_update 0.173122 
+
+ FeedbackAdaptive2SPSA_10_14_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.017951 Init loss 0.156461 Final loss 0.000068 time_setup 1.987166 time_preconditioning 1.723374  time_blocking 0.522820 time_taken 0.478038 time_linsolve 0.170946 
+
+ EfficientAdaptive2SPSA_10_15_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.928752 Init loss 0.156461 Final loss 0.004069 time_setup 1.996991 time_preconditioning 1.747908  time_blocking 0.521135 time_taken 0.366956 time_rank_two_update 0.173523 
+
+ Adaptive2SPSA_10_15_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.599191 Init loss 0.156461 Final loss 0.004375 time_setup 1.985820 time_preconditioning 1.738220  time_blocking 0.522943 time_taken 0.398853 time_linsolve 0.168400 
+
+ FeedbackAdaptive2SPSA_10_15_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003627 Init loss 0.156461 Final loss 0.000022 time_setup 1.989637 time_preconditioning 1.723459  time_blocking 0.524178 time_taken 0.478983 time_linsolve 0.170973 
+
+ EfficientFeedbackAdaptive2SPSA_10_15_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.019673 Init loss 0.156461 Final loss 0.000061 time_setup 1.996686 time_preconditioning 1.748862  time_blocking 0.523207 time_taken 0.383869 time_rank_two_update 0.141494 
+
+ FeedbackAdaptive2SPSA_10_16_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.027004 Init loss 0.156461 Final loss 0.000105 time_setup 1.990370 time_preconditioning 1.729476  time_blocking 0.525756 time_taken 0.479571 time_linsolve 0.170949 
+
+ EfficientFeedbackAdaptive2SPSA_10_16_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.004888 Init loss 0.156461 Final loss 0.000029 time_setup 1.992647 time_preconditioning 1.745193  time_blocking 0.523712 time_taken 0.739468 time_rank_two_update 0.141957 
+
+ EfficientAdaptive2SPSA_10_16_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 4.661194 Init loss 0.156461 Final loss 0.051813 time_setup 1.998245 time_preconditioning 1.744671  time_blocking 0.522909 time_taken 0.367590 time_rank_two_update 0.173639 
+
+ Adaptive2SPSA_10_16_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.198335 Init loss 0.156461 Final loss 0.000663 time_setup 1.986175 time_preconditioning 1.730509  time_blocking 0.521887 time_taken 0.399746 time_linsolve 0.169166 
+
+ EfficientAdaptive2SPSA_10_17_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.696975 Init loss 0.156461 Final loss 0.007470 time_setup 1.997054 time_preconditioning 1.746152  time_blocking 0.524487 time_taken 0.365522 time_rank_two_update 0.172388 
+
+ EfficientFeedbackAdaptive2SPSA_10_17_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.053161 Init loss 0.156461 Final loss 0.000199 time_setup 1.997503 time_preconditioning 1.747360  time_blocking 0.525948 time_taken 0.383407 time_rank_two_update 0.140441 
+
+ FeedbackAdaptive2SPSA_10_17_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.006146 Init loss 0.156461 Final loss 0.000021 time_setup 1.994090 time_preconditioning 1.720983  time_blocking 0.524859 time_taken 0.480672 time_linsolve 0.172758 
+
+ Adaptive2SPSA_10_17_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.508052 Init loss 0.156461 Final loss 0.005640 time_setup 1.989794 time_preconditioning 1.728807  time_blocking 0.522510 time_taken 0.398571 time_linsolve 0.168418 
+
+ Adaptive2SPSA_10_18_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.670877 Init loss 0.156461 Final loss 0.007324 time_setup 1.990653 time_preconditioning 1.735107  time_blocking 0.524240 time_taken 0.399024 time_linsolve 0.169056 
+
+ FeedbackAdaptive2SPSA_10_18_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000573 Init loss 0.156461 Final loss 0.000003 time_setup 1.985935 time_preconditioning 1.716573  time_blocking 0.523135 time_taken 0.478738 time_linsolve 0.172249 
+
+ EfficientAdaptive2SPSA_10_18_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.422219 Init loss 0.156461 Final loss 0.009722 time_setup 1.994178 time_preconditioning 1.733074  time_blocking 0.523194 time_taken 0.367057 time_rank_two_update 0.173091 
+
+ EfficientFeedbackAdaptive2SPSA_10_18_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000859 Init loss 0.156461 Final loss 0.000003 time_setup 1.996784 time_preconditioning 1.742242  time_blocking 0.523665 time_taken 0.384147 time_rank_two_update 0.140665 
+
+ Adaptive2SPSA_10_19_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.215865 Init loss 0.156461 Final loss 0.004300 time_setup 1.986441 time_preconditioning 1.730372  time_blocking 0.522550 time_taken 0.398201 time_linsolve 0.169102 
+
+ EfficientFeedbackAdaptive2SPSA_10_19_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.039817 Init loss 0.156461 Final loss 0.000154 time_setup 2.004392 time_preconditioning 1.747836  time_blocking 0.525134 time_taken 0.384478 time_rank_two_update 0.141016 
+
+ FeedbackAdaptive2SPSA_10_19_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007345 Init loss 0.156461 Final loss 0.000033 time_setup 1.991826 time_preconditioning 1.719756  time_blocking 0.525641 time_taken 0.479280 time_linsolve 0.171366 
+
+ EfficientAdaptive2SPSA_10_19_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.148109 Init loss 0.156461 Final loss 0.005573 time_setup 1.999141 time_preconditioning 1.748488  time_blocking 0.523666 time_taken 0.368249 time_rank_two_update 0.173851 
+
+ EfficientFeedbackAdaptive2SPSA_10_20_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.008719 Init loss 0.156461 Final loss 0.000036 time_setup 2.003576 time_preconditioning 1.745226  time_blocking 0.523884 time_taken 0.383243 time_rank_two_update 0.140513 
+
+ Adaptive2SPSA_10_20_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.188405 Init loss 0.156461 Final loss 0.005285 time_setup 1.984425 time_preconditioning 1.731567  time_blocking 0.521751 time_taken 0.399443 time_linsolve 0.168022 
+
+ EfficientAdaptive2SPSA_10_20_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.487093 Init loss 0.156461 Final loss 0.007149 time_setup 1.995079 time_preconditioning 1.742274  time_blocking 0.522788 time_taken 0.368133 time_rank_two_update 0.173675 
+
+ FeedbackAdaptive2SPSA_10_20_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.027560 Init loss 0.156461 Final loss 0.000139 time_setup 1.991895 time_preconditioning 1.720994  time_blocking 0.524595 time_taken 0.483581 time_linsolve 0.174374 
+
+ EfficientFeedbackAdaptive2SPSA_10_21_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007624 Init loss 0.156461 Final loss 0.000033 time_setup 1.998830 time_preconditioning 1.744044  time_blocking 0.525068 time_taken 0.384718 time_rank_two_update 0.141310 
+
+ EfficientAdaptive2SPSA_10_21_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 6.016559 Init loss 0.156461 Final loss 0.057739 time_setup 1.999308 time_preconditioning 1.739006  time_blocking 0.524388 time_taken 0.368955 time_rank_two_update 0.174427 
+
+ FeedbackAdaptive2SPSA_10_21_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.017749 Init loss 0.156461 Final loss 0.000075 time_setup 1.986805 time_preconditioning 1.716945  time_blocking 0.523312 time_taken 0.477259 time_linsolve 0.169084 
+
+ Adaptive2SPSA_10_21_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.840588 Init loss 0.156461 Final loss 0.002474 time_setup 1.986714 time_preconditioning 1.739236  time_blocking 0.524632 time_taken 0.397323 time_linsolve 0.168235 
+
+ EfficientFeedbackAdaptive2SPSA_10_22_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.006818 Init loss 0.156461 Final loss 0.000030 time_setup 2.000014 time_preconditioning 1.745529  time_blocking 0.525762 time_taken 0.385183 time_rank_two_update 0.141865 
+
+ EfficientAdaptive2SPSA_10_22_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.321561 Init loss 0.156461 Final loss 0.002049 time_setup 1.995478 time_preconditioning 1.742801  time_blocking 0.522551 time_taken 0.367273 time_rank_two_update 0.174509 
+
+ Adaptive2SPSA_10_22_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.185751 Init loss 0.156461 Final loss 0.000595 time_setup 1.984920 time_preconditioning 1.732403  time_blocking 0.522482 time_taken 0.398532 time_linsolve 0.168454 
+
+ FeedbackAdaptive2SPSA_10_22_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007799 Init loss 0.156461 Final loss 0.000031 time_setup 1.993379 time_preconditioning 1.719843  time_blocking 0.525124 time_taken 0.476150 time_linsolve 0.169159 
+
+ FeedbackAdaptive2SPSA_10_23_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005112 Init loss 0.156461 Final loss 0.000020 time_setup 1.990918 time_preconditioning 1.721578  time_blocking 0.525929 time_taken 0.477403 time_linsolve 0.170084 
+
+ EfficientFeedbackAdaptive2SPSA_10_23_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.046711 Init loss 0.156461 Final loss 0.000241 time_setup 2.004057 time_preconditioning 1.744010  time_blocking 0.525010 time_taken 0.383588 time_rank_two_update 0.141071 
+
+ Adaptive2SPSA_10_23_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.304163 Init loss 0.156461 Final loss 0.001933 time_setup 1.991421 time_preconditioning 1.734054  time_blocking 0.524544 time_taken 0.399090 time_linsolve 0.168202 
+
+ EfficientAdaptive2SPSA_10_23_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 4.411892 Init loss 0.156461 Final loss 0.027448 time_setup 1.997119 time_preconditioning 1.744027  time_blocking 0.523703 time_taken 0.369537 time_rank_two_update 0.174696 
+
+ EfficientFeedbackAdaptive2SPSA_10_24_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.008648 Init loss 0.156461 Final loss 0.000047 time_setup 1.998711 time_preconditioning 1.747285  time_blocking 0.525614 time_taken 0.384980 time_rank_two_update 0.141825 
+
+ FeedbackAdaptive2SPSA_10_24_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.024854 Init loss 0.156461 Final loss 0.000095 time_setup 1.985722 time_preconditioning 1.718513  time_blocking 0.521054 time_taken 0.483333 time_linsolve 0.176186 
+
+ Adaptive2SPSA_10_24_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.327097 Init loss 0.156461 Final loss 0.002687 time_setup 1.986924 time_preconditioning 1.730762  time_blocking 0.521826 time_taken 0.399414 time_linsolve 0.168667 
+
+ EfficientAdaptive2SPSA_10_24_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.685872 Init loss 0.156461 Final loss 0.002905 time_setup 1.995811 time_preconditioning 1.724548  time_blocking 0.522593 time_taken 0.367460 time_rank_two_update 0.173903 
+
+ EfficientAdaptive2SPSA_10_25_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.946181 Init loss 0.156461 Final loss 0.007423 time_setup 1.988925 time_preconditioning 1.736799  time_blocking 0.520240 time_taken 0.366463 time_rank_two_update 0.173869 
+
+ EfficientFeedbackAdaptive2SPSA_10_25_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.001379 Init loss 0.156461 Final loss 0.000006 time_setup 1.996910 time_preconditioning 1.746201  time_blocking 0.523505 time_taken 0.383418 time_rank_two_update 0.140593 
+
+ FeedbackAdaptive2SPSA_10_25_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000430 Init loss 0.156461 Final loss 0.000002 time_setup 1.985899 time_preconditioning 1.716138  time_blocking 0.522298 time_taken 0.477498 time_linsolve 0.169960 
+
+ Adaptive2SPSA_10_25_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.492172 Init loss 0.156461 Final loss 0.005206 time_setup 1.984944 time_preconditioning 1.727087  time_blocking 0.522595 time_taken 0.399378 time_linsolve 0.168898 
+
+ FeedbackAdaptive2SPSA_10_26_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.098558 Init loss 0.156461 Final loss 0.000354 time_setup 1.989193 time_preconditioning 1.719412  time_blocking 0.524829 time_taken 0.479018 time_linsolve 0.171626 
+
+ Adaptive2SPSA_10_26_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.863060 Init loss 0.156461 Final loss 0.004563 time_setup 1.985691 time_preconditioning 1.737414  time_blocking 0.521555 time_taken 0.397542 time_linsolve 0.167938 
+
+ EfficientAdaptive2SPSA_10_26_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 6.380187 Init loss 0.156461 Final loss 0.029381 time_setup 2.003189 time_preconditioning 1.742530  time_blocking 0.524947 time_taken 0.368477 time_rank_two_update 0.174125 
+
+ EfficientFeedbackAdaptive2SPSA_10_26_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014735 Init loss 0.156461 Final loss 0.000075 time_setup 1.999986 time_preconditioning 1.746764  time_blocking 0.524861 time_taken 0.384074 time_rank_two_update 0.140987 
+
+ Adaptive2SPSA_10_27_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.354305 Init loss 0.156461 Final loss 0.001747 time_setup 1.985666 time_preconditioning 1.734663  time_blocking 0.522465 time_taken 0.399148 time_linsolve 0.168559 
+
+ EfficientFeedbackAdaptive2SPSA_10_27_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.011778 Init loss 0.156461 Final loss 0.000042 time_setup 2.001670 time_preconditioning 1.745597  time_blocking 0.524244 time_taken 0.384138 time_rank_two_update 0.141191 
+
+ FeedbackAdaptive2SPSA_10_27_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.038592 Init loss 0.156461 Final loss 0.000171 time_setup 1.988547 time_preconditioning 1.718428  time_blocking 0.521223 time_taken 0.483711 time_linsolve 0.176606 
+
+ EfficientAdaptive2SPSA_10_27_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.459551 Init loss 0.156461 Final loss 0.013016 time_setup 1.997814 time_preconditioning 1.737390  time_blocking 0.523110 time_taken 0.367382 time_rank_two_update 0.173629 
+
+ EfficientAdaptive2SPSA_10_28_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.666731 Init loss 0.156461 Final loss 0.004141 time_setup 1.998370 time_preconditioning 1.756203  time_blocking 0.524422 time_taken 0.368292 time_rank_two_update 0.174292 
+
+ Adaptive2SPSA_10_28_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.812741 Init loss 0.156461 Final loss 0.003668 time_setup 1.985390 time_preconditioning 1.731061  time_blocking 0.520674 time_taken 0.398077 time_linsolve 0.168012 
+
+ FeedbackAdaptive2SPSA_10_28_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003781 Init loss 0.156461 Final loss 0.000014 time_setup 1.991476 time_preconditioning 1.718138  time_blocking 0.521855 time_taken 0.480031 time_linsolve 0.173081 
+
+ EfficientFeedbackAdaptive2SPSA_10_28_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.002992 Init loss 0.156461 Final loss 0.000010 time_setup 1.999482 time_preconditioning 1.748824  time_blocking 0.524097 time_taken 0.385647 time_rank_two_update 0.141970 
+
+ FeedbackAdaptive2SPSA_10_29_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.006607 Init loss 0.156461 Final loss 0.000042 time_setup 1.993960 time_preconditioning 1.726811  time_blocking 0.525557 time_taken 0.477664 time_linsolve 0.169317 
+
+ EfficientAdaptive2SPSA_10_29_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.500624 Init loss 0.156461 Final loss 0.003179 time_setup 1.989441 time_preconditioning 1.741575  time_blocking 0.521480 time_taken 0.367427 time_rank_two_update 0.173898 
+
+ EfficientFeedbackAdaptive2SPSA_10_29_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.009094 Init loss 0.156461 Final loss 0.000054 time_setup 2.000789 time_preconditioning 1.749819  time_blocking 0.525765 time_taken 0.386140 time_rank_two_update 0.141672 
+
+ Adaptive2SPSA_10_29_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.842044 Init loss 0.156461 Final loss 0.007567 time_setup 1.991910 time_preconditioning 1.736500  time_blocking 0.523391 time_taken 0.398641 time_linsolve 0.167843 
+
+ EfficientFeedbackAdaptive2SPSA_10_30_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005659 Init loss 0.156461 Final loss 0.000028 time_setup 1.997213 time_preconditioning 1.749368  time_blocking 0.524586 time_taken 0.384859 time_rank_two_update 0.141350 
+
+ EfficientAdaptive2SPSA_10_30_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.410183 Init loss 0.156461 Final loss 0.002648 time_setup 1.998874 time_preconditioning 1.750038  time_blocking 0.524584 time_taken 0.368655 time_rank_two_update 0.174488 
+
+ Adaptive2SPSA_10_30_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.296739 Init loss 0.156461 Final loss 0.027791 time_setup 1.990764 time_preconditioning 1.736650  time_blocking 0.524226 time_taken 0.400036 time_linsolve 0.169356 
+
+ FeedbackAdaptive2SPSA_10_30_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.006369 Init loss 0.156461 Final loss 0.000023 time_setup 1.993283 time_preconditioning 1.725190  time_blocking 0.524678 time_taken 0.482808 time_linsolve 0.173688 
+
+ FeedbackAdaptive2SPSA_10_31_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.016450 Init loss 0.156461 Final loss 0.000047 time_setup 1.989811 time_preconditioning 1.720938  time_blocking 0.523344 time_taken 0.482751 time_linsolve 0.175290 
+
+ EfficientFeedbackAdaptive2SPSA_10_31_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.001388 Init loss 0.156461 Final loss 0.000011 time_setup 2.001453 time_preconditioning 1.747575  time_blocking 0.525967 time_taken 0.385685 time_rank_two_update 0.141634 
+
+ Adaptive2SPSA_10_31_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.276597 Init loss 0.156461 Final loss 0.001236 time_setup 1.985090 time_preconditioning 1.732398  time_blocking 0.521382 time_taken 0.397628 time_linsolve 0.168076 
+
+ EfficientAdaptive2SPSA_10_31_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.058898 Init loss 0.156461 Final loss 0.008451 time_setup 1.998260 time_preconditioning 1.736087  time_blocking 0.524163 time_taken 0.366806 time_rank_two_update 0.173268 
+
+ EfficientAdaptive2SPSA_10_32_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.637994 Init loss 0.156461 Final loss 0.004827 time_setup 1.999862 time_preconditioning 1.751611  time_blocking 0.523042 time_taken 0.367470 time_rank_two_update 0.173292 
+
+ Adaptive2SPSA_10_32_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.298256 Init loss 0.156461 Final loss 0.009880 time_setup 1.987706 time_preconditioning 1.737763  time_blocking 0.525266 time_taken 0.398212 time_linsolve 0.167924 
+
+ EfficientFeedbackAdaptive2SPSA_10_32_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014085 Init loss 0.156461 Final loss 0.000066 time_setup 2.002187 time_preconditioning 1.746487  time_blocking 0.525217 time_taken 0.384986 time_rank_two_update 0.141631 
+
+ FeedbackAdaptive2SPSA_10_32_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003394 Init loss 0.156461 Final loss 0.000014 time_setup 1.993448 time_preconditioning 1.720490  time_blocking 0.525735 time_taken 0.484234 time_linsolve 0.177029 
+
+ EfficientAdaptive2SPSA_10_33_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.613718 Init loss 0.156461 Final loss 0.003464 time_setup 1.995266 time_preconditioning 1.739728  time_blocking 0.523764 time_taken 0.367791 time_rank_two_update 0.174178 
+
+ Adaptive2SPSA_10_33_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.299429 Init loss 0.156461 Final loss 0.000945 time_setup 1.984817 time_preconditioning 1.727116  time_blocking 0.520241 time_taken 0.398496 time_linsolve 0.168525 
+
+ FeedbackAdaptive2SPSA_10_33_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003861 Init loss 0.156461 Final loss 0.000026 time_setup 1.990954 time_preconditioning 1.719670  time_blocking 0.524227 time_taken 0.477655 time_linsolve 0.170242 
+
+ EfficientFeedbackAdaptive2SPSA_10_33_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.002760 Init loss 0.156461 Final loss 0.000010 time_setup 2.006847 time_preconditioning 1.752181  time_blocking 0.527903 time_taken 0.386940 time_rank_two_update 0.142505 
+
+ EfficientFeedbackAdaptive2SPSA_10_34_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.010380 Init loss 0.156461 Final loss 0.000056 time_setup 2.002942 time_preconditioning 1.747483  time_blocking 0.527152 time_taken 0.387019 time_rank_two_update 0.142502 
+
+ Adaptive2SPSA_10_34_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.754165 Init loss 0.156461 Final loss 0.002559 time_setup 1.992519 time_preconditioning 1.734333  time_blocking 0.522784 time_taken 0.397092 time_linsolve 0.166935 
+
+ FeedbackAdaptive2SPSA_10_34_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.034620 Init loss 0.156461 Final loss 0.000130 time_setup 1.994585 time_preconditioning 1.719668  time_blocking 0.525122 time_taken 0.478931 time_linsolve 0.169992 
+
+ EfficientAdaptive2SPSA_10_34_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.286981 Init loss 0.156461 Final loss 0.013271 time_setup 1.998278 time_preconditioning 1.722923  time_blocking 0.523892 time_taken 0.368434 time_rank_two_update 0.174070 
+
+ Adaptive2SPSA_10_35_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.685854 Init loss 0.156461 Final loss 0.002390 time_setup 1.991754 time_preconditioning 1.733676  time_blocking 0.524228 time_taken 0.398578 time_linsolve 0.168224 
+
+ EfficientFeedbackAdaptive2SPSA_10_35_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.004401 Init loss 0.156461 Final loss 0.000017 time_setup 1.998511 time_preconditioning 1.749015  time_blocking 0.525337 time_taken 0.385638 time_rank_two_update 0.141555 
+
+ EfficientAdaptive2SPSA_10_35_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.662733 Init loss 0.156461 Final loss 0.004618 time_setup 1.996726 time_preconditioning 1.747813  time_blocking 0.523494 time_taken 0.369580 time_rank_two_update 0.174522 
+
+ FeedbackAdaptive2SPSA_10_35_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.014110 Init loss 0.156461 Final loss 0.000054 time_setup 1.992979 time_preconditioning 1.720584  time_blocking 0.524962 time_taken 0.479032 time_linsolve 0.171125 
+
+ Adaptive2SPSA_10_36_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.846117 Init loss 0.156461 Final loss 0.002513 time_setup 1.988681 time_preconditioning 1.737478  time_blocking 0.524191 time_taken 0.398790 time_linsolve 0.168551 
+
+ EfficientAdaptive2SPSA_10_36_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.559794 Init loss 0.156461 Final loss 0.002732 time_setup 2.001913 time_preconditioning 1.752823  time_blocking 0.524107 time_taken 0.367621 time_rank_two_update 0.173527 
+
+ FeedbackAdaptive2SPSA_10_36_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.004287 Init loss 0.156461 Final loss 0.000014 time_setup 1.993513 time_preconditioning 1.720522  time_blocking 0.524181 time_taken 0.479518 time_linsolve 0.170889 
+
+ EfficientFeedbackAdaptive2SPSA_10_36_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.011687 Init loss 0.156461 Final loss 0.000061 time_setup 2.003204 time_preconditioning 1.748762  time_blocking 0.526481 time_taken 0.383905 time_rank_two_update 0.141183 
+
+ EfficientAdaptive2SPSA_10_37_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 6.733919 Init loss 0.156461 Final loss 0.050458 time_setup 1.995416 time_preconditioning 1.731477  time_blocking 0.524262 time_taken 0.367915 time_rank_two_update 0.174573 
+
+ EfficientFeedbackAdaptive2SPSA_10_37_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005625 Init loss 0.156461 Final loss 0.000020 time_setup 2.001837 time_preconditioning 1.746162  time_blocking 0.527096 time_taken 0.385671 time_rank_two_update 0.142150 
+
+ FeedbackAdaptive2SPSA_10_37_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003927 Init loss 0.156461 Final loss 0.000019 time_setup 1.990955 time_preconditioning 1.713909  time_blocking 0.523015 time_taken 0.476924 time_linsolve 0.170129 
+
+ Adaptive2SPSA_10_37_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 5.030067 Init loss 0.156461 Final loss 0.022418 time_setup 1.987830 time_preconditioning 1.730368  time_blocking 0.523154 time_taken 0.398332 time_linsolve 0.167773 
+
+ EfficientAdaptive2SPSA_10_38_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.948001 Init loss 0.156461 Final loss 0.005842 time_setup 1.993373 time_preconditioning 1.742349  time_blocking 0.524821 time_taken 0.368937 time_rank_two_update 0.173600 
+
+ FeedbackAdaptive2SPSA_10_38_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.033302 Init loss 0.156461 Final loss 0.000190 time_setup 1.981051 time_preconditioning 1.715451  time_blocking 0.524485 time_taken 0.480211 time_linsolve 0.172153 
+
+ EfficientFeedbackAdaptive2SPSA_10_38_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005275 Init loss 0.156461 Final loss 0.000023 time_setup 1.999789 time_preconditioning 1.743781  time_blocking 0.525873 time_taken 0.385050 time_rank_two_update 0.141829 
+
+ Adaptive2SPSA_10_38_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.512813 Init loss 0.156461 Final loss 0.008265 time_setup 1.986034 time_preconditioning 1.729979  time_blocking 0.523743 time_taken 0.398593 time_linsolve 0.168750 
+
+ Adaptive2SPSA_10_39_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.678512 Init loss 0.156461 Final loss 0.007297 time_setup 1.991926 time_preconditioning 1.732320  time_blocking 0.524540 time_taken 0.397865 time_linsolve 0.167705 
+
+ FeedbackAdaptive2SPSA_10_39_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.010893 Init loss 0.156461 Final loss 0.000043 time_setup 1.993051 time_preconditioning 1.715002  time_blocking 0.524885 time_taken 0.478307 time_linsolve 0.169424 
+
+ EfficientFeedbackAdaptive2SPSA_10_39_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005626 Init loss 0.156461 Final loss 0.000029 time_setup 2.002413 time_preconditioning 1.750802  time_blocking 0.526932 time_taken 0.386569 time_rank_two_update 0.141822 
+
+ EfficientAdaptive2SPSA_10_39_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.295243 Init loss 0.156461 Final loss 0.006449 time_setup 2.000032 time_preconditioning 1.743579  time_blocking 0.523865 time_taken 0.369092 time_rank_two_update 0.174631 
+
+ Adaptive2SPSA_10_40_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 13.762037 Init loss 0.156461 Final loss 0.044059 time_setup 1.988997 time_preconditioning 1.737697  time_blocking 0.523653 time_taken 0.396825 time_linsolve 0.166994 
+
+ FeedbackAdaptive2SPSA_10_40_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.013532 Init loss 0.156461 Final loss 0.000070 time_setup 1.987477 time_preconditioning 1.714862  time_blocking 0.522625 time_taken 0.477985 time_linsolve 0.171073 
+
+ EfficientFeedbackAdaptive2SPSA_10_40_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005012 Init loss 0.156461 Final loss 0.000021 time_setup 1.998804 time_preconditioning 1.747706  time_blocking 0.526181 time_taken 0.384569 time_rank_two_update 0.140855 
+
+ EfficientAdaptive2SPSA_10_40_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.783799 Init loss 0.156461 Final loss 0.025660 time_setup 1.996153 time_preconditioning 1.737061  time_blocking 0.524074 time_taken 0.367668 time_rank_two_update 0.174033 
+
+ FeedbackAdaptive2SPSA_10_41_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.007168 Init loss 0.156461 Final loss 0.000048 time_setup 1.988661 time_preconditioning 1.721358  time_blocking 0.524190 time_taken 0.480871 time_linsolve 0.172740 
+
+ EfficientFeedbackAdaptive2SPSA_10_41_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.013023 Init loss 0.156461 Final loss 0.000091 time_setup 1.994015 time_preconditioning 1.739988  time_blocking 0.521672 time_taken 0.383557 time_rank_two_update 0.140365 
+
+ Adaptive2SPSA_10_41_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.345507 Init loss 0.156461 Final loss 0.001167 time_setup 1.987914 time_preconditioning 1.735726  time_blocking 0.524805 time_taken 0.399835 time_linsolve 0.168997 
+
+ EfficientAdaptive2SPSA_10_41_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 3.035871 Init loss 0.156461 Final loss 0.012257 time_setup 1.995118 time_preconditioning 1.731834  time_blocking 0.524261 time_taken 0.368500 time_rank_two_update 0.174363 
+
+ EfficientFeedbackAdaptive2SPSA_10_42_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.001048 Init loss 0.156461 Final loss 0.000006 time_setup 1.997235 time_preconditioning 1.745460  time_blocking 0.525513 time_taken 0.384716 time_rank_two_update 0.141580 
+
+ FeedbackAdaptive2SPSA_10_42_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.076723 Init loss 0.156461 Final loss 0.000286 time_setup 1.998865 time_preconditioning 1.720747  time_blocking 0.527702 time_taken 0.483456 time_linsolve 0.173733 
+
+ EfficientAdaptive2SPSA_10_42_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.368560 Init loss 0.156461 Final loss 0.005650 time_setup 2.008016 time_preconditioning 1.760902  time_blocking 0.527333 time_taken 0.370659 time_rank_two_update 0.174943 
+
+ Adaptive2SPSA_10_42_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.839732 Init loss 0.156461 Final loss 0.002806 time_setup 1.988557 time_preconditioning 1.741822  time_blocking 0.525771 time_taken 0.402379 time_linsolve 0.169430 
+
+ EfficientAdaptive2SPSA_10_43_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.015817 Init loss 0.156461 Final loss 0.004739 time_setup 2.004345 time_preconditioning 1.735343  time_blocking 0.525415 time_taken 0.370066 time_rank_two_update 0.174462 
+
+ FeedbackAdaptive2SPSA_10_43_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005593 Init loss 0.156461 Final loss 0.000037 time_setup 2.000500 time_preconditioning 1.734270  time_blocking 0.528580 time_taken 0.488632 time_linsolve 0.177881 
+
+ Adaptive2SPSA_10_43_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 4.226991 Init loss 0.156461 Final loss 0.015487 time_setup 1.989560 time_preconditioning 1.742751  time_blocking 0.526260 time_taken 0.401790 time_linsolve 0.169452 
+
+ EfficientFeedbackAdaptive2SPSA_10_43_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.016086 Init loss 0.156461 Final loss 0.000065 time_setup 2.001492 time_preconditioning 1.761416  time_blocking 0.526967 time_taken 0.387892 time_rank_two_update 0.142610 
+
+ FeedbackAdaptive2SPSA_10_44_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.002178 Init loss 0.156461 Final loss 0.000008 time_setup 1.994634 time_preconditioning 1.730150  time_blocking 0.526114 time_taken 0.485764 time_linsolve 0.174915 
+
+ EfficientFeedbackAdaptive2SPSA_10_44_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.012493 Init loss 0.156461 Final loss 0.000072 time_setup 2.004397 time_preconditioning 1.752072  time_blocking 0.527089 time_taken 0.387350 time_rank_two_update 0.142206 
+
+ Adaptive2SPSA_10_44_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.181727 Init loss 0.156461 Final loss 0.000616 time_setup 1.988843 time_preconditioning 1.743083  time_blocking 0.525237 time_taken 0.401697 time_linsolve 0.169801 
+
+ EfficientAdaptive2SPSA_10_44_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.911356 Init loss 0.156461 Final loss 0.009500 time_setup 2.000698 time_preconditioning 1.759419  time_blocking 0.524181 time_taken 0.369361 time_rank_two_update 0.173905 
+
+ EfficientFeedbackAdaptive2SPSA_10_45_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000883 Init loss 0.156461 Final loss 0.000006 time_setup 2.005597 time_preconditioning 1.757593  time_blocking 0.527716 time_taken 0.387573 time_rank_two_update 0.142128 
+
+ EfficientAdaptive2SPSA_10_45_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.147540 Init loss 0.156461 Final loss 0.008302 time_setup 2.001963 time_preconditioning 1.760375  time_blocking 0.526511 time_taken 0.370268 time_rank_two_update 0.175263 
+
+ FeedbackAdaptive2SPSA_10_45_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000265 Init loss 0.156461 Final loss 0.000001 time_setup 1.994218 time_preconditioning 1.729885  time_blocking 0.526856 time_taken 0.484181 time_linsolve 0.173599 
+
+ Adaptive2SPSA_10_45_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 1.830359 Init loss 0.156461 Final loss 0.006127 time_setup 1.996120 time_preconditioning 1.742888  time_blocking 0.526990 time_taken 0.401918 time_linsolve 0.169465 
+
+ Adaptive2SPSA_10_46_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.513449 Init loss 0.156461 Final loss 0.002155 time_setup 1.994261 time_preconditioning 1.747161  time_blocking 0.526141 time_taken 0.403895 time_linsolve 0.171082 
+
+ EfficientAdaptive2SPSA_10_46_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.208999 Init loss 0.156461 Final loss 0.000923 time_setup 1.999792 time_preconditioning 1.732658  time_blocking 0.525718 time_taken 0.370234 time_rank_two_update 0.175051 
+
+ FeedbackAdaptive2SPSA_10_46_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.012778 Init loss 0.156461 Final loss 0.000056 time_setup 1.997624 time_preconditioning 1.736517  time_blocking 0.529020 time_taken 0.489089 time_linsolve 0.177086 
+
+ EfficientFeedbackAdaptive2SPSA_10_46_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.003836 Init loss 0.156461 Final loss 0.000015 time_setup 2.005796 time_preconditioning 1.755979  time_blocking 0.527936 time_taken 0.387281 time_rank_two_update 0.142339 
+
+ EfficientFeedbackAdaptive2SPSA_10_47_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.019693 Init loss 0.156461 Final loss 0.000091 time_setup 2.007896 time_preconditioning 1.757495  time_blocking 0.527752 time_taken 0.388388 time_rank_two_update 0.142784 
+
+ EfficientAdaptive2SPSA_10_47_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 5.022347 Init loss 0.156461 Final loss 0.030724 time_setup 1.999737 time_preconditioning 1.749555  time_blocking 0.524640 time_taken 0.370196 time_rank_two_update 0.175482 
+
+ FeedbackAdaptive2SPSA_10_47_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.024136 Init loss 0.156461 Final loss 0.000089 time_setup 1.998402 time_preconditioning 1.731059  time_blocking 0.527505 time_taken 0.484258 time_linsolve 0.174082 
+
+ Adaptive2SPSA_10_47_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.868645 Init loss 0.156461 Final loss 0.005621 time_setup 1.993886 time_preconditioning 1.743179  time_blocking 0.526516 time_taken 0.401491 time_linsolve 0.169352 
+
+ EfficientFeedbackAdaptive2SPSA_10_48_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.013332 Init loss 0.156461 Final loss 0.000064 time_setup 2.006123 time_preconditioning 1.763252  time_blocking 0.528924 time_taken 0.388254 time_rank_two_update 0.142911 
+
+ Adaptive2SPSA_10_48_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.828708 Init loss 0.156461 Final loss 0.002824 time_setup 1.992793 time_preconditioning 1.740989  time_blocking 0.525367 time_taken 0.403291 time_linsolve 0.170240 
+
+ FeedbackAdaptive2SPSA_10_48_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.000775 Init loss 0.156461 Final loss 0.000003 time_setup 1.995208 time_preconditioning 1.728368  time_blocking 0.527609 time_taken 0.486276 time_linsolve 0.176117 
+
+ EfficientAdaptive2SPSA_10_48_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 2.846298 Init loss 0.156461 Final loss 0.015183 time_setup 1.999124 time_preconditioning 1.758370  time_blocking 0.525135 time_taken 0.371207 time_rank_two_update 0.175577 
+
+ EfficientFeedbackAdaptive2SPSA_10_49_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.005943 Init loss 0.156461 Final loss 0.000022 time_setup 2.004538 time_preconditioning 1.757993  time_blocking 0.528067 time_taken 0.388732 time_rank_two_update 0.142729 
+
+ EfficientAdaptive2SPSA_10_49_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.585587 Init loss 0.156461 Final loss 0.002783 time_setup 1.999295 time_preconditioning 1.754454  time_blocking 0.525546 time_taken 0.370251 time_rank_two_update 0.175173 
+
+ FeedbackAdaptive2SPSA_10_49_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.008356 Init loss 0.156461 Final loss 0.000037 time_setup 1.994870 time_preconditioning 1.735837  time_blocking 0.528167 time_taken 0.485187 time_linsolve 0.173352 
+
+ Adaptive2SPSA_10_49_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.869440 Init loss 0.156461 Final loss 0.003718 time_setup 1.997886 time_preconditioning 1.747119  time_blocking 0.526901 time_taken 0.403127 time_linsolve 0.170013 
+
+ Adaptive2SPSA_10_50_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.399720 Init loss 0.156461 Final loss 0.001577 time_setup 1.994224 time_preconditioning 1.742373  time_blocking 0.526087 time_taken 0.402648 time_linsolve 0.170725 
+
+ EfficientAdaptive2SPSA_10_50_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.442874 Init loss 0.156461 Final loss 0.001930 time_setup 1.997797 time_preconditioning 1.766584  time_blocking 0.525212 time_taken 0.370408 time_rank_two_update 0.175903 
+
+ FeedbackAdaptive2SPSA_10_50_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.011296 Init loss 0.156461 Final loss 0.000052 time_setup 1.995592 time_preconditioning 1.730663  time_blocking 0.527199 time_taken 0.485090 time_linsolve 0.173848 
+
+ EfficientFeedbackAdaptive2SPSA_10_50_25000 
+Iteration Count 6250 Init SQDIST 0.400000 Final SQDIST 0.006143 Init loss 0.156461 Final loss 0.000023 time_setup 2.005462 time_preconditioning 1.760048  time_blocking 0.529145 time_taken 0.387444 time_rank_two_update 0.142622 
+Comparison Successfully Complete[?1l>compare_algorithms failed
