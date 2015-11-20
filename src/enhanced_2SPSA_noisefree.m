@@ -16,7 +16,10 @@
 clear all
 close all
 global p;
-p=10;
+%     % Adaptive Method      |  Feedback Enhance   |
+p=10; % norm_thetaH = 1.9687, norm_theta = 0.28373, norm_lossthetaH = 2.42360, norm_losstheta = 0.00087494
+p=20; % norm_thetaH = 1.4469, norm_theta = 3.63990, norm_lossthetaH = 0.96728, norm_losstheta = 0.054117
+p=30; % norm_thetaH = 1.6226, norm_theta = 2.26150, norm_lossthetaH = 1.07450, norm_losstheta = 0.13711,
 a=1;           %value of numerator in a_k in 2SPSA part
 A=50;           %stability constant
 c=.01;          %numerator in c_k
@@ -28,6 +31,9 @@ d=.501;         %decay rate in weight sequence
 n=5000;        %no. of iterations
 loss=quartic_loss_factory(p);    %loss function for evaluation of algorithm (no noise)
 loss4thorder = loss;
+noiselevel=0.05;
+noisy_loss = @(theta) loss(theta) + randn() * noiselevel ...
+    + randn(1, length(theta)) * theta * noiselevel;
 cases=5;               %number of cases (replications)
 % cases=50;               %number of cases (replications)
 tolerancetheta=1;		%max. allowable change in elements of theta
@@ -77,7 +83,7 @@ for j=1:cases
 %
 % START 2SPSA ITERATIONS FOLLOWING INITIALIZATION
 %
-  lossold=loss(theta_0); %lossold for use in loss-based blocking
+  lossold=noisy_loss(theta_0); %lossold for use in loss-based blocking
   sum_ck_ctildakH = 0;
   for k=0:n-1
     ak=a/(k+1+A)^alpha;
@@ -92,16 +98,16 @@ for j=1:cases
     delta=2*round(rand(p,1))-1;
     thetaplus=thetaH+ck*delta;
     thetaminus=thetaH-ck*delta;
-    yplus=feval(loss,thetaplus);
-    yminus=feval(loss,thetaminus);
+    yplus=feval(noisy_loss,thetaplus);
+    yminus=feval(noisy_loss,thetaminus);
     ghat=(yplus-yminus)./(2*ck*delta);
 % Generate perturbed theta values for Hessian update
     deltatilda=2*round(rand(p,1))-1;
     thetaplustilda=thetaplus+ctilda_k*deltatilda;
     thetaminustilda=thetaminus+ctilda_k*deltatilda;
 % LOSS FUNCTION CALLS
-    yplustilda=feval(loss,thetaplustilda);
-    yminustilda=feval(loss,thetaminustilda);
+    yplustilda=feval(noisy_loss,thetaplustilda);
+    yminustilda=feval(noisy_loss,thetaminustilda);
     ghatplus=(yplustilda-yplus)./(ctilda_k*deltatilda);
     ghatminus=(yminustilda-yminus)./(ctilda_k*deltatilda);
 % STATEMENT PROVIDING AN AVERAGE OF SP GRAD. APPROXS. PER ITERATION
@@ -125,7 +131,7 @@ for j=1:cases
     thetaH=min(thetaH,thetamax);
     thetaH=max(thetaH,thetamin);
 %   Steps below perform "blocking" step with "avg" no. of loss evaluations
-    lossnew=feval(loss,thetaH);
+    lossnew=feval(noisy_loss,thetaH);
     if lossnew > lossold-toleranceloss;
       thetaH=thetaHlag;
     else
@@ -210,8 +216,8 @@ for j=1:cases
     end
   end
   %theta
-  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta)
-  errtheta_case = (theta-truetheta)'*(theta-truetheta)
+  errthetaH_case = (thetaH-truetheta)'*(thetaH-truetheta);
+  errtheta_case = (theta-truetheta)'*(theta-truetheta);
   errthetaH=errthetaH+errthetaH_case;   %Sum of error in thetaH values
   errtheta=errtheta+errtheta_case;       %Sum of error in theta values
   lossthetaHsq=lossthetaHsq+feval(loss,thetaH)^2;               %Sum of squared L(thetaH)values
