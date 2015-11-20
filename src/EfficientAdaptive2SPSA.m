@@ -76,6 +76,8 @@ time_blocking = 0;
 time_setup = 0;
 time_rank_two_update = 0;
 bbar_max = 1;
+Bbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
+Bbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
@@ -104,7 +106,12 @@ for k=0:max_iterations-1
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
         tic
-        Bbar = rank_two_update_v2_fast(Bbar, a/bbar_max, b, delta_tilda_k, delta_k);
+        Bbar = rank_two_update_v2_fast(Bbar, ...
+             a/bbar_max, b, delta_tilda_k, delta_k)/a;
+        % The efficient version which avoids one matrix scalar division.
+        % Uncomment this along with the
+        % Bbar = rank_two_update_v2_fast(Bbar, ...
+        %      a/bbar_max, b, delta_tilda_k, delta_k);
         Bbar = (Bbar + Bbar')/2;
         time_rank_two_update = time_rank_two_update + toc;
     end
@@ -113,9 +120,15 @@ for k=0:max_iterations-1
     % the negative eigen values of Bbar to positive.
     % Right now we are doing an expensive operation but this can be sped
     % up considerably.
-    tmp_bbar_max = max(max(abs(Bbar)));
-    Bbar = Bbar / tmp_bbar_max;
-    bbar_max = bbar_max * tmp_bbar_max;
+    %% CODE TO BE UNCOMMENTED ALONG WITH THE ONE ABOVE.
+    %     tmp_bbar_max = max(max(abs(Bbar)));
+    %     Bbar = Bbar / tmp_bbar_max;
+    %     if k == 0
+    %         bbar_max = bbar_max * tmp_bbar_max;
+    %     else
+    %         bbar_max = bbar_max * tmp_bbar_max / a;
+    %     end
+    %% END OF CODE TO BE UNCOMMENTED
     time_taken = time_taken + toc;
     if ~sequence_param_struct.use_hacky_preconditioning
         tic
@@ -144,8 +157,19 @@ for k=0:max_iterations-1
         proposed_theta, target_fn, theta, cur_loss_estimate, ...
         sequence_param_struct);
     time_blocking = time_blocking + toc;
+    my_fprintf(2, 'Block %d\n', all(theta ~= proposed_theta));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
+    if sequence_param_struct.compare_iterations
+        if k == 0
+            Bbar_seq(k+1, :, :) = Bbar ;%* (bbar_max);
+        else
+            Bbar_seq(k+1, :, :) = Bbar ;%* (bbar_max / a);
+        end
+        Bbar_theta_seq(k+1, :) = theta;
+        save('../res/EfficientAdaptive2SPSA_Bbar_seq.mat', ...
+            'Bbar_seq', 'Bbar_theta_seq');
+    end
 end
 iteration_count = k + 1;
 timing.time_taken = time_taken;

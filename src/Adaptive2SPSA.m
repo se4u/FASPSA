@@ -96,6 +96,8 @@ time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
 time_linsolve = 0;
+Hbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
+Hbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
@@ -107,6 +109,13 @@ for k=0:max_iterations-1
     % Update Hbar
     half_update = (((w_k * h_k)/2) * delta_tilda_k) * delta_k';
     Hbar = (1 - w_k) * Hbar +  (half_update + half_update');
+    if k == 0
+        % On the first stage, we have the ability to precondition things
+        % as we deem fit. However, the main reason we do this is to
+        % ensure that the initialization of Hbar is the same as Bbar in
+        % the efficient method.
+        Hbar = adaptivespsa_common_preconditioning(Hbar, k);
+    end
     time_taken = time_taken + toc;
     % Update Theta % This step can be made faster.
     tic
@@ -126,9 +135,16 @@ for k=0:max_iterations-1
     time_blocking = time_blocking + toc;
     my_fprintf(2, '\n w_k %f h_k %f |g_k| %f ', ...
             w_k, h_k, g_k_magnitude);
+    my_fprintf(2, 'Block %d\n', all(theta ~= proposed_theta));
     my_fprintf(2, ' norm(solution_of_linsolve) %f ', norm(solution_of_linsolve));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
+    if sequence_param_struct.compare_iterations
+        Hbar_seq(k+1, :, :) = Hbar;
+        Hbar_theta_seq(k+1, :) = theta;
+        save('../res/Adaptive2SPSA_Hbar_seq.mat', ...
+            'Hbar_seq', 'Hbar_theta_seq');
+    end
 end
 iteration_count = k + 1;
 timing.time_taken = time_taken;

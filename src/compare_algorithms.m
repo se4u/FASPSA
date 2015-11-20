@@ -11,16 +11,20 @@ close all; clear; clc;
 warning('off','MATLAB:maxNumCompThreads:Deprecated');
 warning('off', 'comm:system:warnobsolete:obsoleteReplace');
 global disable_print;
-disable_print = 2; % disable_print = 2 disables printing of stderr.
+if ~exist('disable_print')
+    disable_print = 2; % disable_print = 2 disables printing of stderr.  
+end
+global compare_iterations;
+if ~exist('compare_iterations')
+    compare_iterations = 0;
+end
 if maxNumCompThreads() > 1
     disp('Start matlab with -singleCompThread flag.');
     % Check if display is available.
     if ~usejava('jvm') && ~feature('ShowFigureWindows')
         exit(1);
     else
-        if input('Exit now?')
-            exit(1);
-        end
+        disp('I am letting you go but remember that you cant use this run for timing');
     end
 
 end
@@ -33,6 +37,8 @@ end
 rand('seed',31415927);
 randn('seed',3111113);
 sigma = 0; % Noise higher than 5e-4 we can't handle.
+
+sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
 % setting gamma = 0.101 makes the performance of the non-efficient code
@@ -158,4 +164,6 @@ end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
-exit(1);
+if ~usejava('jvm') && ~feature('ShowFigureWindows')
+    exit(1);
+end
