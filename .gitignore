@@ -10,3 +10,5 @@ src/analyze_runs.png
 *sso_project_intermediate.mat
 src/rank_two_update_v2_fast.mexmaci64
 src/rank_two_update_v2_fast.mexa64
+res/Adaptive2SPSA_Hbar_seq.mat
+res/EfficientAdaptive2SPSA_Bbar_seq.mat
