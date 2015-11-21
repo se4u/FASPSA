@@ -76,8 +76,10 @@ time_blocking = 0;
 time_setup = 0;
 time_rank_two_update = 0;
 bbar_max = 1;
+if sequence_param_struct.compare_iterations
 Bbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
 Bbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
+end
 % Do the actual work.
 for k=0:max_iterations-1
     tic;

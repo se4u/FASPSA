@@ -92,6 +92,10 @@ time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
 time_linsolve = 0;
+if sequence_param_struct.compare_iterations
+Hbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
+Hbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
+end
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations-1
@@ -109,6 +113,9 @@ for k=0:max_iterations-1
     Hk_hat_minus_Phi_hat_scalar = w_k * (h_k - hbar_scalar_contrib);
     Hbar_update_half = ((Hk_hat_minus_Phi_hat_scalar/2) * delta_tilda_k) * delta_k';
     Hbar = Hbar +  (Hbar_update_half + Hbar_update_half');
+    if k == 0
+        Hbar = adaptivespsa_common_preconditioning(Hbar, k);
+    end
     % Update Theta
     time_taken = time_taken + toc;
     tic
@@ -133,6 +140,12 @@ for k=0:max_iterations-1
             rcond(Hbar), max(max(abs(Hbar))), max(abs(proposed_update)));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
+    if sequence_param_struct.compare_iterations
+        Hbar_seq(k+1, :, :) = Hbar;
+        Hbar_theta_seq(k+1, :) = theta;
+        save('../res/FeedbackAdaptive2SPSA_Hbar_seq.mat', ...
+            'Hbar_seq', 'Hbar_theta_seq');
+    end
 end
 iteration_count = k + 1;
 timing.time_taken = time_taken;

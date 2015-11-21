@@ -92,6 +92,11 @@ time_blocking = 0;
 time_setup = 0;
 time_rank_two_update = 0;
 bbar_max = 1;
+if sequence_param_struct.compare_iterations
+Hbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
+Bbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
+Bbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
+end
 % settings.sum_ck_square_ck_tilda_square = 0;
 % Do the actual work.
 for k=0:max_iterations-1
@@ -172,6 +177,16 @@ for k=0:max_iterations-1
             rcond(Bbar), max(abs(Bbar)), max(abs(proposed_update)));
     loss_sequence(k+2) = true_loss_fn(theta);
     sqdist_sequence(k+2) = sqdist(theta, true_optimal_theta);
+    if sequence_param_struct.compare_iterations
+        if k == 0
+            Bbar_seq(k+1, :, :) = Hbar ;%* (bbar_max);
+        else
+            Bbar_seq(k+1, :, :) = Hbar ;%* (bbar_max / a);
+        end
+        Bbar_theta_seq(k+1, :) = theta;
+        save('../res/EfficientFeedbackAdaptive2SPSA_Bbar_seq.mat', ...
+            'Bbar_seq', 'Bbar_theta_seq');
+    end
 end
 iteration_count = k + 1;
 timing.time_taken = time_taken;

@@ -96,8 +96,10 @@ time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
 time_linsolve = 0;
+if sequence_param_struct.compare_iterations
 Hbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
 Hbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
+end
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
