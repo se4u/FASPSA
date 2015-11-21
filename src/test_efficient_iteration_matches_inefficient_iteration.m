@@ -33,8 +33,8 @@ for i=1:size(Hbar_seq, 1)
     n1 = norm(Hbar * Bbar -eye(p));
     n2 = norm(Bbar * Hbar -eye(p));    
     mm = [mm, max(n1, n2)];
-    fprintf(2, '\n %d norm(Hbar * Bbar - eye(p)) %.4g ', i, n1);
-    fprintf(2, 'norm(Bbar * Hbar - eye(p)) %.4g \n ', n2);
+    my_fprintf(2, '\n %d norm(Hbar * Bbar - eye(p)) %.4g ', i, n1);
+    my_fprintf(2, 'norm(Bbar * Hbar - eye(p)) %.4g \n ', n2);
 end
 mean(mm)
 median(mm)
