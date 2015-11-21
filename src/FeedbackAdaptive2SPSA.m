@@ -93,6 +93,7 @@ time_blocking = 0;
 time_setup = 0;
 time_linsolve = 0;
 if sequence_param_struct.compare_iterations
+    Hbar = 10*eye(theta_dim);
 Hbar_seq = zeros(length(loss_sequence) - 1, theta_dim, theta_dim);
 Hbar_theta_seq = zeros(length(loss_sequence) - 1, theta_dim);
 end
