@@ -7,15 +7,15 @@ Last-Updated: .
 By: .
 Update #: 0
 %}
-close all; clear; clc;
+% close all; clear; clc;
 warning('off','MATLAB:maxNumCompThreads:Deprecated');
 warning('off', 'comm:system:warnobsolete:obsoleteReplace');
-global disable_print;
 if ~exist('disable_print')
-    disable_print = 2; % disable_print = 2 disables printing of stderr.  
+    global disable_print;
+    disable_print = 2; % disable_print = 2 disables printing of stderr.
 end
-global compare_iterations;
 if ~exist('compare_iterations')
+    global compare_iterations;
     compare_iterations = 0;
 end
 if maxNumCompThreads() > 1
@@ -92,7 +92,7 @@ results_struct = struct();
 % The total memory of the struct would not exceed 60MB.
 % It takes 77m to run this script. < 2Hr
 % I need to fix the convergence of the algorithms.
-for budget=25000
+for budget=(5000 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
@@ -164,6 +164,6 @@ end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
-if ~usejava('jvm') && ~feature('ShowFigureWindows')
+if ~feature('ShowFigureWindows')
     exit(1);
 end
