@@ -36,7 +36,7 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 rand('seed',31415927);
 randn('seed',3111113);
-sigma = 0; % Noise higher than 5e-4 we can't handle.
+sigma = 0.05; % Noise higher than 5e-4 we can't handle.
 
 sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
