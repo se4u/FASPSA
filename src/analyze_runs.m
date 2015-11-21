@@ -31,8 +31,8 @@ Please see the documentation for each cell for details.
 clear; clc; close all;
 load('../res/sso_project.mat');
 p = 10;
-runs = 5;
-budget = 25000;
+runs = 50;
+budget = 20000;
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
