@@ -14,3 +14,16 @@ The algorithms are written in the files.
 These algorithms were called by the main functions in `sso_project.m`
 which were used to generate plots and tables for the paper on the
 `quartic` and `rosenbrock` functions.
+
+
+
+TODO : 25 November
+1. I would implement theta based blocking (for the noisy case) and report results using that on the same problem.
+    And professor spall would email the code used in noisy 2SPSA in the 2000 paper.
+
+2. Code the loss to be faster in fortran, and read up on possible ways to speed up the preconditioning.
+   Either through Boryden type updates or just using the hack of keeping the diagonal values.
+   Or look at the size of gershgorin disks.
+   This will speed up the rest of the code.
+
+3. Formalize the use of the MIL for the 2SG case (in addition to the current 2SPSA case), both w/ and w/o feedback.
