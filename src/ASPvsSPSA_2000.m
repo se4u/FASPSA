@@ -265,12 +265,16 @@ end
 % deviation calculation before using with t-test
 if cases > 1
     disp('cases > 1');
-    (cases^(-.5))*((cases/(cases-1))^.5)*(lossthetasq/(cases*feval(lossfinaleval,theta_0)^2)-(losstheta/(cases*feval(lossfinaleval,theta_0)))^2)^.5
-    (cases^(-.5))*((cases/(cases-1))^.5)*(lossthetaIAsq/(cases*feval(lossfinaleval,theta_0)^2)-(lossthetaIA/(cases*feval(lossfinaleval,theta_0)))^2)^.5
-    (cases^(-.5))*((cases/(cases-1))^.5)*(losstheta2sq/(cases*feval(lossfinaleval,theta_0)^2)-(losstheta2/(cases*feval(lossfinaleval,theta_0)))^2)^.5
+    factor = (cases^(-.5))*((cases/(cases-1))^.5);
+    finalloss_val = feval(lossfinaleval,theta_0);
+    loss_stdev_func = @(lsq, l_) factor * ...
+        sqrt(lsq/(cases*finalloss_val^2) - (l_/(cases*finalloss_val))^2);
+    loss_stdev_func(lossthetasq, losstheta)
+    loss_stdev_func(lossthetaIAsq, lossthetaIA)
+    loss_stdev_func(losstheta2sq, losstheta2)
 end
 disp('normalized loss values');
-losstheta/(cases*feval(lossfinaleval,theta_0))
-lossthetaIA/(cases*feval(lossfinaleval,theta_0))
-losstheta2/(cases)%*feval(lossfinaleval,theta_0))
+losstheta/(cases*finalloss_val)
+lossthetaIA/(cases*finalloss_val)
+losstheta2/(cases)%*finalloss_val)
 exit;
