@@ -63,14 +63,22 @@ lossthetasq=0;                          %cum. sum of loss squared values
 lossthetaIAsq=0;
 losstheta2sq=0;
 truetheta=ones(p,1);
-theta_0=-.52276*ones(p,1);
-%dummy statement for setting dimension of Hhat (avoids occasional error message)
+
+%-----------------------------------------------------------%
+theta_0 = -.52276*ones(p,1); % Initialization that works unreasonably
+                             % well with the heavy prior.
+theta_0 = +0.52276*ones(p, 1); % This drops performance.
+%-----------------------------------------------------------%
+%dummy statement for setting dimension of Hhat
 Hhat=eye(p);
 for j=1:cases
     %INITIALIZATION OF PARAMETER AND HESSIAN ESTIMATES
     theta=theta_0;
     theta2=theta;
-    Hbar=500*eye(p);
+    %--------------- Unreasonably heavy prior on Hbar ---------------%
+    Hbar=500*eye(p); % UNREASONABLY HEAVY PRIOR
+    Hbar = eye(p); % This causes a drop in performance (norm_theta > 1)
+    %----------------------------------------------------------------%
     lossold=0;    %lossold calculation is for use in loss-based blocking step below
     for i=1:avg
         lossold=lossold+feval(loss,theta2);
@@ -258,10 +266,9 @@ end
 'meanHar/cases'; meanHbar/cases;
 % normalized results of 1SPSA and 2SPSA
 if norm(theta_0-truetheta)~= 0
-    disp('norm(theta_0-truetheta)~= 0; compute normalized results of 1SPSA and 2SPSA');
-    ((errtheta/cases)^.5)/norm(theta_0-truetheta)
-    ((errthetaIA/cases)^.5)/norm(theta_0-truetheta)
-    ((errtheta2/cases)^.5)/norm(theta_0-truetheta)
+    fprintf(2, '\n ((errtheta/cases)^.5)/norm(theta_0-truetheta) \t%f ', ((errtheta/cases)^.5)/norm(theta_0-truetheta));
+    fprintf(2, '\n ((errthetaIA/cases)^.5)/norm(theta_0-truetheta) \t%f ', ((errthetaIA/cases)^.5)/norm(theta_0-truetheta));
+    fprintf(2, '\n ((errtheta2/cases)^.5)/norm(theta_0-truetheta) \t%f ', ((errtheta2/cases)^.5)/norm(theta_0-truetheta));
 end
 % standard dev. of mean of normalized loss values; these are by multiplied by
 % (cases/(cases-1))^.5 to account for loss of degree of freedom in standard
@@ -269,15 +276,14 @@ end
 if cases > 1
     disp('cases > 1');
     factor = (cases^(-.5))*((cases/(cases-1))^.5);
-    finalloss_val = feval(lossfinaleval,theta_0);
+    init_loss_val = feval(lossfinaleval,theta_0);
     loss_stdev_func = @(lsq, l_) factor * ...
-        sqrt(lsq/(cases*finalloss_val^2) - (l_/(cases*finalloss_val))^2);
-    loss_stdev_func(lossthetasq, losstheta)
-    loss_stdev_func(lossthetaIAsq, lossthetaIA)
-    loss_stdev_func(losstheta2sq, losstheta2)
+        sqrt(lsq/(cases*init_loss_val^2) - (l_/(cases*init_loss_val))^2);
+    fprintf(2, '\n loss_stdev_func(lossthetasq, losstheta) \t%f ', loss_stdev_func(lossthetasq, losstheta));
+    fprintf(2, '\n loss_stdev_func(lossthetaIAsq, lossthetaIA) \t%f ', loss_stdev_func(lossthetaIAsq, lossthetaIA));
+    fprintf(2, '\n loss_stdev_func(losstheta2sq, losstheta2) \t%f ', loss_stdev_func(losstheta2sq, losstheta2));
 end
-disp('normalized loss values');
-losstheta/(cases*finalloss_val)
-lossthetaIA/(cases*finalloss_val)
-losstheta2/(cases)%*finalloss_val)
+fprintf(2, '\n losstheta/(cases*init_loss_val) \t%f ', losstheta/(cases*init_loss_val));
+fprintf(2, '\n lossthetaIA/(cases*init_loss_val) \t%f ', lossthetaIA/(cases*init_loss_val));
+fprintf(2, '\n losstheta2/(cases)*init_loss_val) \t%f ', losstheta2/(cases*init_loss_val));
 exit;
