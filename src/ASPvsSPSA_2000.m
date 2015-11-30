@@ -21,47 +21,45 @@ a1=.01;
 a2=.5;
 A1=100;           %stability constant for 1SPSA
 A2=100;           %stability constant for 2SPSA
-c1=.19;         	%numerator in c_k for 1SPSA
-c2=2*c1;         	%numerator in c_k for 2SPSA
-ctilda=2*c2;     	%numerator in ctilda_k for 2SPSA;
+c1=.19;           %numerator in c_k for 1SPSA
+c2=2*c1;          %numerator in c_k for 2SPSA
+ctilda=2*c2;      %numerator in ctilda_k for 2SPSA;
 alpha1=.602;      %a_k decay rate for 1SPSA
 alpha2=.602;      %a_k decay rate for 2SPSA
 gamma1=.101;      %c_k decay rate for 1SPSA
 gamma2=.101;      %c_k decay rate for 2SPSA
-n=16000;	    		%total no. of function measurements
-N=0;					%no. of function meas. for 1SPSA
-                                        %initialization
+n=16000;          %total no. of function measurements
+N=0;              %no. of function meas. for 1SPSA initialization
 
 sigma=.05;
-lossfinaleval=quartic_loss_factory(p); 	%loss function for "true" evaluation of algorithm (no noise)
-loss=noisy_function_factory(lossfinaleval, sigma);	  				%loss function for use in algorithm (usually with noise)
-cases=5;         			%number of cases (replications) of 2SPSA and 1SPSA
+%loss function for "true" evaluation of algorithm (no noise)
+lossfinaleval=quartic_loss_factory(p);
+%loss function for use in algorithm (usually with noise)
+loss=noisy_function_factory(lossfinaleval, sigma);
+cases=5;                %number of cases (replications) of 2SPSA and 1SPSA
 gH_avg=1;               %no. of averaged gradients/Hessian in 2SPSA
-toleranceloss=0;			%tolerance in loss-based blocking step
-avg=0;						%no. of loss evals. per loss-based blocking step (1SPSA&2SPSA)
-tolerancetheta=1000;		%max. allowable change in elements of theta
+toleranceloss=0;        %tolerance in loss-based blocking step
+avg=0;                  %no. of loss evals. per loss-based blocking step (1SPSA&2SPSA)
+tolerancetheta=1000;    %max. allowable change in elements of theta
 rand('seed',31415297)
 randn('seed',3111113)
-%
+
+
 %the loop 1:cases below is for doing multiple cases for use in averaging to
 %evaluate the relative performance.
-%
 %the first loop in 2SPSA below uses the standard 1SPSA form to initialize 2SPSA
-%
 %the second loop does 2SPSA following guidelines in Spall, 1999 ASP
-%
 %lines below initialize various recuresions for the gradient/Hess. averaging
 %and for final error reporting based on the average of the solutions for
 %"cases" replications.
-%
 meanHbar=0;
-errtheta=0;				%cum. sum of theta errors
+errtheta=0;                             %cum. sum of theta errors
 errthetaIA=0;
 errtheta2=0;
-losstheta=0;				%cum. sum of loss values
+losstheta=0;                            %cum. sum of loss values
 lossthetaIA=0;
 losstheta2=0;
-lossthetasq=0;				%cum. sum of loss squared values
+lossthetasq=0;                          %cum. sum of loss squared values
 lossthetaIAsq=0;
 losstheta2sq=0;
 truetheta=ones(p,1);
@@ -73,13 +71,14 @@ for j=1:cases
   theta=theta_0;
   theta2=theta;
   Hbar=500*eye(p);
-  lossold=0;	%lossold calculation is for use in loss-based blocking step below
+  lossold=0;    %lossold calculation is for use in loss-based blocking step below
   for i=1:avg
     lossold=lossold+feval(loss,theta2);
   end
 %*********2SPSA*********
-%Initial iterations of 1SPSA based on N measurements (prior to 2SPSA iterations)
-  for k=1:(N-avg)/(2+avg)    %use of N-avg is to account for avg used in setting lossold
+%Initial iterations of 1SPSA based on N measurements (prior to 2SPSA
+%iterations). Use of N-avg is to account for avg used in setting lossold
+  for k=1:(N-avg)/(2+avg)
     a_k=a1/(k+A1)^alpha1;
     c_k=c1/k^gamma1;
     delta=2*round(rand(p,1))-1;
@@ -176,8 +175,8 @@ theta2;
 % accomodate a sliding window of the last IA iterates for an iterate averaging
 % solution.
 %
- IA=200;		%no. of sliding window iterations in iterate averaging
- lossold=0;	%lossold calculation is for use in loss-based blocking step below
+ IA=200;        %no. of sliding window iterations in iterate averaging
+ lossold=0;     %lossold calculation is for use in loss-based blocking step below
  for i=1:avg
    lossold=lossold+feval(loss,theta);
  end
