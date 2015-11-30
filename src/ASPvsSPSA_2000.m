@@ -28,14 +28,14 @@ alpha1=.602;      %a_k decay rate for 1SPSA
 alpha2=.602;      %a_k decay rate for 2SPSA
 gamma1=.101;      %c_k decay rate for 1SPSA
 gamma2=.101;      %c_k decay rate for 2SPSA
-n=4000;	    		%total no. of function measurements
+n=16000;	    		%total no. of function measurements
 N=0;					%no. of function meas. for 1SPSA
                                         %initialization
 
-sigma=.1;
-loss=quartic_loss_factory(p);	  				%loss function for use in algorithm (usually with noise)
-lossfinaleval=noisy_function_factory(loss, sigma); 	%loss function for "true" evaluation of algorithm (no noise)
-cases=1;         			%number of cases (replications) of 2SPSA and 1SPSA
+sigma=.05;
+lossfinaleval=quartic_loss_factory(p); 	%loss function for "true" evaluation of algorithm (no noise)
+loss=noisy_function_factory(lossfinaleval, sigma);	  				%loss function for use in algorithm (usually with noise)
+cases=5;         			%number of cases (replications) of 2SPSA and 1SPSA
 gH_avg=1;               %no. of averaged gradients/Hessian in 2SPSA
 toleranceloss=0;			%tolerance in loss-based blocking step
 avg=0;						%no. of loss evals. per loss-based blocking step (1SPSA&2SPSA)
