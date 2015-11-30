@@ -96,9 +96,9 @@ for j=1:cases
         for i=1:avg
             lossnew=lossnew+feval(loss,theta2);
         end
-        if lossnew > lossold-avg*toleranceloss; %if avg=0, this statement is always false
+        if lossnew > lossold-avg*toleranceloss; %False if avg=0;
             theta2=theta2lag;
-        else                                    %statements to follow are harmless when avg=0
+        else                  %statements to follow are harmless when avg=0
             lossold1=lossold;
             lossold=lossnew;
         end
@@ -108,10 +108,10 @@ for j=1:cases
             lossold=lossold1;     %only relevant if also using loss-based blocking
         end
     end
-    caseiter=j   %print-out of iteration number (for monitoring progress)
-                 %
-                 % START 2SPSA ITERATIONS FOLLOWING INITIALIZATION
-                 %
+    caseiter=j
+    %-------------------------------------------------%
+    % START 2SPSA ITERATIONS FOLLOWING INITIALIZATION %
+    %-------------------------------------------------%
     for k=(N-avg)/(2+avg)+1:(N-avg)/(2+avg)+(n-N)/(gH_avg*4+avg)
         a_k=a2/(k+A2)^alpha2;
         c_k=c2/k^gamma2;
@@ -167,16 +167,16 @@ for j=1:cases
         end
     end
     theta2;
-    %
-    %********1SPSA*************
-    % The iterations below are the 1SPSA iterations.  Uses the same gain sequences
-    % as the 1SPSA loop above (where 2SPSA is not fully engaged).  Uses same number
-    % of loss function measurements.  The overall loop is broken into two parts to
-    % accomodate a sliding window of the last IA iterates for an iterate averaging
-    % solution.
-    %
+
+    %----------------------- 1SPSA --------------------------------------%
+    % The iterations below are the 1SPSA iterations.  Uses the same gain %
+    % sequences as the 1SPSA loop above (where 2SPSA is not fully        %
+    % engaged).  Uses same number of loss function measurements.  The    %
+    % overall loop is broken into two parts to accomodate a sliding      %
+    % window of the last IA iterates for an iterate averaging solution.  %
+    %--------------------------------------------------------------------%
     IA=200;        %no. of sliding window iterations in iterate averaging
-    lossold=0;     %lossold calculation is for use in loss-based blocking step below
+    lossold=0;     %lossold calculation is for use in loss-based blocking
     for i=1:avg
         lossold=lossold+feval(loss,theta);
     end
@@ -189,10 +189,10 @@ for j=1:cases
         yplus=feval(loss,thetaplus);
         yminus=feval(loss,thetaminus);
         ghat=(yplus-yminus)./(2*c_k*delta);
-        %   theta update
+        % Theta update
         thetalag=theta;
         theta=theta-a_k*ghat;
-        %   Steps below perform "blocking" steps as in 1SPSA part of 2SPSA above
+        % Steps below perform "blocking" steps as in 1SPSA part of 2SPSA above
         lossnew=0;
         for i=1:avg
             lossnew=lossnew+feval(loss,theta);
@@ -215,14 +215,14 @@ for j=1:cases
         delta=2*round(rand(p,1))-1;
         thetaplus=theta+c_k*delta;
         thetaminus=theta-c_k*delta;
-        %   THE NEXT TWO LINES SHOULD BE CHANGED AS LOSS CHANGES
+        % THE NEXT TWO LINES SHOULD BE CHANGED AS LOSS CHANGES
         yplus=feval(loss,thetaplus);
         yminus=feval(loss,thetaminus);
         ghat=(yplus-yminus)./(2*c_k*delta);
-        %   theta update
+        % Theta update
         thetalag=theta;
         theta=theta-a_k*ghat;
-        %   Steps below perform "blocking" steps as in 1SPSA part of 2SPSA above
+        % Steps below perform "blocking" steps as in 1SPSA part of 2SPSA above
         lossnew=0;
         for i=1:avg
             lossnew=lossnew+feval(loss,theta);
@@ -242,12 +242,15 @@ for j=1:cases
     %theta
     thetabar=thetabar/IA;
     meanHbar=meanHbar+Hbar;
+
     errtheta=errtheta+(theta-truetheta)'*(theta-truetheta);
     errthetaIA=errthetaIA+(thetabar-truetheta)'*(thetabar-truetheta);
     errtheta2=errtheta2+(theta2-truetheta)'*(theta2-truetheta);
+
     lossthetasq=lossthetasq+feval(lossfinaleval,theta)^2;
     lossthetaIAsq=lossthetaIAsq+feval(lossfinaleval,thetabar)^2;
     losstheta2sq=losstheta2sq+feval(lossfinaleval,theta2)^2;
+
     losstheta=losstheta+feval(lossfinaleval,theta);
     lossthetaIA=lossthetaIA+feval(lossfinaleval,thetabar);
     losstheta2=losstheta2+feval(lossfinaleval,theta2);
