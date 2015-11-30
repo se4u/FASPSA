@@ -21,7 +21,7 @@
 %% Legal Notice:
 %% This code is offered as-is without any warranty either expressed or
 %% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE!
+%% FITNESS FOR A PARTICULAR PURPOSE! 
 %% User assumes all risk.
 %% In no event shall the IEEE or any contributor to this code be liable for
 %% any damages or losses, including, but not limited to, incidental,
@@ -134,7 +134,7 @@
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
 % installed on most LaTeX systems. The latest version and documentation
-% can be obtained at:
+% can be obtained at: 
 % http://www.ctan.org/pkg/graphicx
 % Another good source of documentation is "Using Imported Graphics in
 % LaTeX2e" by Keith Reckdahl which can be found at:
@@ -180,9 +180,7 @@
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
-\usepackage{algorithmicx}
-% Pushpendre : Let's just use algorithmicx which is the newer and better version
-% of algorithmic. https://www.ctan.org/pkg/context-algorithmic
+\usepackage{algorithmic}
 % algorithmic.sty was written by Peter Williams and Rogerio Brito.
 % This package provides an algorithmic environment fo describing algorithms.
 % You can use the algorithmic environment in-text or within a figure
@@ -374,16 +372,16 @@ Stochastic approximation has been widely applied in gradient-free optimization (
 
 
 \section{Introduction}
-Adaptive stochastic approximation (SA) has long been applied in both minimizing noisy loss function and root finding with noisy input information. Spall \cite{Spall1992} introduced the idea of simultaneous perturbation and later Spall \cite{Spall2000} generalized this idea to adaptive stochastic approximation, a stochastic analogue of Newton-Raphson's algorithm. Spall \cite{Spall2009} incorporated feedback and weighting mechanism so as to further improving the performance of Hessian matrix approximation. This paper presents an enhancement to the matrix inversion appeared in such Newton-typed method.
+Adaptive stochastic approximation (SA) has long been applied in both minimizing noisy loss function and root finding with noisy input information. Spall \cite{Spall1992} introduced the idea of simultaneous perturbation and later Spall \cite{Spall2000} generalized this idea to adaptive stochastic approximation, a stochastic analogue of Newton-Raphson's algorithm. Spall \cite{Spall2009} incorporated feedback and weighting mechanism so as to further improving the performance of Hessian matrix approximation. This paper presents an enhancement to the matrix inversion appeared in this second-order stochastic approximation algorithm.
 
-\section{Problem Formulation and Adaptive SPSA Algorithms}
-In the following discussion, use the following notation. For a vector $ \bm{x}\in \mathbbm{R}^p $, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $. Apparently, $ \bm{x}^{-T}\bm{x}=p $.
+\section{Problem Formulation in Enhancement for Adaptive SPSA Algorithms}
+In the following discussion, use the following notation. For a vector $ \bm{x}\in \mathbbm{R}^p $, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $.Obviously, $ \bm{x}^{-T}\bm{x}=p $.
 
+We consider the problem of minimizing a \textit{differentiable} loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote $\bm{g}(\bm{\uptheta})={\partial L}/{\partial \bm{\uptheta}}$. The minimization problem ${\text{min}}_{\bm{\uptheta}}L(\bm{\uptheta})$ is equivalent to the root finding problem $\bm{g}(\bm{\uptheta})=\bm{0}$.
 
-We consider the problem of minimizing a \textit{differentiable} loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote $\bm{g}(\bm{\uptheta})=\frac{\partial L}{\partial \bm{\uptheta}}$. The minimization problem $\underset{\bm{\uptheta}}{\text{min}}L(\bm{\uptheta})$ is equivalent to the root finding problem $\bm{g}(\bm{\uptheta})=\bm{0}$.
+Typically, we only have access to the noisy function measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $, or noisy measurement of gradient evaluation. In this paper we only consider the former case.
 
-
-Typically, we only have access to the noisy measurement of $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $, or noisy measurement of gradient evaluation. In this paper we only consider the case where noisy function evaluations are available. Adaptive simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in \cite{Spall2009} is as following:
+Adaptive simultaneous perturbation (ASP) algorithm incorporated the feedback and weighting mechanism in \cite{Spall2009} is as following:
 
 $$\begin{cases}
 	\htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),\qquad \bm{\ooH}_k=f_k(\oH_k)\\
@@ -392,12 +390,15 @@ $$\begin{cases}
 where
 \begin{align*}
 \bG_k(\htheta_k)&=\frac{y(\htheta_k+c_k\bDelta_k)-y(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-1}\\
-\hH_k&=\frac{\bG_k^{(1)}(\htheta_k+c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-T}\\
+\hH_k&=\frac{1}{2}\left[ \frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}+\left(\frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}\right)^T \right]\\
+\delta\bG_k&=\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)\\
 \bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)
 &=\frac{y(\htheta_k\pm c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k\pm c_k\bDelta_k)}{\tilde{c}_k}\tDelta_k^{-1}\\
 w_k&=\frac{\tilde{c}_k^2c_k^2}{\sum_{i=0}^{k}\tilde{c}_i^2c_i^2}
 \end{align*}
-$ a_k $ is a non-negative scalar gain coefficient, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and the pre-conditioning function $ \bm{f}_k $ is to maintain the symmetry and positive-definiteness of $ \ooH_k $.
+$ a_k $, $ c_k $ and $ \tilde{c}_k $ are all non-negative scalar gain coefficients, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and the pre-conditioning function $ \bm{f}_k $ is to maintain the symmetry and positive-definiteness of $ \ooH_k $.
+
+Through out our discussion, all components in the perturbation sequences (both $ c_k $ and $ \tilde{c}_k $) are \textit{Bernoulli} distributed.
 
 Denote
 \begin{align*}
@@ -405,11 +406,22 @@ Denote
 &\quad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)]
 \end{align*}
 
-Immediately, $$ \hH_k=\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T} $$
+Immediately,
+\begin{equation} \label{eq:Hhat}
+\hH_k=\frac{1}{2}\frac{\delta y_k}{2c_k\tilde{c}_k}\left( \tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T} \right)
+\end{equation}
 
-Eq. (3.8) in Spall \cite{Spall2009} provides an symmetrized form of $ \hPsi_k $. Now we first consider the update of the inverse of $ \oH_k $, then later do the symmetrization and conditioning on $ \oH_k $ to obtain $ \ooH_k $. Below is the pre-symmetrized procedure:
-$$ \hPhi_k=\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k $$
-where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
+Now we first consider the update of the inverse of $ \oH_k $, then later do the  conditioning on $ \oH_k $ to obtain $ \ooH_k $. Eq. (3.8) in Spall \cite{Spall2009} provides a symmetrized $ \hPsi_k $.  Below is the pre-symmetrized from of $ \hPsi_k $:
+\begin{equation}
+	\hPhi_k=\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k
+\end{equation}
+where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $. Obviously,
+\begin{equation} \label{eq:PsiHat}
+\hPsi_k =(\hPhi_k+\hPhi_k^T)/2
+\end{equation}
+
+
+Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $. So it's reasonable how equation~\ref{eq:Hhat} and equation~\ref{eq:PsiHat} proceed the symmetrization.
 
 Notice that
 \begin{align*}
@@ -418,25 +430,37 @@ Notice that
 &=\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T}-\oH_{k-1}
 \end{align*}
 
-Therefore, the Hessian estimate update is
+As in Spall \cite{Spall2009}, the Hessian updates always maintain their symmetry. The symmetry of previous update $ \oH_{k-1}$ guarantees that $\bDelta_k^{T}\oH_{k-1}\tDelta_k=\tDelta_k^{T}\oH_{k-1}\bDelta_k$. Denote
+\begin{equation}
+b_k=\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)
+\end{equation}
+Immediately, the new Hessian estimation is
 \begin{align*}
-\oH_k&=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPhi_k)\\
-&=\oH_{k-1}+w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T})\\
-&=\oH_{k-1}+\tDelta_k^{-1}\left(w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}-\tDelta_k^{T}\oH_{k-1}\bDelta_k)\right)\bDelta_k^{-T}
+\oH_k&=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k)\\
+&=\oH_{k-1}+\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T})\\
+&\quad +\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\bDelta_k^{-1}\tDelta_k^{-T}-\bDelta_k^{-1}\bDelta_k^{T}\oH_{k-1}\tDelta_k\tDelta_k^{-T})\\
+&=\oH_{k-1}+b_k(\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T})
 \end{align*}
 
-By Woodbury matrix identity,
+Recall Woodbury matrix identity,
 \begin{equation*}
-(\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{VA^{-1}U})^{-1}\bm{V}\bm{A}^{-1}
-\end{equation*}
-we can obtain a recursion of the $ \oH_k^{-1} $ as following:
-\begin{equation*}
-\oH_k^{-1}=\oH_{k-1}^{-1}-\oH_{k-1}^{-1}\tDelta_k^{-1}\left[ \left(w_k(\frac{\delta y_k}{2c_k\tilde{c}_k}-\tDelta_k^{T}\oH_{k-1}\bDelta_k)\right)^{-1} + \bDelta_k^{-T}\oH_{k-1}^{-1}\tDelta_k^{-1} \right]^{-1}\bDelta_k^{-T}\oH_{k-1}^{-1}
+(\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{V}\bm{A}^{-1}\bm{U})^{-1}\bm{V}\bm{A}^{-1}
 \end{equation*}
 
-Note that we still have to store $ \oH_{k} $ to proceed above less computational-costly recursion on $ \oH_k^{-1} $.
+Denote
+\begin{equation}
+\bm{B}_k=\oH_{k-1}+b_k\tDelta_k^{-1}\bDelta_k^{-T}
+\end{equation}
 
-Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $. We can guarantee the symmetry of the inverse of the Hessian update simply by updating $ \oH_k^{-1} $ by $ (\oH_k^{-1}+\oH_k^{-T})/2 $.
+We can obtain a sequential recursion of the $ \oH_k^{-1} $ as following:
+\begin{equation}
+	\begin{cases}
+	\bm{B}_k^{-1}&=\oH_{k-1}^{-1}-\oH_{k-1}^{-1}\tDelta_k^{-1}(b_k^{-1}+\bDelta_k^{-T}\oH_{k-1}^{-1}\tDelta_k^{-1})^{-1}\bDelta_k^{-T}\oH_{k-1}^{-1}\\% \nonumber
+    \oH_k^{-1}&=\bm{B}_k^{-1}-\bm{B}_k^{-1}\bDelta_k^{-1}(b_k^{-1}+\tDelta_k^{-T}\bm{B}_k^{-1}\bDelta_k^{-1})^{-1}\tDelta_k^{-T}\bm{B}_k^{-1}
+\end{cases}
+\end{equation}
+
+
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
@@ -454,7 +478,7 @@ Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{
 %\begin{figure}[!t]
 %\centering
 %\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex,
+% where an .eps filename suffix will be assumed under latex, 
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
 %\caption{Simulation results for the network.}
@@ -470,7 +494,7 @@ Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{
 % The subfigure \label commands are set within each subfloat command,
 % and the \label for the overall figure must come after \caption.
 % \hfil is used as a separator to get equal spacing.
-% Watch out that the combined width of all the subfigures on a
+% Watch out that the combined width of all the subfigures on a 
 % line do not exceed the text width or a line break will occur.
 %
 %\begin{figure*}[!t]
@@ -527,14 +551,14 @@ Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{
 % in-text middle ("here") positioning is typically not used, but it
 % is allowed and encouraged for Computer Society conferences (but
 % not Computer Society journals). Most IEEE journals/conferences use
-% top floats exclusively.
+% top floats exclusively. 
 % Note that, LaTeX2e, unlike IEEE journals/conferences, places
 % footnotes above bottom floats. This can be corrected via the
 % \fnbelowfloat command of the stfloats package.
 
 
 \section{Numerical Stability Analysis}
-Use quartic function, the test function in \cite{Spall2009}.
+Use same test function in \cite{Spall2009}, the quartic function, we do a comparison study.
 
 \section{Conclusion}
 The conclusion goes here.
@@ -590,8 +614,3 @@ Bar-Itzhack, I.Y. (1998). Matrix symmetrization. \textit{Journal of guidance, co
 \end{document}
 
 
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: t
-%%% End:
