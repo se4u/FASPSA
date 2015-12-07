@@ -598,13 +598,51 @@ Below is the table showing the time consumed in each step: loss function evaluat
 
 
 \section{Conclusion}
-The conclusion goes here.
+As discussed in section \ref{2SPSA} to \ref{Enhanced 2SG}, the recursion of the Hessian inverse can be achieved via a rank-2 update, which breaks down to a sequential rank-1 update. Basically, the Hessian update (with or without feedback term) can be written as:
+\begin{equation} \label{eq:Coherent Recursion}
+\oH_{k}=d_k\oH_{k-1}+b_k(\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T})
+\end{equation}
 
-% conference papers do not normally have an appendix
+The table below gives the detailed terms in recursion \ref{eq:Coherent Recursion}:
 
-% use section* for acknowledgment
+\begin{center}
+	\begin{tabular}{||c || c | c | c | c||} 
+		\hline
+		Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ \\ [0.5ex] 
+		\hline\hline
+		Adaptive 2SPSA  & $\frac{k}{k+1}$ & $\frac{1}{2(k+1)}(\frac{\delta y_k}{2c_k\tilde{c}_k})$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ \\ 
+		\hline
+		Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$  & $\bDelta_k^{-1}$ \\
+		\hline
+		Adaptive 2SG & $\frac{k}{k+1}$ & $\frac{1}{2(k+1)}(\frac{1}{2c_k})$ & $\delta\bG_k$ & $\bDelta_k^{-1}$ \\
+		\hline
+		Enhanced 2SG * & 1 & 1 & $w_k\left( \frac{1}{4c_k}(\delta\bG_k)-\frac{1}{2}\oH_{k-1}\bDelta_k\right)$ & $\bDelta_k^{-1}$ \\
+		\hline
+	\end{tabular}
+\end{center}
+where the last situation (*) has to use relationship \ref{eq:symmetry}, which is automatically true if we use symmetric Bernoulli perturbation sequences.
+
+Compactly summarizing the update from $\oH_{k-1}^{-1}$ to $\oH_{k}^{-1}$ as below:
+\begin{equation} \label{eq:SequentialUpdate}
+\begin{dcases}
+\bm{B}_k^{-1}
+&=\frac{1}{d_k}\oH_{k-1}^{-1}-(\frac{1}{d_k})^2\oH_{k-1}^{-1}\bm{u}_k\\
+&~~~\cdot(\frac{1}{b_k}+\bm{v}_k^{T}\oH_{k-1}^{-1}\bm{u}_k)^{-1}\bm{v}_k^{T}\oH_{k-1}^{-1}\\
+\oH_k^{-1}
+&=\bm{B}_k^{-1}-\bm{B}_k^{-1}\bm{v}_k\\
+&~~~\cdot(\frac{1}{b_k}+\bm{u}_k^{T}\oH_{k-1}^{-1}\bm{v}_k)^{-1}\bm{u}_k^{T}\oH_{k-1}^{-1}
+\end{dcases}
+\end{equation}
+where
+\begin{equation}
+\bm{B}_k=d_k\oH_{k-1}+b_k\bm{u}_k \bm{v}_k^{T}
+\end{equation}
+
+
+The FLOPS analysis can be given in a unified manner in terms of a rank two update.
+
 \section*{Acknowledgment}
-Pushpendre Rastogi would like to thank the Department of Computer Science at the Johns Hopkins University during his graduate study. This work is supported in part by the Center of Imaging Science. Both the second and the third author receive support from the Office of Naval Research (via Navy contract N00024-13-D6400).
+Pushpendre Rastogi would like to thank the Department of Computer Science at the Johns Hopkins University during his graduate study. This work is supported in part by the Center For Language and Speech Processing. Both the second and the third author receive support from the Office of Naval Research (via Navy contract N00024-13-D6400).
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
