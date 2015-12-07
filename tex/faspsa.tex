@@ -598,7 +598,7 @@ Below is the table showing the time consumed in each step: loss function evaluat
 
 
 \section{Conclusion}
-As discussed in section \ref{2SPSA} to \ref{Enhanced 2SG}, the recursion of the Hessian inverse can be achieved via a rank-2 update, which breaks down to a sequential rank-1 update. Basically, the Hessian update (with or without feedback term) can be written as:
+As discussed in section \ref{2SPSA} to \ref{Enhanced 2SG}, the recursion of the Hessian inverse can be achieved via a rank-2 update, which breaks down to a sequential rank-1 update. Basically, the Hessian update (with or without feedback term) can be coherently organized as:
 \begin{equation} \label{eq:Coherent Recursion}
 \oH_{k}=d_k\oH_{k-1}+b_k(\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T})
 \end{equation}
@@ -630,7 +630,7 @@ Compactly summarizing the update from $\oH_{k-1}^{-1}$ to $\oH_{k}^{-1}$ as belo
 &~~~\cdot(\frac{1}{b_k}+\bm{v}_k^{T}\oH_{k-1}^{-1}\bm{u}_k)^{-1}\bm{v}_k^{T}\oH_{k-1}^{-1}\\
 \oH_k^{-1}
 &=\bm{B}_k^{-1}-\bm{B}_k^{-1}\bm{v}_k\\
-&~~~\cdot(\frac{1}{b_k}+\bm{u}_k^{T}\oH_{k-1}^{-1}\bm{v}_k)^{-1}\bm{u}_k^{T}\oH_{k-1}^{-1}
+&~~~\cdot(\frac{1}{b_k}+\bm{u}_k^{T}\bm{B}_k^{-1}\bm{v}_k)^{-1}\bm{u}_k^{T}\bm{B}_{k-1}^{-1}
 \end{dcases}
 \end{equation}
 where
