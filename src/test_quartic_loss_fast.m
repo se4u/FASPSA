@@ -1,4 +1,4 @@
-p = 200; l = quartic_loss_factory(p);
+p = 10; l = quartic_loss_factory(p);
 time_slow = 0;
 time_fast = 0;
 runs = 1000;
