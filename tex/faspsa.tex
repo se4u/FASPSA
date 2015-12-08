@@ -418,23 +418,25 @@ Now we analyze the FLOPs of the sequential update \ref{eq:2SGSequentialUpdate}, 
 % for details about this issue therefore this table needs to be defined
 % one page before it is to be displayed.
 \begin{table*}
-  \centering
-  \resizebox{1.95\columnwidth}{!}
-  {
-  \begin{tabular}{|c | c | c | c | c| c |}
-    \hline
-    Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ & FLOPS \\
-    \hline
-    Adaptive 2SPSA  & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
-    Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$  & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
-    Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$  & $9p^2 + 10p$\\
-    Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
-    \hline
-  \end{tabular}
-
-  }
-  \\[5pt]
-  \caption{Detailed Expressions for Terms in Equation \ref{eq:CoherentRecursion} and Numerber of Floating-Point Operations Required}  \label{tab:Summary}
+	\centering
+	\resizebox{1.95\columnwidth}{!}
+	{
+		\begin{tabular}{|c | c | c | c | c| c |}
+			\hline
+			Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ & FLOPS \\
+			\hline
+			Adaptive 2SPSA  & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
+			Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$  & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
+			Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$  & $9p^2 + 10p$\\
+			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
+			\hline
+		\end{tabular}
+		
+	}
+	\\[5pt]
+	\caption{Detailed Expressions for Terms in Equation \ref{eq:CoherentRecursion} and Numerber of Floating-Point Operations Required
+	\newline
+	{\scriptsize Enhanced 2SG * requires symmetric Bernoulli perturbation sequences} }  \label{tab:Summary}
 \end{table*}
 
 
@@ -546,7 +548,9 @@ Then we can compute recursive Hessian inverse $\oH_k^{-1}$ as follows:
 \end{dcases}
 \end{equation}
 
-The rank-2 update (2 sequential rank-1 updates) in~(\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. And the procedure described in~(\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. The number of operations required to perform our efficient implementation from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}.
+The rank-2 update (2 sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Note that we have to keep the update (\ref{eq:CoherentRecursion}) in both \textit{enhanced} 2SPSA and \textit{enhanced} 2SG, as shown in Table \ref{tab:Summary}. The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}.
+
+
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
 % For figures, \caption should occur after the \includegraphics.
