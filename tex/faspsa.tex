@@ -427,7 +427,7 @@ Now we analyze the FLOPs of the sequential update \ref{eq:2SGSequentialUpdate}, 
     Adaptive 2SPSA  & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
     Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$  & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
     Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$  & $9p^2 + 10p$\\
-    Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
+    Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k$  & $15p^2 + 13p$\\
     \hline
   \end{tabular}}
   \caption{A table detailing ???. * means ???}
