@@ -34,8 +34,8 @@ if exist(dir_prefix, 'dir') ~= 7
     dir_prefix = '';
     disp(['Saving files to current directory' pwd()]);
 end
-rand('seed',31415927);
-randn('seed',3111113);
+% rand('seed',31415927);
+% randn('seed',3111113);
 sigma = 0.05; % Noise higher than 5e-4 we can't handle.
 
 sequence_param_struct.compare_iterations = compare_iterations;
