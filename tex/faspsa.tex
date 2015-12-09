@@ -544,11 +544,11 @@ Then we can compute recursive Hessian inverse $\oH_k^{-1}$ as follows:
    \frac{d_k^{-2}}{b_k^{-1}+\bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1}\bm{\tilde{u}}_k}
    \oH_{k-1}^{-1}\bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1}\\
 \oH_k^{-1}
-&=\bm{B}_k^{-1} + \frac{1}{b_k^{-1}+\bm{\tilde{v}}_k^{T}\bm{B}_k^{-1}\bm{\tilde{v}}_k} \bm{B}_k^{-1}\bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}\bm{B}_{k}^{-1}
+&=\bm{B}_k^{-1} + \frac{1}{b_k^{-1}-\bm{\tilde{v}}_k^{T}\bm{B}_k^{-1}\bm{\tilde{v}}_k} \bm{B}_k^{-1}\bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}\bm{B}_{k}^{-1}
 \end{dcases}
 \end{equation}
 
-The rank-2 update (2 sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Note that we have to keep the update (\ref{eq:CoherentRecursion}) in both \textit{enhanced} 2SPSA and \textit{enhanced} 2SG, as shown in Table \ref{tab:Summary}. The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}.
+The rank-2 update (2 sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Note that we have to keep the update (\ref{eq:CoherentRecursion}) in both \textit{enhanced} 2SPSA and \textit{enhanced} 2SG, as shown in Table \ref{tab:Summary}. The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}. Apparently, when $p>21$ in applying enhanced algorithms or when $p>12$ in applying basic adaptive algorithms, the corresponding number of operations is fewer than $O(p^3)\approx2p^3/3+3p^2/2-7p/6$ required by direct inversion (Gaussian elimination) of the Hessian itself.
 
 
 % An example of a floating figure using the graphicx package.
