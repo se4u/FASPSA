@@ -261,7 +261,7 @@ w_k=\frac{1}{k+1}\\
 \end{equation}
 $ a_k $, $ c_k $ and $ \tilde{c}_k $ are all non-negative scalar gain coefficients, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and the pre-conditioning function $ \bm{f}_k $ is to maintain the and positive-definiteness of $ \ooH_k $.
 
-As mentioned in Section \ref{Introduction}, we focus on converting the second recursion in algorithm \ref{eq:Adaptation} into a recursion on $\oH_k^{-1}$, and perform the pre-conditioning on the inverse such that $\bm{\ooH}_k^{-1}=\bm{f}_k(\oH_k^{-1})$. This \textit{new} pre-conditioning applies throughtou Section \ref{2SPSA}-\ref{Enhanced 2SG}.
+As mentioned in Section \ref{Introduction}, we focus on converting the second recursion in algorithm \ref{eq:Adaptation} into a recursion on $\oH_k^{-1}$, and perform the pre-conditioning on the inverse such that $\bm{\ooH}_k^{-1}=\bm{f}_k(\oH_k^{-1})$. This \textit{new} pre-conditioning applies throughout Section \ref{2SPSA}-\ref{Enhanced 2SG}.
 
 Denote
 \begin{align} \label{eq:dy}
@@ -431,10 +431,10 @@ Now we analyze the FLOPs of the sequential update \ref{eq:2SGSequentialUpdate}, 
 			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
 			\hline
 		\end{tabular}
-		
+
 	}
 	\\[5pt]
-	\caption{Detailed Expressions for Terms in Equation \ref{eq:CoherentRecursion} and Numerber of Floating-Point Operations Required
+	\caption{Detailed Expressions for Terms in Equation \ref{eq:CoherentRecursion} and Number of Floating-Point Operations Required.
 	\newline
 	{\scriptsize Enhanced 2SG * requires symmetric Bernoulli perturbation sequences} }  \label{tab:Summary}
 \end{table*}
@@ -514,7 +514,7 @@ Recognizing that the Hessian updates are rank two leads to an
 efficient update for the Hessian inverse since now one can simply apply the
 Woodbury matrix identity \ref{eq:MatrixInversion}.
 
-First, we compute 
+First, we compute
 \begin{equation}
 \bm{\tilde{u}}_k, \bm{\tilde{v}}_k =
 \sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k \pm
@@ -548,7 +548,7 @@ Then we can compute recursive Hessian inverse $\oH_k^{-1}$ as follows:
 \end{dcases}
 \end{equation}
 
-The rank-2 update (2 sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Note that we have to keep the update (\ref{eq:CoherentRecursion}) in both \textit{enhanced} 2SPSA and \textit{enhanced} 2SG, as shown in Table \ref{tab:Summary}. The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}. Apparently, when $p>21$ in applying enhanced algorithms or when $p>12$ in applying basic adaptive algorithms, the corresponding number of operations is fewer than $O(p^3)\approx2p^3/3+3p^2/2-7p/6$ required by direct inversion (Gaussian elimination) of the Hessian itself.
+The rank-2 update (2 sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Note that we have to keep the update (\ref{eq:CoherentRecursion}) in both \textit{enhanced} 2SPSA and \textit{enhanced} 2SG, as shown in Table \ref{tab:Summary}. The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}. Apparently, when $p>21$ in applying enhanced algorithms or when $p>12$ in applying basic adaptive algorithms, the corresponding number of operations is fewer than $O(p^3)\approx2p^3/3+3p^2/2-7p/6$ required by direct inversion (Gaussian-Jordan elimination) of the Hessian itself.
 
 
 % An example of a floating figure using the graphicx package.
@@ -660,7 +660,7 @@ where $\bm{B}$ is such that $p\bm{B}$ is an upper triangular matrix of all 1's, 
 \end{equation}
 It can be verified that $L(\bm{\uptheta})$ is a strictly convex function, and the minimizer is $\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=\bm{0}$.
 
-We follow the exact initialization and pre-conditioning steps in Spall \cite{Spall2009} and the pracitical guidlines in Spall \cite{Spall2000}. Below is the plot for these four implementations of the normalized loss functions $[L(\htheta_k)-L(\bm{\uptheta}^{*})]/[L(\htheta_0)-L(\bm{\uptheta}^{*})]$ against iteration $k$ averaging over 10 simulation runs.
+We follow the exact initialization and pre-conditioning steps in Spall \cite{Spall2009} and the practical guidelines in Spall \cite{Spall2000}. Below is the plot for these four implementations of the normalized loss functions $[L(\htheta_k)-L(\bm{\uptheta}^{*})]/[L(\htheta_0)-L(\bm{\uptheta}^{*})]$ against iteration $k$ averaging over 10 simulation runs.
 
 
 Below is the plot for the Euclidean distance between $\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging over 10 simulation runs.
@@ -712,7 +712,7 @@ Spall, J. C. (2000). Adaptive stochastic approximation by the simultaneous pertu
 Spall, J. C. (2009). Feedback and weighting mechanisms for improving Jacobian estimates in the adaptive simultaneous perturbation algorithm. \textit{Automatic Control, IEEE Transactions on}, 54(6), 1216-1229.
 
 \bibitem{Woodbury1950}
-Woodbury, M. A. (1950). Inverting Modiﬁed Matrices, Memorandum Rept. 42. \textit{Statistical Research Group, Princeton University, Princeton, NJ, 316}.
+Woodbury, M. A. (1950). Inverting Modified Matrices, Memorandum Rept. 42. \textit{Statistical Research Group, Princeton University, Princeton, NJ, 316}.
 
 \bibitem{Sadegh1998}
 Sadegh, P., Spall, J. C. (1998). Optimal random perturbations for stochastic approximation using a simultaneous perturbation gradient approximation. \textit{Automatic Control, IEEE Transactions on}, 43(10), 1480-1484.
@@ -729,3 +729,8 @@ Bar-Itzhack, I.Y. (1998). Matrix symmetrization. \textit{Journal of guidance, co
 \end{document}
 Status API Training Shop Blog About Pricing
 © 2015 GitHub, Inc. Terms Privacy Security Contact Help
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
