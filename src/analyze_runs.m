@@ -37,6 +37,9 @@ algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA',
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
 markups = {'or', 'xb', 'sg', 'dk'};
+% DOCUMENTATION
+% This variable controls the markers used in the plots.
+% Please change these variables to change the markers.
 loss_per_iter_markup = {'-rd', '--go', ':b+', '-.kx'};
 for algorithm_idx=1:length(algorithms)
     algorithm = algorithms{algorithm_idx}
