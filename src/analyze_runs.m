@@ -40,7 +40,10 @@ markups = {'or', 'xb', 'sg', 'dk'};
 % DOCUMENTATION
 % This variable controls the markers used in the plots.
 % Please change these variables to change the markers.
+% See http://www.mathworks.com/help/matlab/ref/linespec.html
+% for details.
 loss_per_iter_markup = {'-rd', '--go', ':b+', '-.kx'};
+
 for algorithm_idx=1:length(algorithms)
     algorithm = algorithms{algorithm_idx}
     markup = markups{algorithm_idx};
