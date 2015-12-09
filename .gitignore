@@ -14,3 +14,8 @@ res/Adaptive2SPSA_Hbar_seq.mat
 res/EfficientAdaptive2SPSA_Bbar_seq.mat
 res/EfficientFeedbackAdaptive2SPSA_Bbar_seq.mat
 res/FeedbackAdaptive2SPSA_Hbar_seq.mat
+tex/faspsa.aux
+tex/faspsa.bbl
+tex/faspsa.blg
+tex/faspsa.log
+src/quartic_loss_fast.mexmaci64
