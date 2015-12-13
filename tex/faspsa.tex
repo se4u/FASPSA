@@ -1,20 +1,34 @@
-\documentclass[conference]{IEEEtran} \ifCLASSINFOpdf
-\usepackage[pdftex]{graphicx} \else \fi \usepackage{amsmath}
-\usepackage{tipa} \usepackage{lmodern} \usepackage{upgreek}
-\usepackage{amsfonts} \usepackage{amsmath} \usepackage{bm}
-\usepackage{bbm, dsfont} \usepackage{upquote} \usepackage{mathtools}
-\usepackage{algorithmicx} \usepackage{array}
+\documentclass[conference]{IEEEtran}
+\ifCLASSINFOpdf \usepackage[pdftex]{graphicx} \else \fi
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{tipa}
+\usepackage{lmodern}
+\usepackage{upgreek}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{bbm, dsfont}
+\usepackage{upquote}
+\usepackage{mathtools}
+\usepackage{algorithmicx}
+\usepackage{array}
 \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
-\usepackage{fixltx2e} \usepackage{url} \hyphenation{op-tical net-works
-  semi-conduc-tor} \newcommand{\bD}{\bm{D}} \newcommand{\bG}{\bm{G}}
-\newcommand{\bI}{\bm{I}} \newcommand{\bDelta}{\bm{\Delta}}
+\usepackage{fixltx2e}
+\usepackage{url}
+\hyphenation{op-tical net-works semi-conduc-tor}
+\newcommand{\bD}{\bm{D}}
+\newcommand{\bG}{\bm{G}}
+\newcommand{\bI}{\bm{I}}
+\newcommand{\bDelta}{\bm{\Delta}}
 \newcommand{\oH}{\bm{\overline{H}}}
 \newcommand{\ooH}{\bm{\overline{\overline{H}}}}
-\newcommand{\hH}{\bm{\hat{H}}} \newcommand{\hPsi}{\bm{\hat{\Psi}}}
+\newcommand{\hH}{\bm{\hat{H}}}
+\newcommand{\hPsi}{\bm{\hat{\Psi}}}
 \newcommand{\htheta}{\bm{\hat{\uptheta}}}
 \newcommand{\hPhi}{\bm{\hat{\Phi}}}
 \newcommand{\tDelta}{\bm{\tilde{\Delta}}}
-\newcommand{\tD}{\bm{\tilde{D}}} \newcommand{\remove}[1]{}
+\newcommand{\tD}{\bm{\tilde{D}}}
+\newcommand{\remove}[1]{}
 \newcommand{\ie}{i.e.,\ }
 \newcommand{\bigie}{I.e.,\ }
 \begin{document}
@@ -263,7 +277,7 @@ Now we can obtain $\oH_k$ as a rank two update of $\oH_{k-1}$:
 
 
 \begin{table*} \centering
-  \resizebox{1.95\columnwidth}{!}{
+  \resizebox{2\columnwidth}{!}{
     \begin{tabular}{|c | c | c | c | c| c |} \hline
       Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ & FLOPS \\ \hline
       Adaptive 2SPSA & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
@@ -422,41 +436,93 @@ by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1}
 (\ref{eq:Enhancement}).
 
 
-\section{Numerical Stability Analysis} Now we test all four
-efficient implementation of stochastic Newton-type algorithm,
-described in Section \ref{2SPSA}-\ref{Enhanced 2SG}, on the
-skew-quartic function in Spall~\cite{Spall2009}.
+\section{Numerical Study}
+We now present an empirical study of the runtime performance of the
+proposed updates for the case of adaptive 2SPSA and enhanced adaptive
+2SPSA, described in Section~\ref{2SPSA}--\ref{Enhanced 2SPSA}, on the
+skewed-quartic function in Spall~\cite{Spall2009}.
 \begin{equation*}
   L(\bm{\uptheta})=\bm{\uptheta}^{T}\bm{B}^{T}\bm{B}\bm{\uptheta}+0.1
   \sum_{i=1}^{p} (\bm{B}\bm{\uptheta})_i^3 +0.01 \sum_{i=1}^{p}
   (\bm{B}\bm{\uptheta})_i^4.
-\end{equation*} where $\bm{B}$ is such that $p\bm{B}$ is an
-upper triangular matrix of all 1's, and $p=10$. Easily we can derive
+\end{equation*}
+where $p$ is the dimensionality of the vectors which we set to $16$.
+$\bm{B}$ is such that $p\bm{B}$ is an
+upper triangular matrix of all 1's.
+Easily we can derive
 \begin{equation}
   \begin{dcases} \bm{g}(\bm{\uptheta})&=\bm{B}^{T}\left(
       2\bm{B}\bm{\uptheta}+0.3 \sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2 +0.04\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^3\right),\\
     \bm{H}(\bm{\uptheta})&=\bm{B}^{T}\left[\text{diag}\left(2+0.6*\bm{B}\bm{\uptheta}+0.12\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2\right)\right]\bm{B}.\\
   \end{dcases}
-\end{equation} It can be verified that $L(\bm{\uptheta})$ is a
-strictly convex function, and the minimizer is
+\end{equation}
+We can see that $L(\bm{\uptheta})$ is a
+strictly convex function, and its minimizer is
 $\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=\bm{0}$.
 
-We follow the exact initialization and pre-conditioning steps
-in Spall~\cite{Spall2009} and the practical guidelines in Spall
-\cite{Spall2000}. Below is the plot for these four implementations of
-the normalized loss functions
+Both the 2SPSA algorithm and its enhanced versions require a choice of
+the gain sequence $a_k$, the averaging sequence $w_k$,
+the perturbation size sequences $c_k, \tilde{c}_k$, the preconditioning
+sequence $\delta_k$ and the number of iterations $N$. We decide apriori to
+set a budget of $20,000$ noisy loss evaluations per iteration and
+accordingly set $n=5000$. We set
+$a_k = \frac{a}{(A + k + 1)^\alpha}$
+, $w_k = \frac{w}{(k+1)^d}$
+, $c_k = \tilde{c}_k = \frac{c}{(k+1)^\gamma}$
+and $\delta_k = 10^{-8}\exp(-k)$
+where the values of $a, A, w, d, \alpha, \gamma$ are set using the
+guidelines in Spall~\cite{Spall2000} and through tuning. We use the values,
+$a=1, w=0.1, d=0.501, \alpha=1, A=50, \gamma=1/6$. We also use the heuristic of
+bounding the steps taken at each iteration to within a $L_{\infty}$-ball of
+fixed radius centered around the current estimate of theta and set the
+radius equal to 10.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\columnwidth]{../res/NoNoise_normalized_loss_per_iteration.pdf}
+  \caption{}
+  \label{fig:normalizedloss}
+\end{figure}
+
+\newcommand{\nruns}[0]{20\ }
+To compare the original 2SPSA formulation which requires an explicit
+solution of a linear system of equations for computing to its more efficient
+version we first plot the normalized loss
 $[L(\htheta_k)-L(\bm{\uptheta}^{*})]/[L(\htheta_0)-L(\bm{\uptheta}^{*})]$
-against iteration $k$ averaging over 10 simulation runs.
+against iteration $k$ averaging over \nruns simulation runs. We note that
+both versions of the algorithms can use the same random sequence and
+are essentially performing the same iterations therefore we expect
+that the normalized loss sequences should be identical when plotted
+against the iteration number $k$. We can see from figure~\ref{fig:normalizedloss}
+that it is so.
 
-
-Below is the plot for the Euclidean distance between
+Figure~\ref{fig:dist} plots the Euclidean distance between
 $\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging
-over 10 simulation runs.
+over \nruns simulation runs.
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1\columnwidth]{../res/NoNoise_normalized_squared_distance_per_iteration.pdf}
+  \caption{}
+  \label{fig:dist}
+\end{figure}
 
 Below is the table showing the time consumed in each step:
 loss function evaluation, Hessian inverse update, pre-conditioning on
 Hessian inverse, for four efficient implementation against the
 original algorithms.
+\begin{table}[htbp]
+  \centering
+  \resizebox{\columnwidth}{!}{
+  \begin{tabular}{l|ccccc|}
+    Algorithm & Hessian Update & Pre-Conditioning & Blocking &Evaluation & Total\\
+    A2SPSA     & 0.401   & 1.983   & 0.456   & 0.747   & 3.587 \\
+    EA2SPSA    & 0.402   & 1.774   & 0.440   & 0.713   & 3.329 \\
+    FA2SPSA    & 0.457   & 3.240   & 0.453   & 0.722   & 4.872 \\
+    EFA2SPSA    & 0.333   & 1.759   & 0.436   & 0.709   & 3.237 \\
+  \end{tabular}}
+  \caption{A2SPSA=Adaptive2SPSA, EA2SPSA=EfficientAdaptive2SPSA, FA2SPSA=FeedbackAdaptive2SPSA,EFA2SPSA=EfficientFeedbackAdaptive2SPSA}
+  \label{tab:time}
+\end{table}
 
 \section{Conclusion and Future Work} In this paper, we discuss
 a coherent efficient implementation of four Newton-type SP algorithms:
