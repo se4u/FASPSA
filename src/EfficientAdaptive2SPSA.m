@@ -74,6 +74,8 @@ time_taken = 0;
 time_preconditioning = 0;
 time_blocking = 0;
 time_setup = 0;
+time_setup_rand = 0;
+time_setup_feval = 0;
 time_rank_two_update = 0;
 bbar_max = 1;
 if sequence_param_struct.compare_iterations
@@ -83,10 +85,12 @@ end
 % Do the actual work.
 for k=0:max_iterations-1
     tic;
-    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude] = adaptivespsa_common(...
+    [w_k, h_k, delta_k, delta_tilda_k, g_k_magnitude, setup_time_split] = adaptivespsa_common(...
         k, theta, delta_fn, perturbation_size_fn, target_fn, ...
         sequence_param_struct);
     time_setup = time_setup + toc;
+    time_setup_rand = time_setup_rand + setup_time_split.time_rand;
+    time_setup_feval = time_setup_feval + setup_time_split.time_feval;
     %% Update Bbar
     % The primal update is
     % Hbar = (1 - w_k) * Hbar + (w_k * h_k) * symmetric(delta_tilda_k * delta_k')
@@ -179,4 +183,6 @@ timing.time_preconditioning = time_preconditioning;
 timing.time_blocking = time_blocking;
 timing.time_setup = time_setup;
 timing.time_rank_two_update = time_rank_two_update;
+timing.time_setup_rand = time_setup_rand;
+timing.time_setup_feval = time_setup_feval;
 time_taken = timing;

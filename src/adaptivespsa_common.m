@@ -54,8 +54,13 @@ g_k_magnitude : The scalar multiplier to delta_k^-1 which is a biased
 
 varargout : return the updated sum_ck_square_ck_tilda_square.
 %}
+time_rand = 0;
+time_feval = 0;
+tic
 delta_k = delta_fn();
 delta_tilda_k = delta_fn();
+time_rand = time_rand + toc;
+
 c_k = perturbation_size_fn(k);
 c_tilda_k = c_k * sequence_param_struct.c_tilda_k_multiplier;
 
@@ -68,10 +73,21 @@ ctk_dtk = c_tilda_k * delta_tilda_k;
 theta_plus_tilda = theta_plus + ctk_dtk;
 theta_minus_tilda = theta_minus + ctk_dtk;
 
+tic
 % Create gradient and hessian
-del_yk_part1 = target_fn(theta_plus_tilda) - target_fn(theta_minus_tilda);
 % del_yk_part2 will be reused later to compute the gradient estimate.
-del_yk_part2 = target_fn(theta_plus) - target_fn(theta_minus);
+global noise_std;
+va = quartic_loss_fast(theta_plus_tilda) + (randn(1) + randn(1, length(theta_plus_tilda)) * theta_plus_tilda) * noise_std;
+vb = quartic_loss_fast(theta_minus_tilda)+ (randn(1) + randn(1, length(theta_minus_tilda)) * theta_minus_tilda) * noise_std;
+vc = quartic_loss_fast(theta_plus)+ (randn(1) + randn(1, length(theta_plus)) * theta_plus) * noise_std;
+vd = quartic_loss_fast(theta_minus)+ (randn(1) + randn(1, length(theta_minus)) * theta_minus) * noise_std;
+% va = quartic_loss_fast(theta_plus_tilda) + (randn(1) ) * noise_std;
+% vb = quartic_loss_fast(theta_minus_tilda)+ (randn(1) ) * noise_std;
+% vc = quartic_loss_fast(theta_plus)+ (randn(1)) * noise_std;
+% vd = quartic_loss_fast(theta_minus)+ (randn(1)) * noise_std;
+del_yk_part1 = va - vb;
+del_yk_part2 = vc - vd;
+time_feval = time_feval + toc;
 del_yk = del_yk_part1 - del_yk_part2;
 % Note that if del_yk does not become small as quickly as c_k^2 then
 % h_k would rise fast. If h_k rises faster than w_k can compensate
@@ -95,3 +111,5 @@ else
     w_k = ck_square_ck_tilda_square / sum_ck_square_ck_tilda_square;
 end
 g_k_magnitude = del_yk_part2 / c_k / 2;
+varargout{1}.time_feval = time_feval;
+varargout{1}.time_rand = time_rand;
