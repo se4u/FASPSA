@@ -30,9 +30,11 @@ Please see the documentation for each cell for details.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
 clear; clc; close all;
 load('../res/sso_project.mat');
-p = 10;
-runs = 50;
-budget = 20000;
+ff = fieldnames(results_struct);
+tmp = regexp(ff{1}, '[^_]*?_([^_]*?)_[^_]*?_([^_]*?)_.*', 'tokens');
+p = str2num(tmp{1}{1});
+runs = 20;
+budget = str2num(tmp{1}{2});
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
 % O-red, x-blue, square-green, diamond-black.
@@ -42,8 +44,8 @@ markups = {'or', 'xb', 'sg', 'dk'};
 % Please change these variables to change the markers.
 % See http://www.mathworks.com/help/matlab/ref/linespec.html
 % for details.
-loss_per_iter_markup = {'-rd', '--go', ':b+', '-.kx'};
-
+loss_per_iter_markup = {'-kd', '--ks', ':k+', '-.k*'};
+markersize_cell = {10, 7, 5, 6}
 for algorithm_idx=1:length(algorithms)
     algorithm = algorithms{algorithm_idx}
     markup = markups{algorithm_idx};
@@ -84,21 +86,23 @@ for algorithm_idx=1:length(algorithms)
     figure(1); 
     seq = log(norm_loss_per_iter);
     sample_rate = 100;
-    plot(seq(1:sample_rate:end), loss_per_iter_markup{algorithm_idx}); 
-    title('Log of Normalized Loss Per Iteration');
-    xlabel(['Number of iterations in units of ' num2str(sample_rate)]);
+    plot(seq(1:sample_rate:end), ...
+        loss_per_iter_markup{algorithm_idx}, ...
+        'MarkerSize', markersize_cell{algorithm_idx}); 
+    % title('Log of Normalized Loss Per Iteration');
+    xlabel(['Iterations x ' num2str(sample_rate)]);
     ylabel(['Log of Normalized Loss']);
-    set(gca(), 'XGrid', 'on');
+    set(gca(), 'XGrid', 'on', 'YGrid', 'on');
     hold on;
     
     figure(2);
     seq = sqrt(sqdist_per_iter);
     sample_rate = 100;
     plot(seq(1:sample_rate:end), loss_per_iter_markup{algorithm_idx}); 
-    title('Normalized Squared Distance Per Iteration');
-    xlabel(['Number of iterations in units of ' num2str(sample_rate)]);
+    % title('Normalized Squared Distance Per Iteration');
+    xlabel(['Iterations x ' num2str(sample_rate)]);
     ylabel(['Normalized Squared Distance']);
-    set(gca(), 'XGrid', 'on');
+    set(gca(), 'XGrid', 'on', 'YGrid', 'on');
     hold on;
     
     figure(3);
@@ -123,7 +127,8 @@ filenames = {'normalized_loss_per_iteration', ...
     'loglogplot_of_asymptotic_convergence'};
 for i = 1:3
     figure(i);
-    saveas(gca(), ['../res/NoNoise_' filenames{i} '.png']);
+    tightfig();
+    saveas(gca(), ['../res/NoNoise_' filenames{i} '.pdf']);
 end
 % title(['Final Loss vs. Time taken for fixed budget at dimension=', ...
 %        num2str(p)]);
@@ -131,3 +136,35 @@ end
 % ylabel('Loss');
 % legend(algorithms, 'Location','NorthEastOutside');
 % saveas(gcf, '../res/analyze_runs', 'png');
+%%
+clc
+str = 'Algorithm & Hessian Update & Pre-Conditioning & Blocking & Evaluation & Total\\\\\n';
+abbv_algorithms = {'A2SPSA', 'FA2SPSA', 'EA2SPSA', 'EFA2SPSA'};
+fid = fopen('../res/timing.txt', 'w');
+fprintf(1, str);
+fprintf(fid, str);
+for algorithm_idx=[1, 3, 2,4 ]
+    ttaken = 0;
+    tpreco = 0;
+    tblock = 0;
+    tsetup = 0;
+    for run_idx=1:runs
+        algorithm = algorithms{algorithm_idx};
+        prefix = concat_all(algorithm, p, run_idx, budget);
+        tts = results_struct.([prefix, '_time_taken']);
+        ttaken = ttaken + tts.time_taken;
+        tpreco = tpreco + tts.time_preconditioning;
+        tblock = tblock + tts.time_blocking;
+        tsetup = tsetup + tts.time_setup;
+    end
+    ttaken = ttaken / runs ;
+    tpreco = tpreco / runs ;
+    tblock = tblock / runs ;
+    tsetup = tsetup / runs ;
+    ttotal = ttaken + tpreco + tblock + tsetup;
+    
+    str = sprintf('%-30s    & %.3f   & %.3f   & %.3f   & %.3f   & %.3f \\\\\\\\\n', abbv_algorithms{algorithm_idx}, ttaken, tpreco, tblock, tsetup, ttotal);
+    fprintf(fid, str);
+    fprintf(1, str);
+end
+fclose(fid);

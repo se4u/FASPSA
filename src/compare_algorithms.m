@@ -37,7 +37,7 @@ end
 % rand('seed',31415927);
 % randn('seed',3111113);
 global noise_std;
-noise_std = 1e-3; % Noise higher than 5e-4 we can't handle.
+noise_std = 0; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
@@ -88,11 +88,12 @@ results_struct = struct();
 % for multiple runs.
 % for different algorithms
 % run algorithm with dimensions.
-for budget=(200000 * sequence_param_struct.function_eval_per_iteration)
+% budget = 200e3
+for budget=(5e3 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[10]% for multiple dimensions.
+for p=[15]% for multiple dimensions.
     sequence_param_struct.a_numerator = 1;
     sequence_param_struct.c_numerator = 0.01;
     true_loss_fn = @quartic_loss_fast;
