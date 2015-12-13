@@ -96,15 +96,10 @@ for budget=(5000 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[10]% for multiple dimensions.
-    if p == 10
-        sequence_param_struct.a_numerator = 1;
-        sequence_param_struct.c_numerator = 0.01;
-    else
-        sequence_param_struct.a_numerator = 1;
-        sequence_param_struct.c_numerator = 0.01;
-    end
-    true_loss_fn = quartic_loss_factory(p);
+for p=[16]% for multiple dimensions.
+    sequence_param_struct.a_numerator = 1;
+    sequence_param_struct.c_numerator = 0.01;
+    true_loss_fn = @quartic_loss_fast;
     target_fn = noisy_function_factory(true_loss_fn, sigma);
     true_optimal_theta = zeros(p, 1);
     for run_idx=1:50 % for multiple runs.
