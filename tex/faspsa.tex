@@ -1,398 +1,543 @@
-\documentclass[conference]{IEEEtran}
-\ifCLASSINFOpdf
- \usepackage[pdftex]{graphicx}
-\else
-\fi
-\usepackage{amsmath}
-\usepackage{tipa}
-\usepackage{lmodern}
-\usepackage{upgreek}
-\usepackage{amsfonts}
-\usepackage{amsmath}
-\usepackage{bm}
-\usepackage{bbm, dsfont}
-\usepackage{upquote}
-\usepackage{mathtools}
-\usepackage{algorithmicx}
-\usepackage{array}
+\documentclass[conference]{IEEEtran} \ifCLASSINFOpdf
+\usepackage[pdftex]{graphicx} \else \fi \usepackage{amsmath}
+\usepackage{tipa} \usepackage{lmodern} \usepackage{upgreek}
+\usepackage{amsfonts} \usepackage{amsmath} \usepackage{bm}
+\usepackage{bbm, dsfont} \usepackage{upquote} \usepackage{mathtools}
+\usepackage{algorithmicx} \usepackage{array}
 \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
-\usepackage{fixltx2e}
-\usepackage{url}
-\hyphenation{op-tical net-works semi-conduc-tor}
-\newcommand{\bD}{\bm{D}}
-\newcommand{\bG}{\bm{G}}
-\newcommand{\bI}{\bm{I}}
-\newcommand{\bDelta}{\bm{\Delta}}
+\usepackage{fixltx2e} \usepackage{url} \hyphenation{op-tical net-works
+  semi-conduc-tor} \newcommand{\bD}{\bm{D}} \newcommand{\bG}{\bm{G}}
+\newcommand{\bI}{\bm{I}} \newcommand{\bDelta}{\bm{\Delta}}
 \newcommand{\oH}{\bm{\overline{H}}}
 \newcommand{\ooH}{\bm{\overline{\overline{H}}}}
-\newcommand{\hH}{\bm{\hat{H}}}
-\newcommand{\hPsi}{\bm{\hat{\Psi}}}
+\newcommand{\hH}{\bm{\hat{H}}} \newcommand{\hPsi}{\bm{\hat{\Psi}}}
 \newcommand{\htheta}{\bm{\hat{\uptheta}}}
 \newcommand{\hPhi}{\bm{\hat{\Phi}}}
 \newcommand{\tDelta}{\bm{\tilde{\Delta}}}
-\newcommand{\tD}{\bm{\tilde{D}}}
-\newcommand{\remove}[1]{}
+\newcommand{\tD}{\bm{\tilde{D}}} \newcommand{\remove}[1]{}
 \begin{document}
-	
-	\title{Efficient Implementation of Enhanced Adaptive Simultaneous Perturbation Algorithms}
-	\author{\IEEEauthorblockN{Pushpendre Rastogi}
-		\IEEEauthorblockA{Department of Computer Science\\
-			The Johns Hopkins University\\
-			Baltimore, MD 21218\\
-			Email: pushpendre@jhu.edu}
-		\and
-		\IEEEauthorblockN{Jingyi Zhu}
-		\IEEEauthorblockA{Department of Applied Mathematics and Statistics\\
-			The Johns Hopkins University\\
-			Baltimore, MD 21218\\
-			Email: jingyi.zhu@jhu.edu}
-		\and
-		\IEEEauthorblockN{James C. Spall}
-		\IEEEauthorblockA{Applied Physics Laboratory\\
-			The Johns Hopkins University\\
-			Laurel, MD 20723\\
-			Email: james.spall@jhuapl.edu}}
-	
-	\maketitle
-	
-	\begin{abstract}
-		Stochastic approximation applies in both the gradient-free optimization (Kiefer-Wolfowitz) and the gradient-based setting (Robbins-Monro). The idea of simultaneous perturbation (SP) has been well established. This paper discusses an efficient way of implementing both the adaptive SP algorithms and their enhancements (feedback and optimal weighting incorporated), using the Woodbury matrix identity, a.k.a. matrix inversion lemma. Basically, instead of estimating the Hessian matrix directly, this paper deals with the estimation of the inverse of the Hessian matrix. Furthermore, the preconditioning steps, which are required in early iterations to ensure positive-definiteness of the Hessian estimates, are imposed on the Hessian inverse rather than the Hessian itself. Numerical results also demonstrate the superiority of this efficient implementation on Newton-type SP algorithms.
-		
-		\textit{Keywords---Adaptive Estimation; Simultaneous Perturbation Stochastic Approximation (SPSA); Woodbury Matrix Identity}
-	\end{abstract}
-	
-	\IEEEpeerreviewmaketitle
-	
-	\section{Introduction} \label{Introduction}
-	Stochastic approximation has been widely applied in minimization and/or root-finding problems. Spall \cite{Spall1992} first introduced the idea of \textit{simultaneous perturbation} (SP), which can be applied in both the gradient-free optimization (Kiefer-Wolfowitz) and the gradient-based setting (Robbins-Monro). Later Spall \cite{Spall2000} generalized this SP idea to Hessian estimation, and demonstrated an \textit{adaptive} stochastic approximation algorithm, a stochastic analogue of Newton-Raphson's algorithm. Spall \cite{Spall2009} incorporated a feedback process and an optimal weighting mechanism into the algorithm in Spall \cite{Spall2000}, thereby producing an \textit{enhanced} algorithm for Hessian matrix approximation. 
-	
-	This paper presents an \textit{efficient} way to handle the matrix inversion appearing in the second-order stochastic approximation algorithm. The basic idea is to use the Woodbury matrix identity, i.e., matrix inversion lemma, in Woodbury \cite{Woodbury1950}:
-	\begin{equation} \label{eq:MatrixInversion}
-		(\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{V}\bm{A}^{-1}\bm{U})^{-1}\bm{V}\bm{A}^{-1}.
-	\end{equation}
-	where $\bm{A}$, $\bm{U}$, $\bm{C}$ and $\bm{V}$ are of the correct (comformable) size and the denoted matrix inverses exist. In such a way, we obtain an update of the Hessian inverse, an key scaling matrix used in the Newton-Raphson's algorithms.
-	
-	We consider the problem of minimizing a \textit{differentiable} loss function $ L(\bm{\uptheta}) $ where $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote $\bm{g}(\bm{\uptheta})={\partial L}/{\partial \bm{\uptheta}}$. The minimization problem ${\text{min}}_{\bm{\uptheta}}L(\bm{\uptheta})$ is equivalent to the root finding problem $\bm{g}(\bm{\uptheta})=\bm{0}$.  Typically, we only have access to the noisy function measurements of the function $ L(\bm{\uptheta}) $, say $ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $, or noisy measurements of the gradient $\bm{g}(\bm{\uptheta})$, say $\bm{Y}(\bm{\uptheta})=\bm{g}(\bm{\uptheta})+\bm{e}(\bm{\uptheta})$.
-	
-	The essence of SP idea as applied in stochastic Newton's algorithm is to approximately accurately and efficiently estimate the Hessian matrix of the loss function under the minimization setting, or to estimate the Jacobian matrix of the objective function under the root-finding setting. Throughout this paper, noisy function evaluations are available in 2SPSA algorithms, and noisy gradient evaluations in 2SG algorithms.
-	
-	This paper focuses on the recursive update in estimating the Hessian inverse rather than the Hessian itself, therefore all the pre-conditionings as appearing in Spall \cite{Spall2000} and Spall \cite{Spall2009} are in fact imposed on the inverse of the Hessian estimate. i.e., we first consider the update of $ \oH_k^{-1} $, then perform the pre-conditioning on $ \oH_k^{-1} $ to obtain $ \ooH_k^{-1} $.
-	
-	Additionally, every Hessian update and/or its inverse has to remain symmetric at each iteration. Bar-Itzhack \cite{Bar-Itzhack1998} shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm, is $ (\bm{P}+\bm{P}^T)/2 $. This further validates how Spall \cite{Spall2000} and Spall \cite{Spall2009} proceed with the symmetrization.
-	
-	In general, the perturbation sequences $\bDelta_k$ and $\tDelta_k$ in Section \ref{2SPSA} to \ref{2SG} can be any sequences satisfying the regularity condition C.9 in Spall \cite{Spall2009}. However, particularly in Section \ref{Enhanced 2SG}, all components in the perturbation sequences (both $ \bDelta_k $ and $ \tDelta_k $) are symmetric Bernoulli distributed, a.k.a. \textit{Rademacher} distributed. This is valid and efficient as shown in Sadegh and Spall \cite{Sadegh1998}. Using this nearly-optimal perturbation (all components has a 50\% chance of being either $+1$ or $\text{--}1$), following relationship holds:
-	\begin{equation} \label{eq:symmetry}
-	\bDelta_k=\bDelta_k^{-1}, \tDelta_k=\tDelta_k^{-1}.
-	\end{equation}
-	
-	A recent textbook \cite{Bhatnagar2012} introduces deterministic perturbation sequences generated based on the structure of Hadamard matrix discussed in Sylvester \cite{Sylvester1867}. There are numerical evidence that such deterministic construction of the perturbation performs better that the optimal stochastic generation in Sadegh and Spall \cite{Sadegh1998}, in terms of both estimation accuracy and convergence rate; though the theoretical part is yet to be proven. Still, all the components of such deterministic Hadamard-matrix-based perturbation are either $+1$ or $\text{--}1$, and relationship (\ref{eq:symmetry}) still holds.
-	
-	In the following, let's use the following compact notations. For any perturbation vector $ \bm{x}\in \mathbbm{R}^p \setminus \{\bm{0}\}  $ satisfying regularity condition C.9 in Spall \cite{Spall2009} , denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $, and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $.
-		
-	
-	
-	\section{Adaptive 2SPSA Algorithm} \label{2SPSA}
-	An adaptive 2SPSA algorithm introduced in Spall \cite{Spall2000} has the following two recursions:
-	\begin{equation} \label{eq:Adaptation}
-		\begin{cases}
-			\htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),\qquad \bm{\ooH}_k=\bm{f}_k(\oH_k),\\
-			\oH_k= (1 - w_k) \oH_{k-1}+ w_k \hH_k, \quad k=0,1,\dots
-		\end{cases}
-	\end{equation}
-	where
-	\begin{equation} \label{eq:notations}
-		\begin{cases}
-			w_k=\frac{1}{k+1},\\
-			\bG_k(\htheta_k)=\frac{y(\htheta_k+c_k\bDelta_k)-y(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-1},\\
-			\hH_k=\frac{1}{2}\left[ \frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}+\left(\frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}\right)^T \right],\\
-			\delta\bG_k=\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k- c_k\bDelta_k),\\
-			\bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)
-			=\frac{y(\htheta_k\pm c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k\pm c_k\bDelta_k)}{\tilde{c}_k}\tDelta_k^{-1}.\\
-		\end{cases}
-	\end{equation}
-	$ a_k $, $ c_k $ and $ \tilde{c}_k $ are all non-negative scalar gain coefficients, $ \bDelta_k $ and $ \tDelta_k $ are stochastic perturbation (vector) sequence, and the pre-conditioning function $ \bm{f}_k $ is to maintain the positive-definiteness of $ \ooH_k $.
-	
-	As mentioned in Section \ref{Introduction}, we focus on converting the second recursion in algorithm (\ref{eq:Adaptation}) into a recursion on $\oH_k^{-1}$, and perform the pre-conditioning on the inverse such that
-	\begin{equation} \label{eq:preconditioning}
-	\bm{\ooH}_k^{-1}=\bm{f}_k(\oH_k^{-1}).
-	\end{equation}
-	A particular form of $\bm{f}_k$ suggested in Spall \cite{Spall2009} is $\bm{f}_k: \mathbb{R}^{p\times p} \to \mathbb{R}^{p\times p}$ defined by $\bm{f}_k(\bm{H})=(\bm{H}^{T}\bm{H}+\delta_k \bm{I}_p)^{1/2}$ where the square root is the (unique) positive definite square root and $\delta_k$ is a small positive number. The preconditioning imposed on the Hessian inverse as in (\ref{eq:preconditioning}) generally applies throughout Section \ref{2SPSA}-\ref{Enhanced 2SG}.
-	
-	Denote
-	\begin{align} \label{eq:dy}
-		\begin{split}
-			\delta y_k&=[y(\htheta_k+c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k+c_k\bDelta_k)]\\
-			&\quad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)],
-		\end{split}
-	\end{align}
-	
-	Immediately,
-	\begin{equation} \label{eq:HHat}
-		\hH_k=\frac{1}{2}\frac{\delta y_k}{2c_k\tilde{c}_k}\left( \tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T} \right).
-	\end{equation}
-	
-	Now the updated Hessian can be readily seen as a rank two update with respect to
-	the current Hessian estimate $\oH_k$:
-	\begin{align*}
-		\oH_k
-		&= (1 - w_k)\oH_{k-1}
-		+ \frac{w_k \delta y_k}{4c_k\tilde{c}_k}
-		(\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T}).
-	\end{align*}
-		
-	
-	\section{Enhancement for Adaptive 2SPSA Algorithms} \label{Enhanced 2SPSA}
-	An enhancement to adaptive 2SPSA algorithm in Section \ref{2SPSA} incorporats the feedback and weighting mechanism, as shown in Spall \cite{Spall2009}. This method has the following two recursions:
-	\begin{equation} \label{eq:Enhancement}
-		\begin{cases}
-			\htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),\qquad \bm{\ooH}_k=f_k(\oH_k),\\
-			\oH_k=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k), \quad k=0,1,\dots
-		\end{cases}
-	\end{equation}
-	where $\bG_k(\htheta_k)$, $\hH_k$, $\delta\bG_k$, and $\bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)$ are defined in (\ref{eq:notations}), and notations in (\ref{eq:dy}) and (\ref{eq:HHat}) in Section \ref{2SPSA} apply. The optimal weighting parameter, which minimizes the asymptotic variances of the elements in $\hH_k$, is proven to be:
-	\begin{equation} \label{eq:weighting}
-		w_k=\frac{\tilde{c}_k^2c_k^2}{\sum_{i=0}^{k}\tilde{c}_i^2c_i^2}.
-	\end{equation}
-	
-	Eq. (3.8) in Spall \cite{Spall2009} provides a symmetrized feedback term $ \hPsi_k $:
-	\begin{equation} \label{eq:PsiHat}
-			\hPsi_k =(\hPhi_k+\hPhi_k^T)/2,
-	\end{equation}
-	where the pre-symmetrized form of $ \hPsi_k $:
-	\begin{equation}
-		\hPhi_k=\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k.
-	\end{equation}
-	with $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p, \tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
-	
-	Collecting terms in $\hPhi_k$ gives:
-	\begin{align*}
-		&\quad\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k\\
-		&=\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T}-\oH_{k-1}.
-	\end{align*}
-	
-	As in Spall \cite{Spall2009}, the Hessian updates have to maintain symmetric. The symmetry of previous update $ \oH_{k-1}$ guarantees that $\bDelta_k^{T}\oH_{k-1}\tDelta_k=\tDelta_k^{T}\oH_{k-1}\bDelta_k$. Denote
-	\begin{equation}
-		b_k=\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k).
-	\end{equation}
-	
 
-	Now we can obtain a rank two update with respect to
-	the current Hessian estimate $\oH_k$:
-	\begin{align*}
-		\oH_k&=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k)\\
-		&=\oH_{k-1}+\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T})\\
-		&\quad +\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\bDelta_k^{-1}\tDelta_k^{-T}-\bDelta_k^{-1}\bDelta_k^{T}\oH_{k-1}\tDelta_k\tDelta_k^{-T})\\
-		&=\oH_{k-1}+b_k(\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T}).
-	\end{align*}
-			
-		
-		\begin{table*}
-			\centering
-			\resizebox{1.95\columnwidth}{!}
-			{
-				\begin{tabular}{|c | c | c | c | c| c |}
-					\hline
-					Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ & FLOPS \\
-					\hline
-					Adaptive 2SPSA  & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
-					Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$  & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
-					Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$  & $9p^2 + 10p$\\
-					Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  & $15p^2 + 13p$\\
-					\hline
-				\end{tabular}
-				
-			}
-			\\[5pt]
-			\caption{Detailed Expressions for Terms in Equation (\ref{eq:CoherentRecursion}) and Number of Floating-Point Operations Required
-				\newline
-				{\scriptsize Enhanced 2SG * requires symmetric Bernoulli perturbation sequences} }  \label{tab:Summary}
-		\end{table*}
-		
-	
-	\section{Adaptive 2SG Algorithm} \label{2SG}
-	Now we have access to the noisy measurement of the gradient information, $\bG_k(\htheta_k)$, $\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)$ and $\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)$ at each iteration $k$. An adaptive 2SG algorithm introduced in Spall \cite{Spall2000} has the recursion as in algorithm (\ref{eq:Adaptation}) with
-	
-	\begin{equation} \label{eq:notationSG}
-		\begin{dcases}
-			w_k=\frac{1}{k+1},\\
-			\delta\bG_k=\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k- c_k\bDelta_k),\\
-			\hH_k=\frac{1}{2}\left[ \frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}+\left(\frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}\right)^T \right].\\
-		\end{dcases}
-	\end{equation}
-		
-	This leads to the following rank two update with respect to
-	the current Hessian estimate $\oH_k$:
-	\begin{align*}
-		\oH_k
-		&= (1 - w_k) \oH_{k-1} + \frac{w_k}{4c_k} ((\delta\bG_k)\bDelta_k^{-T}+\bDelta_k^{-1}(\delta\bG_k)^{T}).
-	\end{align*}
-	\remove{
-		Above gives a rank-two update from $ \oH_{k-1}^{-1} $ to $ \oH_{k}^{-1} $. Write the sequential recursions for the $ \oH_k^{-1} $ as following:
-		\begin{equation} \label{eq:2SGSequentialUpdate}
-			\begin{dcases}
-				\bm{B}_k^{-1}
-				&=\frac{k+1}{k}\oH_{k-1}^{-1}-(\frac{k+1}{k})^2\oH_{k-1}^{-1}(\delta\bG_k)\\
-				&~~~\cdot(b_k^{-1}+\frac{k+1}{k}\bDelta_k^{-T}\oH_{k-1}^{-1}(\delta\bG_k)\bDelta_k^{-T}\oH_{k-1}^{-1}\\
-				\oH_k^{-1}
-				&=\bm{B}_k^{-1}-\bm{B}_k^{-1}\bDelta_k^{-1}\\
-				&~~~\cdot(b_k^{-1}+(\delta\bG_k)^{T}\bm{B}_k^{-1}\bDelta_k^{-1})^{-1}(\delta\bG_k)^{T}\bm{B}_k^{-1}
-			\end{dcases}
-		\end{equation}
-		where
-		\begin{equation}\label{eq:2SGB}
-			\bm{B}_k=\frac{k}{k+1}\oH_{k-1}+b_k(\delta\bG_k)\bDelta_k^{-T}
-		\end{equation}
-	}
+\title{Efficient Implementation of Enhanced Adaptive
+  Simultaneous Perturbation Algorithms}
+\author{\IEEEauthorblockN{Pushpendre Rastogi}
+  \IEEEauthorblockA{Department of Computer Science\\ The Johns Hopkins
+    University\\ Baltimore, MD 21218\\ Email: pushpendre@jhu.edu} \and
+  \IEEEauthorblockN{Jingyi Zhu} \IEEEauthorblockA{Department of Applied
+    Mathematics and Statistics\\ The Johns Hopkins University\\ Baltimore,
+    MD 21218\\ Email: jingyi.zhu@jhu.edu} \and \IEEEauthorblockN{James
+    C. Spall} \IEEEauthorblockA{Applied Physics Laboratory\\ The Johns
+    Hopkins University\\ Laurel, MD 20723\\ Email:
+    james.spall@jhuapl.edu}}
 
-	
-	
-	\section{Enhancement for Adaptive 2SG Algorithms} \label{Enhanced 2SG}
-	An enhancement to adaptive 2SG algorithm in Section \ref{2SG}, incorporated the feedback and weighting mechanism, as appearing in Spall \cite{Spall2009}, has recursion form as algorithm (\ref{eq:Enhancement}) with optimal weighting defined in equation (\ref{eq:weighting}). Now we have access to the noisy measurement of the gradient information, $\bG_k(\htheta_k)$, $\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)$ and $\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)$ at each iteration $k$.
-	
-	Eq. (3.12) in Spall \cite{Spall2009} provides a symmetrized feedback term $ \hPsi_k $, which can be rewritten as the following using relationship \ref{eq:symmetry}:
-	\begin{align}
-		\begin{split}
-			\hPsi_k &=(\oH_{k-1}\bD_k+\bD_k\oH_{k-1})/2\\
-			&=\frac{1}{2}\left( \oH_{k-1}\bDelta_k\bDelta_k^{-T}+\bDelta_k\bDelta_k^{T}\oH_{k-1}-2\oH_{k-1} \right).\\
-		\end{split}
-	\end{align}
-	where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p$.
-	
-	If we only use the symmetric Bernoulli (Rademacher) perturbation sequence as
-	suggested in Sadegh and Spall \cite{Sadegh1998}, then $\bD_k$ is
-	symmetric. Using relationship (\ref{eq:symmetry}), equation
-	$\hH_k$ can be written as:
-	\begin{equation}
-		\hH_k=\frac{1}{2}\frac{1}{2c_k}\left( (\delta\bG_k)\bDelta_k^{-T}+\bDelta_k(\delta\bG_k)^{T} \right).
-	\end{equation}
-		
-	Denote
-	\begin{equation}
-		\bm{v}_k= \frac{1}{2c_k}\delta\bG_k-\oH_{k-1}\bDelta_k.
-	\end{equation}
-		
-	Using the symmetry of update $\oH_{k-1}$, we obtain a rank two update with respect to the current Hessian estimate $\oH_k$:
-	\begin{align*}
-		\oH_k&=\oH_{k-1}+\frac{w_k}{2} (\bm{v}_k\bDelta_k^{-T}+\bDelta_k^{-1}\bm{v}_k^{T}).
-	\end{align*}
-		
-	
-	\section{Efficient Update Recursion for the Hessian Inverse}
-	As described in Section \ref{2SPSA} to \ref{Enhanced 2SG}, the
-	recursion of the Hessian can be achieved via a rank-two update in all
-	variants of Adaptive SPSA.
-	The Hessian update (with or without feedback term) can be
-	generally written as:
-	\begin{equation} \label{eq:CoherentRecursion}
-		\oH_{k}=d_k\oH_{k-1}+b_k(\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T}).
-	\end{equation}
-	
-	Table~\ref{tab:Summary} summarizes the terms in recursion
-	(\ref{eq:CoherentRecursion}) for all four cases. Particularly for the enhanced 2SG case *, relationship (\ref{eq:symmetry}) is used.
-	
-	The procedure described in equation (\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Recursion (\ref{eq:CoherentRecursion}) has to be updated in the original setup for all four cases. However in the \textit{efficient} implementation setting, it needs to be updated only for enhanced 2SPSA discussed in Section \ref{Enhanced 2SPSA} and enhanced 2SG discussed in Section \ref{Enhanced 2SG}, as evidenced in Table \ref{tab:Summary}.
-	
-	Recognizing that the Hessian updates are a rank two leads to an
-	efficient update for the Hessian inverse by applying the
-	Woodbury matrix identity (\ref{eq:MatrixInversion}).
-	
-	First, we compute
-	\begin{equation}
-		\bm{\tilde{u}}_k, \bm{\tilde{v}}_k =
-		\sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k \pm
-		\frac{|\bm{u}_k|}{|\bm{v}_k|}\bm{v}_k),
-	\end{equation}
-	such that
-	\begin{equation*}
-		\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T} = \bm{\tilde{u}}_k
-		\bm{\tilde{u}}_k^{T} - \bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}.
-	\end{equation*}
-	
-	Although the computation of $\bm{\tilde{u}}_k, \bm{\tilde{v}}_k$ requires
-	$6p$ operations, it reduces the number of matrix vector multiplications
-	required from 4 down to 2, and it maintains the symmetry of the intermediate update and the resulting update in the rank-two update (\ref{eq:CoherentRecursion}).
-		
-	Let
-	\begin{equation*}
-		\bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T}.
-	\end{equation*}
-	
-	Then we can compute recursive Hessian inverse $\oH_k^{-1}$ as follows:
-	\begin{equation} \label{eq:SequentialUpdate}
-		\begin{dcases}
-			\bm{B}_k^{-1}
-			&= d_k^{-1}\oH_{k-1}^{-1} -
-			\frac{d_k^{-2}}{b_k^{-1}+\bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1}\bm{\tilde{u}}_k}
-			\oH_{k-1}^{-1}\bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1},\\
-			\oH_k^{-1}
-			&=\bm{B}_k^{-1} + \frac{1}{b_k^{-1}-\bm{\tilde{v}}_k^{T}\bm{B}_k^{-1}\bm{\tilde{v}}_k} \bm{B}_k^{-1}\bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}\bm{B}_{k}^{-1}.
-		\end{dcases}
-	\end{equation}
-	
-	The rank-two update (two sequential rank-1 updates) in equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations per iteration. 
-	
-	 The total number of operations required to perform all four efficient implementations from Section \ref{2SPSA} to \ref{Enhanced 2SG} are listed in the last column of Table \ref{tab:Summary}. When $p>15$ in applying \textit{enhanced} algorithms or when $p>7$ in applying basic \textit{adaptive} algorithms, the corresponding number of operations is fewer than $2p^3/3+3p^2/2-7p/6$ operations required by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1} \bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}).
-	
-	
-	\section{Numerical Stability Analysis}
-	Now we test all four efficient implementation of stochastic Newton-type algorithm, described in Section \ref{2SPSA}-\ref{Enhanced 2SG}, on the skew-quartic function in Spall \cite{Spall2009}.
-	\begin{equation*}
-		L(\bm{\uptheta})=\bm{\uptheta}^{T}\bm{B}^{T}\bm{B}\bm{\uptheta}+0.1 \sum_{i=1}^{p}  (\bm{B}\bm{\uptheta})_i^3  +0.01 \sum_{i=1}^{p}  (\bm{B}\bm{\uptheta})_i^4.
-	\end{equation*}
-	where $\bm{B}$ is such that $p\bm{B}$ is an upper triangular matrix of all 1's, and $p=10$. Easily we can derive
-	\begin{equation}
-		\begin{dcases}
-			\bm{g}(\bm{\uptheta})&=\bm{B}^{T}\left( 2\bm{B}\bm{\uptheta}+0.3 \sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2 +0.04\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^3\right),\\
-			\bm{H}(\bm{\uptheta})&=\bm{B}^{T}\left[\text{diag}\left(2+0.6*\bm{B}\bm{\uptheta}+0.12\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2\right)\right]\bm{B}.\\
-		\end{dcases}
-	\end{equation}
-	It can be verified that $L(\bm{\uptheta})$ is a strictly convex function, and the minimizer is $\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=\bm{0}$.
-	
-	We follow the exact initialization and pre-conditioning steps in Spall \cite{Spall2009} and the practical guidelines in Spall \cite{Spall2000}. Below is the plot for these four implementations of the normalized loss functions $[L(\htheta_k)-L(\bm{\uptheta}^{*})]/[L(\htheta_0)-L(\bm{\uptheta}^{*})]$ against iteration $k$ averaging over 10 simulation runs.
-	
-	
-	Below is the plot for the Euclidean distance between $\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging over 10 simulation runs.
-		
-	Below is the table showing the time consumed in each step: loss function evaluation, Hessian inverse update, pre-conditioning on Hessian inverse, for four efficient implementation against the original algorithms.
-		
-	\section{Conclusion and Future Work}
-	In this paper, we discuss a coherent efficient implementation of four Newton-type SP algorithms: adaptive 2SPSA, enhanced 2SPSA, adaptive 2SG, and enhanced 2SG. The efficiency, in terms of both time taken and numerical accuracy, is achieved by a unified sequential (rank-two) update using Woodbury matrix identity. Particularly for the case of enhanced 2SG *, the usage of symmetric Bernoulli perturbation sequence is required. 
-	
-	As discovered from practical experience, the time taken in the stochastic optimization(minimization) problem is dominated by the noisy function/gradient evaluation and the preconditioning part. We are gathering ideas in speeding up the preconditioning step in the algorithm, so as to magnify the contribution of this paper in streamlining the Hessian inverse update.
-		
-	\section*{Acknowledgment}
-	The first author is sponsored by the Defense Advanced
-	Research Projects Agency (DARPA) under the Deep Exploration and
-	Filtering of Text (DEFT) Program (Agreement Number: FA8750-13-2-001).
-	Both the second and the third author receive support from the Office
-	of Naval Research (via Navy contract N00024-13-D6400).
-	
-	\begin{thebibliography}{1}
-		
-		\bibitem{Spall1992}
-		Spall, J. C. (1992). Multivariate stochastic approximation using a simultaneous perturbation gradient approximation. \textit{Automatic Control, IEEE Transactions on}, 37(3), 332-341.
-		
-		\bibitem{Spall2000}
-		Spall, J. C. (2000). Adaptive stochastic approximation by the simultaneous perturbation method. \textit{Automatic Control, IEEE Transactions on}, 45(10), 1839-1853.
-		
-		\bibitem{Spall2009}
-		Spall, J. C. (2009). Feedback and weighting mechanisms for improving Jacobian estimates in the adaptive simultaneous perturbation algorithm. \textit{Automatic Control, IEEE Transactions on}, 54(6), 1216-1229.
-		
-		\bibitem{Woodbury1950}
-		Woodbury, M. A. (1950). Inverting Modified Matrices, Memorandum Rept. 42. \textit{Statistical Research Group, Princeton University, Princeton, NJ, 316}.
-		
-		\bibitem{Bar-Itzhack1998}
-		Bar-Itzhack, I.Y. (1998). Matrix symmetrization. \textit{Journal of guidance, control, and dynamics}, 21(1), 178-179.
-		
-		
-		\bibitem{Sadegh1998}
-		Sadegh, P. and Spall, J. C. (1998). Optimal random perturbations for stochastic approximation using a simultaneous perturbation gradient approximation. \textit{Automatic Control, IEEE Transactions on}, 44, 231-237.
-		
-		\bibitem{Bhatnagar2012}
-		Bhatnagar, S., Prasad, H. L. and Prashanth, L. A. (2013). \textit{Stochastic recursive algorithms for optimization: simultaneous perturbation methods}, Springer.
-		
-		\bibitem{Sylvester1867}
-		Sylvester, J. J. (1867). LX. Thoughts on inverse orthogonal matrices, simultaneous signsuccessions, and tessellated pavements in two or more colours, with applications to Newton's rule, ornamental tile-work, and the theory of numbers. The London, Edinburgh, and Dublin Philosophical Magazine and Journal of Science, 34(232), pp. 461-475.
-				
-	\end{thebibliography}
+\maketitle
+
+\begin{abstract} Stochastic approximation applies in both the
+  gradient-free optimization (Kiefer-Wolfowitz) and the gradient-based
+  setting (Robbins-Monro). The idea of simultaneous perturbation (SP)
+  has been well established. This paper discusses an efficient way of
+  implementing both the adaptive SP algorithms and their enhancements
+  (feedback and optimal weighting incorporated), using the Woodbury
+  matrix identity, a.k.a. matrix inversion lemma. Basically, instead of
+  estimating the Hessian matrix directly, this paper deals with the
+  estimation of the inverse of the Hessian matrix. Furthermore, the
+  preconditioning steps, which are required in early iterations to
+  ensure positive-definiteness of the Hessian estimates, are imposed on
+  the Hessian inverse rather than the Hessian itself. Numerical results
+  also demonstrate the superiority of this efficient implementation on
+  Newton-type SP algorithms.
+
+  \textit{Keywords---Adaptive Estimation; Simultaneous
+    Perturbation Stochastic Approximation (SPSA); Woodbury Matrix
+    Identity}
+\end{abstract}
+
+\IEEEpeerreviewmaketitle
+
+\section{Introduction} \label{Introduction} Stochastic
+approximation has been widely applied in minimization and/or
+root-finding problems. Spall \cite{Spall1992} first introduced the
+idea of \textit{simultaneous perturbation} (SP), which can be applied
+in both the gradient-free optimization (Kiefer-Wolfowitz) and the
+gradient-based setting (Robbins-Monro). Later Spall \cite{Spall2000}
+generalized this SP idea to Hessian estimation, and demonstrated an
+\textit{adaptive} stochastic approximation algorithm, a stochastic
+analogue of Newton-Raphson's algorithm. Spall \cite{Spall2009}
+incorporated a feedback process and an optimal weighting mechanism
+into the algorithm in Spall \cite{Spall2000}, thereby producing an
+\textit{enhanced} algorithm for Hessian matrix approximation.
+
+This paper presents an \textit{efficient} way to handle the
+matrix inversion appearing in the second-order stochastic
+approximation algorithm. The basic idea is to use the Woodbury matrix
+identity, i.e., matrix inversion lemma, in Woodbury
+\cite{Woodbury1950}:
+\begin{equation} \label{eq:MatrixInversion}
+  (\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{V}\bm{A}^{-1}\bm{U})^{-1}\bm{V}\bm{A}^{-1}.
+\end{equation}
+where $\bm{A}$, $\bm{U}$, $\bm{C}$ and $\bm{V}$
+are of the correct (comformable) size and the denoted matrix inverses
+exist. In such a case, we can update the Hessian inverse, which is the
+key scaling matrix used in the Newton-Raphson algorithm.
+
+We consider the problem of minimizing a
+\textit{differentiable} loss function $ L(\bm{\uptheta}) $ where
+$ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote
+$\bm{g}(\bm{\uptheta})={\partial L}/{\partial \bm{\uptheta}}$. The
+minimization problem ${\text{min}}_{\bm{\uptheta}}L(\bm{\uptheta})$ is
+equivalent to the root finding problem $\bm{g}(\bm{\uptheta})=\bm{0}$.
+Typically, we only have access to the noisy function measurements of
+the function $ L(\bm{\uptheta}) $, say
+$ y(\bm{\uptheta})=L(\bm{\uptheta})+\upvarepsilon(\bm{\uptheta}) $, or
+noisy measurements of the gradient $\bm{g}(\bm{\uptheta})$, say
+$\bm{Y}(\bm{\uptheta})=\bm{g}(\bm{\uptheta})+\bm{e}(\bm{\uptheta})$.
+
+The essence of SP idea as applied in stochastic Newton's
+algorithm is to approximately accurately and efficiently estimate the
+Hessian matrix of the loss function under the minimization setting, or
+to estimate the Jacobian matrix of the objective function under the
+root-finding setting. Throughout this paper, noisy function
+evaluations are available in 2SPSA algorithms, and noisy gradient
+evaluations in 2SG algorithms.
+
+This paper focuses on the recursive update in estimating the
+Hessian inverse rather than the Hessian itself, therefore all the
+pre-conditionings as appearing in Spall \cite{Spall2000} and Spall
+\cite{Spall2009} are in fact imposed on the inverse of the Hessian
+estimate. i.e., we first consider the update of $ \oH_k^{-1} $, then
+perform the pre-conditioning on $ \oH_k^{-1} $ to obtain $ \ooH_k^{-1} $.
+
+Additionally, every Hessian update and/or its inverse has to
+remain symmetric at each iteration. Bar-Itzhack \cite{Bar-Itzhack1998}
+shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the
+closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm,
+is $ (\bm{P}+\bm{P}^T)/2 $. This further validates how Spall
+\cite{Spall2000} and Spall \cite{Spall2009} proceed with the
+symmetrization.
+
+In general, the perturbation sequences $\bDelta_k$ and
+$\tDelta_k$ in Section \ref{2SPSA} to \ref{2SG} can be any sequences
+satisfying the regularity condition C.9 in Spall
+\cite{Spall2009}. However, particularly in Section \ref{Enhanced 2SG},
+all components in the perturbation sequences (both $ \bDelta_k $ and
+$\tDelta_k $) are symmetric Bernoulli distributed,
+a.k.a. \textit{Rademacher} distributed. This is valid and efficient as
+shown in Sadegh and Spall \cite{Sadegh1998}. Using this nearly-optimal
+perturbation (all components has a 50\% chance of being either $+1$ or
+$\text{--}1$), following relationship holds:
+\begin{equation} \label{eq:symmetry}
+\bDelta_k=\bDelta_k^{-1}, \tDelta_k=\tDelta_k^{-1}.
+\end{equation}
+
+A recent textbook \cite{Bhatnagar2012} introduces
+deterministic perturbation sequences generated based on the structure
+of Hadamard matrix discussed in Sylvester \cite{Sylvester1867}. There
+are numerical evidence that such deterministic construction of the
+perturbation performs better than the optimal stochastic generation in
+Sadegh and Spall \cite{Sadegh1998}, in terms of both estimation
+accuracy and convergence rate; though the theoretical part is yet to
+be proven. Still, all the components of such deterministic
+Hadamard-matrix-based perturbation are either $+1$ or $\text{--}1$,
+and relationship (\ref{eq:symmetry}) still holds.
+
+In the following, let's use the following compact
+notations. For any perturbation vector
+$ \bm{x}\in \mathbbm{R}^p \setminus \{\bm{0}\} $
+satisfying regularity condition C.9 in Spall
+\cite{Spall2009}, denote $ [1/x_1, ..., 1/x_p]^T $ as $ \bm{x}^{-1} $,
+and $ [1/x_1, ..., 1/x_p] $ as $ \bm{x}^{-T} $.
+
+\section{Adaptive 2SPSA Algorithm} \label{2SPSA} An adaptive
+2SPSA algorithm introduced in Spall \cite{Spall2000} has the following
+two recursions:
+\begin{equation} \label{eq:Adaptation}
+  \begin{cases}
+    \htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),
+  \qquad \bm{\ooH}_k=\bm{f}_k(\oH_k),\\ \oH_k= (1 - w_k) \oH_{k-1}+ w_k \hH_k,
+ \quad k=0,1,\dots
+  \end{cases}
+\end{equation}
+where
+\begin{equation} \label{eq:notations}
+  \begin{cases} w_k=\frac{1}{k+1},\\
+    \bG_k(\htheta_k)=\frac{y(\htheta_k+c_k\bDelta_k)-y(\htheta_k-c_k\bDelta_k)}{2c_k}\bDelta_k^{-1},\\
+    \hH_k=\frac{1}{2}\left[
+      \frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}+\left(\frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}\right)^T \right],\\
+    \delta\bG_k=\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k- c_k\bDelta_k),\\
+    \bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k) =\frac{y(\htheta_k\pm c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k\pm c_k\bDelta_k)}{\tilde{c}_k}\tDelta_k^{-1}.\\
+  \end{cases}
+\end{equation} $ a_k $, $ c_k $ and $ \tilde{c}_k $ are all
+non-negative scalar gain coefficients, $ \bDelta_k $ and $ \tDelta_k $
+are stochastic perturbation (vector) sequence, and the
+pre-conditioning function $ \bm{f}_k $ is to maintain the
+positive-definiteness of $ \ooH_k $.
+
+As mentioned in Section \ref{Introduction}, we focus on
+converting the second recursion in algorithm (\ref{eq:Adaptation})
+into a recursion on $\oH_k^{-1}$, and perform the pre-conditioning on
+the inverse such that
+\begin{equation} \label{eq:preconditioning}
+  \bm{\ooH}_k^{-1}=\bm{f}_k(\oH_k^{-1}).
+\end{equation} A particular form of $\bm{f}_k$ suggested in
+Spall \cite{Spall2009} is $\bm{f}_k: \mathbb{R}^{p\times p} \to \mathbb{R}^{p\times p}$ defined by
+$\bm{f}_k(\bm{H})=(\bm{H}^{T}\bm{H}+\delta_k \bm{I}_p)^{1/2}$ where
+the square root is the (unique) positive definite square root and
+$\delta_k$ is a small positive number. The preconditioning imposed on
+the Hessian inverse as in (\ref{eq:preconditioning}) generally applies
+throughout Section \ref{2SPSA}-\ref{Enhanced 2SG}.
+
+Denote
+\begin{align} \label{eq:dy}
+  \begin{split} \delta
+    y_k&=[y(\htheta_k+c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k+c_k\bDelta_k)]\\
+    &\quad-[y(\htheta_k-c_k\bDelta_k+\tilde{c}_k\tDelta_k)-y(\htheta_k-c_k\bDelta_k)],
+  \end{split}
+\end{align}
+
+Immediately,
+\begin{equation} \label{eq:HHat} \hH_k=\frac{1}{2}\frac{\delta
+    y_k}{2c_k\tilde{c}_k}\left(
+    \tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T} \right).
+\end{equation}
+
+Now the updated Hessian can be readily seen as a rank two
+update with respect to the current Hessian estimate $\oH_k$:
+\begin{align*}
+\oH_k &= (1 - w_k)\oH_{k-1} + \frac{w_k \delta y_k}{4c_k\tilde{c}_k} (\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T}).
+\end{align*}
+
+
+\section{Enhancement for Adaptive 2SPSA Algorithms}
+\label{Enhanced 2SPSA}
+An enhancement to adaptive 2SPSA
+algorithm in Section \ref{2SPSA} incorporats the feedback and
+weighting mechanism, as shown in Spall \cite{Spall2009}. This method
+has the following two recursions:
+\begin{equation} \label{eq:Enhancement}
+  \begin{cases} \htheta_{k+1}=\htheta_k-a_k\ooH_k^{-1} \bG_k(\htheta_k),
+    \qquad \bm{\ooH}_k=f_k(\oH_k),\\
+    \oH_k=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k),
+    \quad k=0,1,\dots
+  \end{cases}
+\end{equation}
+where $\bG_k(\htheta_k)$, $\hH_k$,
+$\delta\bG_k$, and $\bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)$ are
+defined in (\ref{eq:notations}), and notations in (\ref{eq:dy}) and
+(\ref{eq:HHat}) in Section \ref{2SPSA} apply. The optimal weighting
+parameter, which minimizes the asymptotic variances of the elements in
+$\hH_k$, is proven to be:
+\begin{equation} \label{eq:weighting}
+  w_k=\frac{\tilde{c}_k^2c_k^2}{\sum_{i=0}^{k}\tilde{c}_i^2c_i^2}.
+\end{equation}
+
+Eq. (3.8) in Spall \cite{Spall2009} provides a symmetrized
+feedback term $ \hPsi_k $:
+\begin{equation} \label{eq:PsiHat} \hPsi_k
+  =(\hPhi_k+\hPhi_k^T)/2,
+\end{equation} where the pre-symmetrized form of $ \hPsi_k $:
+\begin{equation}
+  \hPhi_k=\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k.
+\end{equation} with $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p,
+\tD_k=\tDelta_k\tDelta_k^{-T}-\bI_p $.
+
+Collecting terms in $\hPhi_k$ gives:
+\begin{align*}
+  &\quad\tD_k^T\oH_{k-1}\bD_k+\tD_k^T\oH_{k-1}+\oH_{k-1}\bD_k\\
+  &=\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T}-\oH_{k-1}.
+\end{align*}
+
+As in Spall \cite{Spall2009}, the Hessian updates have to
+maintain symmetric. The symmetry of previous update $ \oH_{k-1}$
+guarantees that
+$\bDelta_k^{T}\oH_{k-1}\tDelta_k=\tDelta_k^{T}\oH_{k-1}\bDelta_k$. Denote
+\begin{equation}
+  b_k=\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k).
+\end{equation}
+
+
+Now we can obtain a rank two update with respect to the
+current Hessian estimate $\oH_k$:
+\begin{align*}
+\oH_k&=(1-w_k)\oH_{k-1}+w_k(\hH_k-\hPsi_k)\\
+     &=\oH_{k-1}+\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\tDelta_k^{-1}\bDelta_k^{-T}-\tDelta_k^{-1}\tDelta_k^{T}\oH_{k-1}\bDelta_k\bDelta_k^{-T})\\
+     &\quad +\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}\bDelta_k^{-1}\tDelta_k^{-T}-\bDelta_k^{-1}\bDelta_k^{T}\oH_{k-1}\tDelta_k\tDelta_k^{-T})\\
+     &=\oH_{k-1}+b_k(\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T}).
+\end{align*}
+
+
+\begin{table*} \centering
+  \resizebox{1.95\columnwidth}{!}{
+    \begin{tabular}{|c | c | c | c | c| c |} \hline Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$ & FLOPS \\ \hline
+      Adaptive 2SPSA & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $9p^2+10p$\\
+      Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ & $15p^2 + 13p$\\
+      Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$ & $9p^2 + 10p$\\
+      Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$ & $15p^2 + 13p$\\
+      \hline
+    \end{tabular}}\\[5pt]
+  \caption{Detailed Expressions for Terms in
+    Equation (\ref{eq:CoherentRecursion}) and Number of Floating-Point
+    Operations Required \newline {\scriptsize Enhanced 2SG * requires
+      symmetric Bernoulli perturbation sequences} }
+  \label{tab:Summary}
+\end{table*}
+
+\section{Adaptive 2SG Algorithm} \label{2SG} Now we have
+access to the noisy measurement of the gradient information,
+$\bG_k(\htheta_k)$, $\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)$ and
+$\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)$ at each iteration $k$. An
+adaptive 2SG algorithm introduced in Spall \cite{Spall2000} has the
+recursion as in algorithm (\ref{eq:Adaptation}) with
+
+\begin{equation} \label{eq:notationSG}
+  \begin{dcases}
+    w_k=\frac{1}{k+1},\\
+    \delta\bG_k=\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)-\bG_k^{(1)}(\htheta_k- c_k\bDelta_k),\\
+    \hH_k=\frac{1}{2}\left[ \frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}+\left(\frac{\delta\bG_k}{2c_k}\bDelta_k^{-T}\right)^T \right].\\
+  \end{dcases}
+\end{equation}
+
+This leads to the following rank two update with respect to
+the current Hessian estimate $\oH_k$:
+\begin{align*}
+\oH_k &= (1 - w_k) \oH_{k-1} + \frac{w_k}{4c_k} ((\delta\bG_k)\bDelta_k^{-T}+\bDelta_k^{-1}(\delta\bG_k)^{T}).
+\end{align*} \remove{ Above gives a rank-two update from $
+  \oH_{k-1}^{-1} $ to $ \oH_{k}^{-1} $. Write the sequential recursions
+  for the $ \oH_k^{-1} $ as following:
+  \begin{equation} \label{eq:2SGSequentialUpdate}
+    \begin{dcases} \bm{B}_k^{-1}
+      &=\frac{k+1}{k}\oH_{k-1}^{-1}-(\frac{k+1}{k})^2\oH_{k-1}^{-1}(\delta\bG_k)\\
+      &~~~\cdot(b_k^{-1}+\frac{k+1}{k}\bDelta_k^{-T}\oH_{k-1}^{-1}(\delta\bG_k)\bDelta_k^{-T}\oH_{k-1}^{-1}\\
+      \oH_k^{-1} &=\bm{B}_k^{-1}-\bm{B}_k^{-1}\bDelta_k^{-1}\\
+      &~~~\cdot(b_k^{-1}+(\delta\bG_k)^{T}\bm{B}_k^{-1}\bDelta_k^{-1})^{-1}(\delta\bG_k)^{T}\bm{B}_k^{-1}
+    \end{dcases}
+  \end{equation} where
+  \begin{equation}\label{eq:2SGB}
+    \bm{B}_k=\frac{k}{k+1}\oH_{k-1}+b_k(\delta\bG_k)\bDelta_k^{-T}
+  \end{equation}}
+
+\section{Enhancement for Adaptive 2SG Algorithms}
+ \label{Enhanced 2SG}
+ An enhancement to adaptive 2SG
+algorithm in Section \ref{2SG}, incorporated the feedback and
+weighting mechanism, as appearing in Spall \cite{Spall2009}, has
+recursion form as algorithm (\ref{eq:Enhancement}) with optimal
+weighting defined in equation (\ref{eq:weighting}). Now we have access
+to the noisy measurement of the gradient information,
+$\bG_k(\htheta_k)$, $\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)$ and
+$\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)$ at each iteration $k$.
+
+Eq. (3.12) in Spall \cite{Spall2009} provides a symmetrized
+feedback term $ \hPsi_k $, which can be rewritten as the following
+using relationship \ref{eq:symmetry}:
+\begin{align}
+  \begin{split} \hPsi_k
+    &=(\oH_{k-1}\bD_k+\bD_k\oH_{k-1})/2\\ &=\frac{1}{2}\left(
+      \oH_{k-1}\bDelta_k\bDelta_k^{-T}+\bDelta_k\bDelta_k^{T}\oH_{k-1}-2\oH_{k-1}
+    \right).\\
+  \end{split}
+\end{align} where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p$.
+
+If we only use the symmetric Bernoulli (Rademacher)
+perturbation sequence as suggested in Sadegh and Spall
+\cite{Sadegh1998}, then $\bD_k$ is symmetric. Using relationship
+(\ref{eq:symmetry}), equation $\hH_k$ can be written as:
+\begin{equation}
+\hH_k=\frac{1}{2}\frac{1}{2c_k}\left( (\delta\bG_k)\bDelta_k^{-T}+\bDelta_k(\delta\bG_k)^{T} \right).
+\end{equation}
+
+Denote
+\begin{equation}
+\bm{v}_k= \frac{1}{2c_k}\delta\bG_k-\oH_{k-1}\bDelta_k.
+\end{equation}
+
+Using the symmetry of update $\oH_{k-1}$, we obtain a rank two
+update with respect to the current Hessian estimate $\oH_k$:
+\begin{align*}
+ \oH_k&=\oH_{k-1}+\frac{w_k}{2} (\bm{v}_k\bDelta_k^{-T}+\bDelta_k^{-1}\bm{v}_k^{T}).
+\end{align*}
+
+
+\section{Efficient Update Recursion for the Hessian Inverse}
+As described in Section \ref{2SPSA} to \ref{Enhanced 2SG}, the
+recursion of the Hessian can be achieved via a rank-two update in all
+variants of Adaptive SPSA.  The Hessian update (with or without
+feedback term) can be generally written as:
+\begin{equation}
+\label{eq:CoherentRecursion}
+  \oH_{k}=d_k\oH_{k-1}+b_k(\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T}).
+\end{equation}
+
+Table~\ref{tab:Summary} summarizes the terms in recursion
+(\ref{eq:CoherentRecursion}) for all four cases. Particularly for the
+enhanced 2SG case *, relationship (\ref{eq:symmetry}) is used.
+
+The procedure described in equation
+(\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Recursion
+(\ref{eq:CoherentRecursion}) has to be updated in the original setup
+for all four cases. However in the \textit{efficient} implementation
+setting, it needs to be updated only for enhanced 2SPSA discussed in
+Section \ref{Enhanced 2SPSA} and enhanced 2SG discussed in Section
+\ref{Enhanced 2SG}, as evidenced in Table \ref{tab:Summary}.
+
+Recognizing that the Hessian updates are a rank two leads to
+an efficient update for the Hessian inverse by applying the Woodbury
+matrix identity (\ref{eq:MatrixInversion}).
+
+First, we compute
+\begin{equation} \bm{\tilde{u}}_k, \bm{\tilde{v}}_k =
+  \sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k \pm
+  \frac{|\bm{u}_k|}{|\bm{v}_k|}\bm{v}_k),
+\end{equation} such that
+\begin{equation*} \bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T}
+  = \bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T} - \bm{\tilde{v}}_k
+  \bm{\tilde{v}}_k^{T}.
+\end{equation*}
+
+Although the computation of $\bm{\tilde{u}}_k,
+\bm{\tilde{v}}_k$ requires $6p$ operations, it reduces the number of
+matrix vector multiplications required from 4 down to 2, and it
+maintains the symmetry of the intermediate update and the resulting
+update in the rank-two update (\ref{eq:CoherentRecursion}).
+
+Let
+\begin{equation*} \bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k
+  \bm{\tilde{u}}_k^{T}.
+\end{equation*}
+
+Then we can compute recursive Hessian inverse $\oH_k^{-1}$ as
+follows:
+\begin{equation} \label{eq:SequentialUpdate}
+  \begin{dcases} \bm{B}_k^{-1} &= d_k^{-1}\oH_{k-1}^{-1}
+    -
+    \frac{d_k^{-2}}{b_k^{-1}+\bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1}\bm{\tilde{u}}_k}
+    \oH_{k-1}^{-1}\bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1},\\
+    \oH_k^{-1} &=\bm{B}_k^{-1} +
+    \frac{1}{b_k^{-1}-\bm{\tilde{v}}_k^{T}\bm{B}_k^{-1}\bm{\tilde{v}}_k}
+    \bm{B}_k^{-1}\bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}\bm{B}_{k}^{-1}.
+  \end{dcases}
+\end{equation}
+
+The rank-two update (two sequential rank-1 updates) in
+equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations
+per iteration.
+
+The total number of operations required to perform all four
+efficient implementations from Section \ref{2SPSA} to \ref{Enhanced
+  2SG} are listed in the last column of Table \ref{tab:Summary}. When
+$p>15$ in applying \textit{enhanced} algorithms or when $p>7$ in
+applying basic \textit{adaptive} algorithms, the corresponding number
+of operations is fewer than $2p^3/3+3p^2/2-7p/6$ operations required
+by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1}
+\bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and
+(\ref{eq:Enhancement}).
+
+
+\section{Numerical Stability Analysis} Now we test all four
+efficient implementation of stochastic Newton-type algorithm,
+described in Section \ref{2SPSA}-\ref{Enhanced 2SG}, on the
+skew-quartic function in Spall \cite{Spall2009}.
+\begin{equation*}
+  L(\bm{\uptheta})=\bm{\uptheta}^{T}\bm{B}^{T}\bm{B}\bm{\uptheta}+0.1
+  \sum_{i=1}^{p} (\bm{B}\bm{\uptheta})_i^3 +0.01 \sum_{i=1}^{p}
+  (\bm{B}\bm{\uptheta})_i^4.
+\end{equation*} where $\bm{B}$ is such that $p\bm{B}$ is an
+upper triangular matrix of all 1's, and $p=10$. Easily we can derive
+\begin{equation}
+  \begin{dcases} \bm{g}(\bm{\uptheta})&=\bm{B}^{T}\left(
+      2\bm{B}\bm{\uptheta}+0.3 \sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2 +0.04\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^3\right),\\
+    \bm{H}(\bm{\uptheta})&=\bm{B}^{T}\left[\text{diag}\left(2+0.6*\bm{B}\bm{\uptheta}+0.12\sum_{i=1}^{p}(\bm{B}\bm{\uptheta})_i^2\right)\right]\bm{B}.\\
+  \end{dcases}
+\end{equation} It can be verified that $L(\bm{\uptheta})$ is a
+strictly convex function, and the minimizer is
+$\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=\bm{0}$.
+
+We follow the exact initialization and pre-conditioning steps
+in Spall \cite{Spall2009} and the practical guidelines in Spall
+\cite{Spall2000}. Below is the plot for these four implementations of
+the normalized loss functions
+$[L(\htheta_k)-L(\bm{\uptheta}^{*})]/[L(\htheta_0)-L(\bm{\uptheta}^{*})]$
+against iteration $k$ averaging over 10 simulation runs.
+
+
+Below is the plot for the Euclidean distance between
+$\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging
+over 10 simulation runs.
+
+Below is the table showing the time consumed in each step:
+loss function evaluation, Hessian inverse update, pre-conditioning on
+Hessian inverse, for four efficient implementation against the
+original algorithms.
+
+\section{Conclusion and Future Work} In this paper, we discuss
+a coherent efficient implementation of four Newton-type SP algorithms:
+adaptive 2SPSA, enhanced 2SPSA, adaptive 2SG, and enhanced 2SG. The
+efficiency, in terms of both time taken and numerical accuracy, is
+achieved by a unified sequential (rank-two) update using Woodbury
+matrix identity. Particularly for the case of enhanced 2SG *, the
+usage of symmetric Bernoulli perturbation sequence is required.
+
+As discovered from practical experience, the time taken in the
+stochastic optimization(minimization) problem is dominated by the
+noisy function/gradient evaluation and the preconditioning part. We
+are gathering ideas in speeding up the preconditioning step in the
+algorithm, so as to magnify the contribution of this paper in
+streamlining the Hessian inverse update.
+
+\section*{Acknowledgment} The first author is sponsored by the
+Defense Advanced Research Projects Agency (DARPA) under the Deep
+Exploration and Filtering of Text (DEFT) Program (Agreement Number:
+FA8750-13-2-001). Both the second and the third author receive
+support from the Office of Naval Research (via Navy contract
+N00024-13-D6400).
+
+\begin{thebibliography}{1}
+
+\bibitem{Spall1992} Spall, J. C. (1992). Multivariate
+  stochastic approximation using a simultaneous perturbation gradient
+  approximation. \textit{Automatic Control, IEEE Transactions on},
+  37(3), 332-341.
+
+\bibitem{Spall2000} Spall, J. C. (2000). Adaptive
+  stochastic approximation by the simultaneous perturbation
+  method. \textit{Automatic Control, IEEE Transactions on}, 45(10),
+  1839-1853.
+
+\bibitem{Spall2009} Spall, J. C. (2009). Feedback and
+  weighting mechanisms for improving Jacobian estimates in the adaptive
+  simultaneous perturbation algorithm. \textit{Automatic Control, IEEE
+    Transactions on}, 54(6), 1216-1229.
+
+\bibitem{Woodbury1950} Woodbury,
+  M. A. (1950). Inverting Modified Matrices, Memorandum
+  Rept. 42. \textit{Statistical Research Group, Princeton University,
+    Princeton, NJ, 316}.
+
+\bibitem{Bar-Itzhack1998} Bar-Itzhack,
+  I.Y. (1998). Matrix symmetrization. \textit{Journal of guidance,
+    control, and dynamics}, 21(1), 178-179.
+
+
+\bibitem{Sadegh1998} Sadegh, P. and Spall,
+  J. C. (1998). Optimal random perturbations for stochastic
+  approximation using a simultaneous perturbation gradient
+  approximation. \textit{Automatic Control, IEEE Transactions on}, 44,
+  231-237.
+
+\bibitem{Bhatnagar2012} Bhatnagar, S., Prasad,
+  H. L. and Prashanth, L. A. (2013). \textit{Stochastic recursive
+    algorithms for optimization: simultaneous perturbation methods},
+  Springer.
+
+\bibitem{Sylvester1867} Sylvester,
+  J. J. (1867). LX. Thoughts on inverse orthogonal matrices,
+  simultaneous signsuccessions, and tessellated pavements in two or more
+  colours, with applications to Newton's rule, ornamental tile-work, and
+  the theory of numbers. The London, Edinburgh, and Dublin Philosophical
+  Magazine and Journal of Science, 34(232), pp. 461-475.
+
+\end{thebibliography}
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
