@@ -98,7 +98,7 @@ for p=[10]% for multiple dimensions.
     true_loss_fn = @quartic_loss_fast;
     target_fn = noisy_function_factory(true_loss_fn, noise_std);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:10 % for multiple runs.
+    for run_idx=1:20 % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
         % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
