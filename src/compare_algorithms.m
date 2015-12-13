@@ -36,8 +36,8 @@ if exist(dir_prefix, 'dir') ~= 7
 end
 % rand('seed',31415927);
 % randn('seed',3111113);
-sigma = 0.05; % Noise higher than 5e-4 we can't handle.
-
+global noise_std;
+noise_std = 1e-3; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
@@ -55,7 +55,7 @@ sequence_param_struct.weight_decay_rate = 0.501;
 sequence_param_struct.weight_sequence_numerator = 1/10;
 % a_numerator should be tuned. In section VIII of the 2009 paper
 % professor spall said that he used a = 100.
-% sequence_param_struct.a_numerator = 1 * sigma;
+% sequence_param_struct.a_numerator = 1 * noise_std;
 sequence_param_struct.c_tilda_k_multiplier = 1; % 1.1; % 1
 sequence_param_struct.use_greedy_algorithm_a = 1;
 sequence_param_struct.greedy_algorithm_a_threshold = 1;
@@ -87,22 +87,18 @@ results_struct = struct();
 % for multiple dimensions.
 % for multiple runs.
 % for different algorithms
-% Run algorithm with dimensions.
-% collate result.
-% The total memory of the struct would not exceed 60MB.
-% It takes 77m to run this script. < 2Hr
-% I need to fix the convergence of the algorithms.
-for budget=(5000 * sequence_param_struct.function_eval_per_iteration)
+% run algorithm with dimensions.
+for budget=(200000 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[16]% for multiple dimensions.
+for p=[10]% for multiple dimensions.
     sequence_param_struct.a_numerator = 1;
     sequence_param_struct.c_numerator = 0.01;
     true_loss_fn = @quartic_loss_fast;
-    target_fn = noisy_function_factory(true_loss_fn, sigma);
+    target_fn = noisy_function_factory(true_loss_fn, noise_std);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:50 % for multiple runs.
+    for run_idx=1:10 % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
         % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
@@ -130,7 +126,9 @@ for p=[16]% for multiple dimensions.
                 ['\nIteration Count %d Init SQDIST %f Final SQDIST ' ...
                  '%f Init loss %f Final loss %f time_setup %f ' ...
                  'time_preconditioning %f  time_blocking %f time_taken %f ' ...
-                 fn_fine_struct.(name_fn) ' %f \n'],  ...
+                 fn_fine_struct.(name_fn) ' %f ' ...
+                 'time_setup_rand %f  time_setup_feval %f ' ...
+                 '\n'],  ...
                 iteration_count, ...
                 sqdist_sequence(1), ...
                 sqdist_sequence(length(sqdist_sequence)), ...
@@ -140,7 +138,9 @@ for p=[16]% for multiple dimensions.
                 time_taken.time_preconditioning, ...
                 time_taken.time_blocking, ...
                 time_taken.time_taken, ...
-                time_taken.(fn_fine_struct.(name_fn)));
+                time_taken.(fn_fine_struct.(name_fn)), ...
+                time_taken.time_setup_rand, ...
+                time_taken.time_setup_feval);
             results_struct.([common_prefix, '_final_sqdist']) = ...
                 sqdist_sequence(length(sqdist_sequence));
             results_struct.([common_prefix, '_iteration_count']) = ...
