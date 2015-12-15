@@ -10,6 +10,7 @@ Update #: 0
 % close all; clear; clc;
 warning('off','MATLAB:maxNumCompThreads:Deprecated');
 warning('off', 'comm:system:warnobsolete:obsoleteReplace');
+
 if ~exist('disable_print')
     global disable_print;
     disable_print = 2; % disable_print = 2 disables printing of stderr.
@@ -40,6 +41,14 @@ global noise_std;
 noise_std = 0; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.noise_std = noise_std;
 sequence_param_struct.n_runs = 5;
+if ~exist('dim_p');
+    global dim_p;
+    dim_p = 120;
+    disp(['Set p in script to ' num2str(dim_p)]);
+else
+    disp(['dim_p supplied as ' num2str(dim_p)]);
+end
+sequence_param_struct.dim_p = dim_p;
 sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
@@ -95,7 +104,7 @@ for budget=(5e3 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100
-for p=[15]% for multiple dimensions.
+for p=[dim_p]% for multiple dimensions.
     sequence_param_struct.a_numerator = 1;
     sequence_param_struct.c_numerator = 0.01;
     true_loss_fn = @quartic_loss_fast;
@@ -158,11 +167,11 @@ for p=[15]% for multiple dimensions.
                 sqdist_sequence;
         end
         % Write/Overwrite intermediate result files that can be observed separately.
-        save([dir_prefix '/sso_project_intermediate.mat'], 'results_struct');
+        save([dir_prefix '/sso_project_' num2str(dim_p) '_intermediate.mat'], 'results_struct');
     end
 end
 end
-save([dir_prefix '/sso_project.mat'], 'results_struct');
+save([dir_prefix '/sso_project_' num2str(dim_p) '.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
 if ~feature('ShowFigureWindows')
     exit;

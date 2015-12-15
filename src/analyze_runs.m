@@ -29,7 +29,13 @@ Please see the documentation for each cell for details.
 % in the readings. For each dimensionality a separate scatter plot is produced.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
 clear; clc; close all;
-load('../res/sso_project.mat');
+if ~exist('dim_p');
+    disp(['Set p in script !!!']);
+    exit(1);
+else
+    disp(['dim_p supplied as ' num2str(dim_p)]);
+end
+load(['../res/sso_project_' num2str(dim_p) '.mat');
 ff = fieldnames(results_struct);
 tmp = regexp(ff{1}, '[^_]*?_([^_]*?)_[^_]*?_([^_]*?)_.*', 'tokens');
 p = str2num(tmp{1}{1});
