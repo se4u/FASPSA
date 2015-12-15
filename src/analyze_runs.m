@@ -33,7 +33,7 @@ load('../res/sso_project.mat');
 ff = fieldnames(results_struct);
 tmp = regexp(ff{1}, '[^_]*?_([^_]*?)_[^_]*?_([^_]*?)_.*', 'tokens');
 p = str2num(tmp{1}{1});
-runs = 20;
+runs = results_struct.sequence_param_struct.n_runs;
 budget = str2num(tmp{1}{2});
 algorithms = {'Adaptive2SPSA', 'FeedbackAdaptive2SPSA','EfficientAdaptive2SPSA', ...
               'EfficientFeedbackAdaptive2SPSA'};
@@ -118,28 +118,28 @@ for algorithm_idx=1:length(algorithms)
     end
     norm_loss_per_iter = mean(lossseq_arr)/loss_init;
     sqdist_per_iter = mean(sqdist_arr)/sqdist_init;
-    figure(1); 
+    figure(1);
     seq = log(norm_loss_per_iter);
     sample_rate = 100;
     plot(seq(1:sample_rate:end), ...
         loss_per_iter_markup{algorithm_idx}, ...
-        'MarkerSize', markersize_cell{algorithm_idx}); 
+        'MarkerSize', markersize_cell{algorithm_idx});
     % title('Log of Normalized Loss Per Iteration');
     xlabel(['Iterations x ' num2str(sample_rate)]);
     ylabel(['Log of Normalized Loss']);
     set(gca(), 'XGrid', 'on', 'YGrid', 'on');
     hold on;
-    
+
     figure(2);
     seq = sqrt(sqdist_per_iter);
     sample_rate = 100;
-    plot(seq(1:sample_rate:end), loss_per_iter_markup{algorithm_idx}); 
+    plot(seq(1:sample_rate:end), loss_per_iter_markup{algorithm_idx});
     % title('Normalized Squared Distance Per Iteration');
     xlabel(['Iterations x ' num2str(sample_rate)]);
     ylabel(['Normalized Squared Distance']);
     set(gca(), 'XGrid', 'on', 'YGrid', 'on');
     hold on;
-    
+
     figure(3);
     seq = 1000:length(sqdist_per_iter);
     seq2 = sqdist_per_iter(1000:end);
@@ -148,7 +148,7 @@ for algorithm_idx=1:length(algorithms)
     title('LogLog plot of Asymptotic convergence');
     grid minor;
     hold on;
-    
+
 %     norm_theta = sqrt(mean(errtheta_readings)/errtheta_init)
 %     scatter(time_readings, loss_readings, markup);
 %     hold on;

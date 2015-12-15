@@ -38,6 +38,8 @@ end
 % randn('seed',3111113);
 global noise_std;
 noise_std = 0; % Noise higher than 5e-4 we can't handle.
+sequence_param_struct.noise_std = noise_std;
+sequence_param_struct.n_runs = 5;
 sequence_param_struct.compare_iterations = compare_iterations;
 sequence_param_struct.alpha = 1; %.602;  % a = 1
 % .101 or 0.499
@@ -99,7 +101,10 @@ for p=[15]% for multiple dimensions.
     true_loss_fn = @quartic_loss_fast;
     target_fn = noisy_function_factory(true_loss_fn, noise_std);
     true_optimal_theta = zeros(p, 1);
-    for run_idx=1:20 % for multiple runs.
+    results_struct.sequence_param_struct = ...
+                sequence_param_struct;
+
+    for run_idx=1:sequence_param_struct.n_runs % for multiple runs.
         seed_for_this_run = randint(1,1,1e6);
         % Use random initializations instead of a fixed point.
         % init_theta = 0.2 * (2 * (rand(p, 1) > 0.5) - 1);
@@ -151,12 +156,10 @@ for p=[15]% for multiple dimensions.
                 loss_sequence;
             results_struct.([common_prefix, '_sqdist_sequence']) = ...
                 sqdist_sequence;
-            results_struct.([common_prefix, '_sp_struct']) = ...
-                sequence_param_struct;
         end
+        % Write/Overwrite intermediate result files that can be observed separately.
+        save([dir_prefix '/sso_project_intermediate.mat'], 'results_struct');
     end
-    % Write/Overwrite intermediate result files that can be observed separately.
-    save([dir_prefix '/sso_project_intermediate.mat'], 'results_struct');
 end
 end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
