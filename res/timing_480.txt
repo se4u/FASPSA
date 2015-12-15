@@ -1,0 +1,5 @@
+Algorithm & Hessian Update & Pre-Conditioning & Blocking & Evaluation & Total\\
+A2SPSA                            & 2.470   & 31.826   & 0.019   & 0.039   & 34.354 \\
+EA2SPSA                           & 1.304   & 36.318   & 0.022   & 0.037   & 37.681 \\
+FA2SPSA                           & 2.477   & 38.353   & 0.017   & 0.037   & 40.884 \\
+EFA2SPSA                          & 1.374   & 36.005   & 0.019   & 0.039   & 37.437 \\
