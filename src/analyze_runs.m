@@ -46,6 +46,41 @@ markups = {'or', 'xb', 'sg', 'dk'};
 % for details.
 loss_per_iter_markup = {'-kd', '--ks', ':k+', '-.k*'};
 markersize_cell = {10, 7, 5, 6}
+
+clc
+str = 'Algorithm & Hessian Update & Pre-Conditioning & Blocking & Evaluation & Total\\\\\n';
+abbv_algorithms = {'A2SPSA', 'FA2SPSA', 'EA2SPSA', 'EFA2SPSA'};
+timing_fn = ['../res/timing_' num2str(p) '.txt'];
+disp(['Writing file ' timing_fn]);
+fid = fopen(timing_fn, 'w');
+fprintf(1, str);
+fprintf(fid, str);
+for algorithm_idx=[1, 3, 2,4 ]
+    ttaken = 0;
+    tpreco = 0;
+    tblock = 0;
+    tsetup = 0;
+    for run_idx=1:runs
+        algorithm = algorithms{algorithm_idx};
+        prefix = concat_all(algorithm, p, run_idx, budget);
+        tts = results_struct.([prefix, '_time_taken']);
+        ttaken = ttaken + tts.time_taken;
+        tpreco = tpreco + tts.time_preconditioning;
+        tblock = tblock + tts.time_blocking;
+        tsetup = tsetup + tts.time_setup;
+    end
+    ttaken = ttaken / runs ;
+    tpreco = tpreco / runs ;
+    tblock = tblock / runs ;
+    tsetup = tsetup / runs ;
+    ttotal = ttaken + tpreco + tblock + tsetup;
+
+    str = sprintf('%-30s    & %.3f   & %.3f   & %.3f   & %.3f   & %.3f \\\\\\\\\n', abbv_algorithms{algorithm_idx}, ttaken, tpreco, tblock, tsetup, ttotal);
+    fprintf(fid, str);
+    fprintf(1, str);
+end
+fclose(fid);
+
 for algorithm_idx=1:length(algorithms)
     algorithm = algorithms{algorithm_idx}
     markup = markups{algorithm_idx};
@@ -137,34 +172,3 @@ end
 % legend(algorithms, 'Location','NorthEastOutside');
 % saveas(gcf, '../res/analyze_runs', 'png');
 %%
-clc
-str = 'Algorithm & Hessian Update & Pre-Conditioning & Blocking & Evaluation & Total\\\\\n';
-abbv_algorithms = {'A2SPSA', 'FA2SPSA', 'EA2SPSA', 'EFA2SPSA'};
-fid = fopen('../res/timing.txt', 'w');
-fprintf(1, str);
-fprintf(fid, str);
-for algorithm_idx=[1, 3, 2,4 ]
-    ttaken = 0;
-    tpreco = 0;
-    tblock = 0;
-    tsetup = 0;
-    for run_idx=1:runs
-        algorithm = algorithms{algorithm_idx};
-        prefix = concat_all(algorithm, p, run_idx, budget);
-        tts = results_struct.([prefix, '_time_taken']);
-        ttaken = ttaken + tts.time_taken;
-        tpreco = tpreco + tts.time_preconditioning;
-        tblock = tblock + tts.time_blocking;
-        tsetup = tsetup + tts.time_setup;
-    end
-    ttaken = ttaken / runs ;
-    tpreco = tpreco / runs ;
-    tblock = tblock / runs ;
-    tsetup = tsetup / runs ;
-    ttotal = ttaken + tpreco + tblock + tsetup;
-    
-    str = sprintf('%-30s    & %.3f   & %.3f   & %.3f   & %.3f   & %.3f \\\\\\\\\n', abbv_algorithms{algorithm_idx}, ttaken, tpreco, tblock, tsetup, ttotal);
-    fprintf(fid, str);
-    fprintf(1, str);
-end
-fclose(fid);
