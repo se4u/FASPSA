@@ -40,7 +40,7 @@ end
 global noise_std;
 noise_std = 0; % Noise higher than 5e-4 we can't handle.
 sequence_param_struct.noise_std = noise_std;
-sequence_param_struct.n_runs = 5;
+sequence_param_struct.n_runs = 3;
 if ~exist('dim_p');
     global dim_p;
     dim_p = 120;
@@ -100,7 +100,7 @@ results_struct = struct();
 % for different algorithms
 % run algorithm with dimensions.
 % budget = 200e3
-for budget=(5e3 * sequence_param_struct.function_eval_per_iteration)
+for budget=(1e2 * sequence_param_struct.function_eval_per_iteration)
     n_iter = (budget / sequence_param_struct.function_eval_per_iteration);
     % Set A to be 10% of the number of iterations performed.
     sequence_param_struct.A =  n_iter / 100; % n_iter / 10; n_iter / 100

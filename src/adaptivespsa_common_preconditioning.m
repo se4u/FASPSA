@@ -13,8 +13,3 @@ if ~(all(isreal(Hbarbar)))
     pause;
     exit(1);
 end
-% while not(all(isreal(Hbarbar)))
-%     delta_eye = 10 * delta_eye;
-%     my_fprintf(2, '\n delta_eye %g ', delta_eye);
-%     Hbarbar = Hbarbar_f(delta_eye);
-% end

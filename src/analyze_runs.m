@@ -28,16 +28,16 @@ Please see the documentation for each cell for details.
 % incurred with a small circle around the point that indicates the variance
 % in the readings. For each dimensionality a separate scatter plot is produced.
 % Each scatter plot contains 4 points corresponding to the four algorithms.
-clear; clc; close all;
+clc; close all;
 if ~exist('dim_p');
     disp(['Set p in script !!!']);
     exit(1);
 else
     disp(['dim_p supplied as ' num2str(dim_p)]);
 end
-load(['../res/sso_project_' num2str(dim_p) '.mat');
+load(['../res/sso_project_' num2str(dim_p) '.mat']);
 ff = fieldnames(results_struct);
-tmp = regexp(ff{1}, '[^_]*?_([^_]*?)_[^_]*?_([^_]*?)_.*', 'tokens');
+tmp = regexp(ff{2}, '[^_]*?_([^_]*?)_[^_]*?_([^_]*?)_.*', 'tokens');
 p = str2num(tmp{1}{1});
 runs = results_struct.sequence_param_struct.n_runs;
 budget = str2num(tmp{1}{2});
@@ -86,6 +86,9 @@ for algorithm_idx=[1, 3, 2,4 ]
     fprintf(1, str);
 end
 fclose(fid);
+%%
+pause;
+exit();
 
 for algorithm_idx=1:length(algorithms)
     algorithm = algorithms{algorithm_idx}
