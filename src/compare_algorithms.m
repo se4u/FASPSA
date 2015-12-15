@@ -107,6 +107,7 @@ for p=[15]% for multiple dimensions.
         % Shuffle the order of the different algorithms that we try
         % for fair timing experiments.
         algorithm_sequence_to_try = randperm(length(name_fn_cell));
+        algorithm_sequence_to_try = 1:length(name_fn_cell);
         for name_fn_idx=algorithm_sequence_to_try
             rand('seed', seed_for_this_run);
             randn('seed', seed_for_this_run);
@@ -161,5 +162,5 @@ end
 save([dir_prefix '/sso_project.mat'], 'results_struct');
 my_fprintf(1, 'Comparison Successfully Complete');
 if ~feature('ShowFigureWindows')
-    exit(1);
+    exit;
 end

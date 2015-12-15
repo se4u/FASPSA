@@ -111,7 +111,7 @@ for k=0:max_iterations-1
         Bbar = inv(adaptivespsa_common_preconditioning(...
             b * ((delta_tilda_k * delta_k') + (delta_k * delta_tilda_k')), k));
     else
-        tic
+        % tic
         Bbar = rank_two_update_v2_fast(Bbar, ...
              a/bbar_max, b, delta_tilda_k, delta_k)/a;
         % The efficient version which avoids one matrix scalar division.
@@ -119,7 +119,7 @@ for k=0:max_iterations-1
         % Bbar = rank_two_update_v2_fast(Bbar, ...
         %      a/bbar_max, b, delta_tilda_k, delta_k);
         Bbar = (Bbar + Bbar')/2;
-        time_rank_two_update = time_rank_two_update + toc;
+        % time_rank_two_update = time_rank_two_update + toc;
     end
     % Update Theta.
     % It is critical to use this modified newton step of converting
@@ -143,20 +143,18 @@ for k=0:max_iterations-1
     end
 
     tic
-    step_size = (step_length_fn(k)*g_k_magnitude*bbar_max);
-    if sequence_param_struct.use_hacky_preconditioning
-        step_direction = Bbar * delta_k;
-        dot_prod = (step_direction'*delta_k)/norm(step_direction)/norm(delta_k);
-        my_eps = sequence_param_struct.hacky_preconditioning_eps;
-        if dot_prod < -my_eps
-            step_size = -step_size;
-        elseif dot_prod >= -my_eps && dot_prod < my_eps
-            step_direction = delta_k;
-        end
-    else
-        step_direction = cond_bbar * delta_k;
-    end
-    proposed_theta = theta - step_size * step_direction;
+    % if sequence_param_struct.use_hacky_preconditioning
+    %     step_direction = Bbar * delta_k;
+    %     dot_prod = (step_direction'*delta_k)/norm(step_direction)/norm(delta_k);
+    %     my_eps = sequence_param_struct.hacky_preconditioning_eps;
+    %     if dot_prod < -my_eps
+    %         step_size = -step_size;
+    %     elseif dot_prod >= -my_eps && dot_prod < my_eps
+    %         step_direction = delta_k;
+    %     end
+    % else
+    % end
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude*bbar_max) * cond_bbar * delta_k;
     time_taken = time_taken + toc;
     tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...
