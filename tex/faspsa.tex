@@ -80,7 +80,7 @@ in both the gradient-free optimization (Kiefer-Wolfowitz) and the
 gradient-based setting (Robbins-Monro).  Wang~\cite{Wang2011} creatively extends SP idea to discrete optimization setting. Later Spall~\cite{Spall2000}
 generalizes the SP idea to \textit{adaptive} simultaneous perturbation (ASP) and demonstrated a stochastic
 analogue of Newton-Raphson's algorithm.  Spall~\cite{Spall2007} and \cite{Spall2009} incorporate a feedback process and an optimal weighting mechanism into the method in Spall~\cite{Spall2000}, providing an
-\textit{enhanced} second-order algorithm with more accurate Hessian matrix approximations.
+\textit{enhanced} second-order algorithm with more accurate Hessian matrix approximations. Chapter 7 of Bhatnagar~\cite{Bhatnagar2012} extensively covers the framework and convergence analysis for some variants of Newton-type ASP algorithms.
 
 The essence of second-order SP algorithm, under the minimization setting,
 is to approximately and efficiently obtain an estimate of the
@@ -120,18 +120,6 @@ Hessian inverse rather than the Hessian itself, and
 pre-condition the inverse of the Hessian estimate directly. Essentially, first update $ \oH_k^{-1} $, and then
 perform the pre-conditioning on $ \oH_k^{-1} $ to obtain $\ooH_k^{-1}$.
 
-
-\remove
-{ % Why are we suddenly talking about this ?
-Additionally, every Hessian update and/or its inverse has to
-remain symmetric at each iteration. Bar-Itzhack~\cite{Bar-Itzhack1998}
-shows that for any matrix $ \bm{P}\in\mathbb{R}^{p\times p} $, the
-closest symmetric matrix to $ \bm{P} $, in Frobenius (Euclidean) norm,
-is $ (\bm{P}+\bm{P}^T)/2 $. This further validates how Spall
-\cite{Spall2000} and Spall~\cite{Spall2009} proceed with the
-symmetrization.
-}
-
 In general, the perturbation sequences $\bDelta_k$ and
 $\tDelta_k$ in Section~\ref{2SPSA} to~\ref{2SG} can be any sequences
 satisfying the regularity condition C.9 in Spall
@@ -140,7 +128,7 @@ Section~\ref{Enhanced 2SG}, is when
 all components in the perturbation sequences (both $ \bDelta_k $ and
 $\tDelta_k $) are symmetric Bernoulli distributed,
 a.k.a. \textit{Rademacher} distributed. Such a perturbation sequence
-is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. However, Cao \cite{Cao2011} points out that the symmetric Bernoulli perturbation sequences might not be optimal in small-sample approximations; while \cite{Cao2011} doest't rule out the superior role of symmetric Bernoulli perturbation in high-dimensional and large-sample circumstances. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
+is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. However, Cao \cite{Cao2011} points out that the symmetric Bernoulli perturbation sequences might not be optimal in small-sample approximations; however \cite{Cao2011} doest't rule out the superior role of symmetric Bernoulli perturbation in high-dimensional and large-sample circumstances. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
 $\text{--}1$, such that:
 \begin{equation} \label{eq:symmetry}
 \bDelta_k=\bDelta_k^{-1}, \tDelta_k=\tDelta_k^{-1}.
@@ -149,7 +137,7 @@ where for any vector
 $ \bm{x}\in \mathbbm{R}^p \setminus \{\bm{0}\} $, 
 $\bm{x}^{-1}$ denotes $[1/x_1, \ldots, 1/x_p]^T$ for the ease of following discussion. Additionally, $ \bm{x}^{-T} $ denotes $[1/x_1, \ldots, 1/x_p]$.
 
-The Chap. 5 of a recent textbook Bhatnagar~\cite{Bhatnagar2012} comprehensively explains a deterministic perturbation construction based on the particular structure of Hadamard matrix in Sylvester~\cite{Sylvester1867}. Bhatnagar~\cite{Bhatnagar2003} provides some empirical evidences that such a deterministic construction of the
+Chapter 5 of a recent textbook Bhatnagar~\cite{Bhatnagar2012} comprehensively explains a deterministic perturbation construction based on the particular structure of Hadamard matrix in Sylvester~\cite{Sylvester1867}. Bhatnagar~\cite{Bhatnagar2003} provides some empirical evidences that such a deterministic construction of the
 perturbation sequence results in better approximation
 accuracy and speed of convergence than the optimal stochastic
 generation described in Sadegh and Spall~\cite{Sadegh1998}; though
@@ -234,7 +222,10 @@ update with respect to the current Hessian estimate $\oH_k$:
 			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  \\
 			\hline
 		\end{tabular}}\\[5pt]
-		\caption{Expressions for Terms in Eq. (\ref{eq:CoherentRecursion}) \newline{\footnotesize  In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.} \newline{\footnotesize  In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}\newline {\scriptsize  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences.} }
+		\caption{{\footnotesize  Expressions for Terms in Eq. (\ref{eq:CoherentRecursion})\\
+			 In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.
+			 In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.
+			  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
 		\label{tab:Summary}
 	\end{table*}
 
@@ -446,7 +437,16 @@ applying basic \textit{adaptive} algorithms, or when $p>15$ in applying \textit{
 of operations is fewer than $2p^3/3+3p^2/2-7p/6$ operations required
 by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1}
 \bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and
-(\ref{eq:Enhancement}). The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) is heuristically faster than the original setting, in the sense that the FLOPS required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$.
+(\ref{eq:Enhancement}).
+
+The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) is heuristically faster than the original setting, in the sense that the FLOPS required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$. Assume that the time taken for every computation (addition, multiplication, etc.) are the same, then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in the original setting is:
+\begin{equation*}
+\frac{9p^2+10p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} \frac{3}{2p}.
+\end{equation*}
+Similarly, for the enhanced 2SPSA and 2SG setting, the theoretical ratio is
+\begin{equation*}
+\frac{15p^2+13p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} \frac{3}{2p}.
+\end{equation*}
 
 
 \section{Numerical Study}
@@ -507,18 +507,19 @@ $\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging
 over \nruns simulation runs.
 
 
-Below is the table showing the time consumed in each step:
+Below is the table showing the time consumed in each step for $p=15$ case:
 loss function evaluation, Hessian inverse update, pre-conditioning on
 Hessian inverse, for A2SPSA and E2SPSA and their efficient implementations, efficient adaptive 2SPSA (EA2SPSA) and efficient enhanced 2SPSA (EE2SPSA).
+
 \begin{table}[htbp]
-  \centering
-  \resizebox{\columnwidth}{!}{
-  \begin{tabular}{l|ccccc|}
-    \input{../res/timing.txt}
-  \end{tabular}}
-  \caption{Time Consumed in Each Procedure}
-  \label{tab:time}
-\end{table}
+	\centering
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{l|ccccc|}
+			\input{../res/timing_15.txt}
+		\end{tabular}}
+		\caption{Time Consumed in Each Procedure}
+		\label{tab:time}
+	\end{table}
 
 Only consider the time consumed in the Hessian update recursion at each iteration. The second column in Table \ref{tab:time} shows that, the EA2SPSA only takes $81.82\%$ of the time taken in A2SPSA, and EE2SPSA only takes $77.31\%$ of that in E2SPSA. The \textit{efficient} implementation can save more time with the original setup in Spall \cite{Spall2000} and \cite{Spall2009}, as the dimension $p$ goes up. 
 
