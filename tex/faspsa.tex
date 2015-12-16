@@ -1,4 +1,4 @@
-\documentclass[conference]{IEEEtran}
+\documentclass[conference,10.6cpt]{IEEEtran}
 \ifCLASSINFOpdf \usepackage[pdftex]{graphicx} \else \fi
 \usepackage{verbatim}
 \usepackage{amsmath}
@@ -16,6 +16,8 @@
 \usepackage{fixltx2e}
 \usepackage{url}
 \usepackage{multirow}
+\usepackage{caption}
+\setlength{\baselineskip}{11pt}
 \hyphenation{op-tical net-works semi-conduc-tor}
 \newcommand{\bD}{\bm{D}}
 \newcommand{\bG}{\bm{G}}
@@ -222,10 +224,16 @@ update with respect to the current Hessian estimate $\oH_k$:
 			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  \\
 			\hline
 		\end{tabular}}\\[5pt]
-		\caption{{\footnotesize  Expressions for Terms in Eq. (\ref{eq:CoherentRecursion})\\
-			 In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.
-			 In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.
-			  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
+		\captionsetup{justification=centering}
+		\caption{
+			{ 
+			Expressions for Terms in Eq. (\ref{eq:CoherentRecursion}).}
+			\newline
+			{\footnotesize  In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.}
+			 \newline
+			{\footnotesize  In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}
+			 \newline
+			 {\scriptsize  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
 		\label{tab:Summary}
 	\end{table*}
 
@@ -449,7 +457,7 @@ Similarly, for the enhanced 2SPSA and 2SG setting, the theoretical ratio is
 \end{equation*}
 
 
-\section{Numerical Study}
+\section{Numerical Study} \label{Numerical Study}
 We now present an empirical study of the runtime performance of the
 proposed updates for the case of adaptive 2SPSA in \ref{2SPSA} and enhanced 2SPSA in \ref{Enhanced 2SPSA}, on the
 skewed-quartic function in Spall~\cite{Spall2009}.
@@ -623,4 +631,3 @@ Bhatnagar, S., Fu, M.C., Marcus, S.I. and Wang, I., 2003. Two-timescale simultan
 
 \end{thebibliography}
 \end{document}
-
