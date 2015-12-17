@@ -130,7 +130,7 @@ Section~\ref{Enhanced 2SG}, is when
 all components in the perturbation sequences (both $ \bDelta_k $ and
 $\tDelta_k $) are symmetric Bernoulli distributed,
 a.k.a. \textit{Rademacher} distributed. Such a perturbation sequence
-is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. However, Cao \cite{Cao2011} points out that the symmetric Bernoulli perturbation sequences might not be optimal in small-sample approximations; however \cite{Cao2011} doest't rule out the superior role of symmetric Bernoulli perturbation in high-dimensional and large-sample circumstances. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
+is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. However, Cao \cite{Cao2011} points out that the symmetric Bernoulli perturbation sequences might not be optimal in small-sample approximations; however \cite{Cao2011} does not rule out the superior role of symmetric Bernoulli perturbation in high-dimensional and large-sample circumstances. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
 $\text{--}1$, such that:
 \begin{equation} \label{eq:symmetry}
 \bDelta_k=\bDelta_k^{-1}, \tDelta_k=\tDelta_k^{-1}.
@@ -148,7 +148,7 @@ such deterministic
 Hadamard-matrix-based perturbation are still either $+1$ or $\text{--}1$,
 and therefore relationship (\ref{eq:symmetry}) still holds.
 
-The efficient implementations of ASP algorithms in this paper aims to reduce the number of computation required in the Hessian inverse. The derivations in Section~\ref{2SPSA} to~\ref{2SG} are for the coherent rank-two representation of the Hessian update in Section~ref{Efficient Update for Hessian Inverse}. The key of reducing the FLOPS in this paper is in Section~ref{Efficient Update for Hessian Inverse}: the decompose and transform the rank-two update of the Hessian update into a sequential rank-one update of the Hessian inverse. Broadly, the perturbation sequences $\bDelta_k$ and
+The efficient implementations of ASP algorithms in this paper aims to reduce the number of computation required in the Hessian inverse. The derivations in Section~\ref{2SPSA} to~\ref{2SG} are for the coherent rank-two representation of the Hessian update in Section~\ref{Efficient Update for Hessian Inverse}. The key of reducing the FLOPS in this paper is in Section~ref{Efficient Update for Hessian Inverse}: the decompose and transform the rank-two update of the Hessian update into a sequential rank-one update of the Hessian inverse. Broadly, the perturbation sequences $\bDelta_k$ and
 $\tDelta_k$ in Section~\ref{2SPSA} to~\ref{2SG} can be any sequences
 satisfying the regularity condition C.9 in Spall
 \cite{Spall2009}, except for the enhanced 2SG case in Section~{Enhanced 2SG}. Section~\ref{Numerical Study} further evidences the computational advantage of performing the efficient implementation. 
@@ -213,29 +213,6 @@ update with respect to the current Hessian estimate $\oH_k$:
 \oH_k &= (1 - w_k)\oH_{k-1} + \frac{w_k \delta y_k}{4c_k\tilde{c}_k} (\tDelta_k^{-1}\bDelta_k^{-T}+\bDelta_k^{-1}\tDelta_k^{-T}).
 \end{align*}
 
-
-\begin{table*} \centering
-	\resizebox{2\columnwidth}{!}{
-		\begin{tabular}{|c | c | c | c | c | } \hline
-			Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$  \\ \hline
-			Adaptive 2SPSA & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$ \\
-			Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$ & $\bDelta_k^{-1}$  \\
-			Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ & $\bDelta_k^{-1}$ \\
-			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ & $\bDelta_k^{-1}$  \\
-			\hline
-		\end{tabular}}\\[5pt]
-		\captionsetup{justification=centering}
-		\caption{
-			{ 
-			Expressions for Terms in Eq. (\ref{eq:CoherentRecursion}).}
-			\newline
-			{\footnotesize  In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.}
-			 \newline
-			{\footnotesize  In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}
-			 \newline
-			 {\scriptsize  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
-		\label{tab:Summary}
-	\end{table*}
 
 
 \section{Enhancement for Adaptive 2SPSA Algorithms}
@@ -339,7 +316,7 @@ the current Hessian estimate $\oH_k$:
 
 	Eq. (3.12) in Spall \cite{Spall2009} provides a symmetrized feedback term $ \hPsi_k $, which can be rewritten as the following using relationship (\ref{eq:symmetry}):
 	\begin{equation}
-	\hPsi_k (\oH_{k-1}\bD_k+\bD_k\oH_{k-1})/2,
+	\hPsi_k =(\oH_{k-1}\bD_k+\bD_k\oH_{k-1})/2,
 	\end{equation}
 	where $ \bD_k=\bDelta_k\bDelta_k^{-T}-\bI_p$.
 
@@ -369,9 +346,32 @@ Denote
 
 
 
+\begin{table*} \centering
+	\resizebox{2\columnwidth}{!}{
+		\begin{tabular}{|c | c | c | c | c | } \hline
+			Algorithms & $d_k$ & $b_k$ & $\bm{u}_k$ & $\bm{v}_k$  \\ \hline
+			Adaptive 2SPSA & $1-w_k$ & $\frac{w_k \delta y_k}{4c_k\tilde{c}_k}$ & $\tDelta_k^{-1}$ & \multirow{4}{*}{$\bDelta_k^{-1}$} \\
+			Enhanced 2SPSA & 1 & $\frac{w_k}{2}(\frac{\delta y_k}{2c_k\tilde{c}_k}-\bDelta_k^{T}\oH_{k-1}\tDelta_k)$ & $\tDelta_k^{-1}$ &   \\
+			Adaptive 2SG & $1-w_k$ & $\frac{w_k}{4c_k}$ & $\delta\bG_k$ &  \\
+			Enhanced 2SG * & 1 & $\frac{w_k}{2}$ & $\frac{1}{2c_k}(\delta\bG_k) - \oH_{k-1}\bDelta_k $ &  \\
+			\hline
+		\end{tabular}}\\[1pt]
+		\captionsetup{justification=centering}
+		\caption{
+			{ 
+				Expressions for Terms in Eq. (\ref{eq:CoherentRecursion}).}
+			\newline
+			{\footnotesize  In original setting of Spall~\cite{Spall2000} and \cite{Spall2009}, Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.}
+			\newline
+			{\footnotesize  In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}
+			\newline
+			{\scriptsize  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
+		\label{tab:Summary}
+	\end{table*}
 
 
-\section{Efficient Update for Hessian Inverse}
+
+\section{Efficient Update for Hessian Inverse} \label{Efficient Update for Hessian Inverse}
 As described in Section~\ref{2SPSA}--\ref{Enhanced 2SG}, the
 Hessian updates in \textit{efficient} implementations can be described as rank-two updates in all variants of adaptive simultaneous perturbation algorithms. The Hessian update (either with or without feedback term) can be generalized as:
 \begin{equation}
@@ -420,8 +420,7 @@ maintains symmetry of updates even under numerical approximations. Here is the u
 where $\bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k  \bm{\tilde{u}}_k^{T}$.
 
 \begin{table} [!hbp] \centering 
-	\resizebox{\columnwidth}{!}{
-	\tiny
+	\resizebox{0.85\columnwidth}{!}{
 		\begin{tabular}{| c | c |} \hline
 			Algorithms &  FLOPS \\ \hline
 			Adaptive 2SPSA & $9p^2+10p$\\
@@ -429,7 +428,7 @@ where $\bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k  \bm{\tilde{u}}_k^{T}$.
 			Adaptive 2SG & $9p^2 + 10p$\\
 			Enhanced 2SG* & $15p^2 + 13p$\\
 			\hline
-		\end{tabular}}\\[5pt]
+		\end{tabular}}\\[2pt]
 		\caption{FLOPS Required in Eq. (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) \newline {\scriptsize  Enhanced 2SG* requires symmetric Bernoulli perturbation sequences.} }
 		\label{tab:FLOPS}
 	\end{table}
@@ -440,20 +439,17 @@ per iteration. The total number of operations required to perform all four
 efficient implementations from Section \ref{2SPSA} to \ref{Enhanced
   2SG} are listed in of Table \ref{tab:FLOPS}.
 
-When $p>7$ in
-applying basic \textit{adaptive} algorithms, or when $p>15$ in applying \textit{enhanced} algorithms, the corresponding number
-of operations is fewer than $2p^3/3+3p^2/2-7p/6$ operations required
-by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1}
-\bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and
+Page 12 in Farebrother \cite{Farebrother1988} shows that the total number $2p^3/3+3p^2/2-7p/6$ operations is required by the Gaussian-Jordan elimination. When $p>7$ in applying basic \textit{adaptive} algorithms, or when $p>15$ in applying \textit{enhanced} algorithms, the corresponding number
+of operations is fewer than $2p^3/3+3p^2/2-7p/6$ when computing the term $\ooH_k^{-1} \bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and
 (\ref{eq:Enhancement}).
 
 Assume that the time taken for every computation (addition, multiplication, etc.) are the same, then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in the original setting is:
 \begin{equation} \label{eq:ratio1}
-\frac{9p^2+10p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} O(\frac{1}{p}).
+\frac{9p^2+10p}{2/3p^3+11/2p^2-1/6p} = O(\frac{1}{p}).
 \end{equation}
 Similarly, for the enhanced 2SPSA and 2SG setting, the theoretical ratio is
 \begin{equation}\label{eq:ratio2}
-\frac{15p^2+13p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} O(\frac{1}{p}).
+\frac{15p^2+13p}{2/3p^3+11/2p^2-1/6p} = O(\frac{1}{p}).
 \end{equation}
 
 The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) is heuristically faster than the original setting, in the sense that the FLOPS required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$.
@@ -533,11 +529,11 @@ Hessian inverse, for A2SPSA and E2SPSA and their efficient implementations, effi
 
 Only consider the time consumed in the Hessian update recursion at each iteration. The second column in Table \ref{tab:time} shows that, the EA2SPSA only takes $81.82\%$ of the time taken in A2SPSA, and EE2SPSA only takes $77.31\%$ of that in E2SPSA.
 
-The \textit{efficient} implementation can save more time with the original setup in Spall \cite{Spall2000} and \cite{Spall2009}, as the dimension $p$ goes up. To validate the relationship (\ref{eq:ratio1}-\ref{eq:ratio2}), we run the algorithms, using the same parameters tuned for dimension $p=15$, on different dimension $p=15,30,45,60,120$ and $240$.
+The \textit{efficient} implementation can save more time with the original setup in Spall \cite{Spall2000} and \cite{Spall2009}, as the dimension $p$ goes up. To validate the relationship (\ref{eq:ratio1})--(\ref{eq:ratio2}), we run the algorithms, using the same parameters tuned for dimension $p=15$, on different dimension $p=15,30,45,60,120$ and $240$.
 
 \begin{table}[htbp]
 	\centering
-	\resizebox{\columnwidth}{!}{
+	\resizebox{0.9\columnwidth}{!}{
 		\begin{tabular}{l | c | c || r }
 			
 			 \hline
@@ -551,15 +547,14 @@ The \textit{efficient} implementation can save more time with the original setup
 			 \hline
 		\end{tabular}}
 		\caption{Time Consumed in Hessian Update Procedure for Different Dimension  $p$
-			\newline {\scriptsize  Ratio is time taken in A2SPSA over time taken in EA2SPSA}}
+			\newline {\footnotesize  Ratio is time taken in EA2SPSA over time taken in A2SPSA.}}
 		\label{tab:timedifference1}
 	\end{table}
 	
 	\begin{table}[htbp]
 		\centering
-		\resizebox{\columnwidth}{!}{
-			\begin{tabular}{l | c | c || r }
-				
+		\resizebox{0.9\columnwidth}{!}{
+			\begin{tabular}{l | c | c || r }				
 				\hline
 				Dimension &  E2SPSA & EE2SPA & Ratio\\ \hline
 				15 & 0.432 & 0.334 & 0.7731\\
@@ -571,13 +566,13 @@ The \textit{efficient} implementation can save more time with the original setup
 				\hline
 			\end{tabular}}
 			\caption{Time Consumed in Hessian Update Procedure for Different Dimension  $p$
-				\newline {\scriptsize  Ratio is time taken in E2SPSA over time taken in EE2SPSA}}
+				\newline {\footnotesize  Ratio is time taken in EE2SPSA over time taken in E2SPSA.}}
 			\label{tab:timedifference2}
 		\end{table}
 
-From table \ref{tab:timedifference1}-\ref{tab:timedifference2}, we can envision the trend that the time consumed in the Hessian update procedure, where the sequential rank-one update \ref{eq:SequentialUpdate} makes a difference, is lesser in the efficient implementations than in the original setup in Spall~\cite{Spall2000} and \cite{Spall2009}. Though the ratio of time taken in efficient implementation over that in original setup is indeed decreasing as the dimension goes up, the ratio isn't decreasing as fast as (\ref{eq:ratio1}-\ref{eq:ratio2}) predict. The slower rate results from the efficiency of mldivide function (equivalently linsolve). The dimensions of our test matrices are far too small to manifest the asymptoptic $O(p^3)$ running time required by Gaussian-Jordan factorization in linsolve. Furthermore, MATLAB will typically be making use of parallel routines for computing the LU factorization. 
+From table \ref{tab:timedifference1}-\ref{tab:timedifference2}, we can envision the trend that the time consumed in the Hessian update procedure, where the sequential rank-one update \ref{eq:SequentialUpdate} makes a difference, is lesser in the efficient implementations than in the original setup in Spall~\cite{Spall2000} and \cite{Spall2009}. Though the ratio of time taken in efficient implementation over that in original setup is indeed decreasing as the dimension goes up, the ratio is not decreasing as fast as (\ref{eq:ratio1})--(\ref{eq:ratio2}) predict. The slower rate results from the efficiency of mldivide function (equivalently linsolve). The dimensions of our test matrices are far too small to manifest the asymptoptic $O(p^3)$ running time required by Gaussian-Jordan factorization in linsolve. Furthermore, MATLAB will typically be making use of parallel routines for computing the LU factorization. 
 
-In short, this numerical example does show the superiority of the \textit{efficient} implementation of (\ref{eq:Transform}-\ref{eq:SequentialUpdate}), in terms of the running time and accuracy (though small as shown in Fig \ref{fig:dist}). The asymptotic ratio (\ref{eq:ratio1}-\ref{eq:ratio2}) hasn't been fully exploited in this small-dimensional example, though it is theoretically valid.
+In short, this numerical example does show the superiority of the \textit{efficient} implementation of (\ref{eq:Transform})--(\ref{eq:SequentialUpdate}), in terms of the running time and accuracy (though small as shown in Fig \ref{fig:dist}). The asymptotic ratio (\ref{eq:ratio1})--(\ref{eq:ratio2}) has not been fully exploited in this small-dimensional example, though it is theoretically valid.
 
 
 \section{Conclusion and Future Work} In this paper, we discuss
@@ -605,7 +600,7 @@ N00024-13-D6400).
 \begin{thebibliography}{1}
 	
 	\bibitem{Kiefer1952}
-	Kiefer, J., and Wolfowitz, J. (1952). Stochastic estimation of the maximum of a regression function.\textit{ The Annals of Mathematical Statistics, 23(3)}, 462-466.
+	Kiefer, J., and Wolfowitz, J. (1952). Stochastic estimation of the maximum of a regression function.\textit{The Annals of Mathematical Statistics, 23(3)}, 462-466.
 	
 	\bibitem{Fabian1971}
 	Fabian, V. (1971). Stochastic approximation, \textit{Optimizing Methods in Statistics}, J.S. Rustigi, Ed. New York: Academic Press, pp. 439-470.
@@ -615,12 +610,12 @@ N00024-13-D6400).
 
 \bibitem{Spall1992} Spall, J. C. (1992). Multivariate
   stochastic approximation using a simultaneous perturbation gradient
-  approximation. \textit{Automatic Control, IEEE Transactions on},
+  approximation. \textit{IEEE Transactions on Automatic Control},
   37(3), 332-341.
 
 \bibitem{Spall2000} Spall, J. C. (2000). Adaptive
   stochastic approximation by the simultaneous perturbation
-  method. \textit{Automatic Control, IEEE Transactions on}, 45(10),
+  method. \textit{IEEE Transactions on Automatic Control}, 45(10),
   1839-1853.
 
 
@@ -630,13 +625,12 @@ Wang, Q. (2011). Stochastic approximation for discrete optimization of noisy los
 
 
 \bibitem{Spall2007}
-Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm. In \textit{Information Sciences and Systems (CISS), 2007 41st Annual Conference on} (pp. 35-40). IEEE.
+Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm. In \textit{2007 41st Annual Conference on Information Sciences and Systems} (pp. 35-40). IEEE.
 
 
 \bibitem{Spall2009} Spall, J. C. (2009). Feedback and
   weighting mechanisms for improving Jacobian estimates in the adaptive
-  simultaneous perturbation algorithm. \textit{Automatic Control, IEEE
-    Transactions on}, 54(6), 1216-1229.
+  simultaneous perturbation algorithm. \textit{IEEE Transactions on Automatic Control}, 54(6), 1216-1229.
 
 
 \bibitem{Woodbury1950} Woodbury,
@@ -655,11 +649,11 @@ Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Es
 \bibitem{Sadegh1998} Sadegh, P. and Spall,
   J. C. (1998). Optimal random perturbations for stochastic
   approximation using a simultaneous perturbation gradient
-  approximation. \textit{Automatic Control, IEEE Transactions on}, 44,
+  approximation. \textit{IEEE Transactions on Automatic Control}, 44,
   231-237.
 
 \bibitem{Cao2011}
-Cao, X. (2011, March). Effective perturbation distributions for small samples in simultaneous perturbation stochastic approximation. In \textit{Information Sciences and Systems (CISS), 2011 45th Annual Conference on} (pp. 1-5). IEEE.
+Cao, X. (2011, March). Effective perturbation distributions for small samples in simultaneous perturbation stochastic approximation. In \textit{2011 45th Annual Conference on Information Sciences and Systems} (pp. 1-5). IEEE.
 
 
 \bibitem{Bhatnagar2012} Bhatnagar, S., Prasad,
@@ -676,6 +670,9 @@ Cao, X. (2011, March). Effective perturbation distributions for small samples in
 
 \bibitem{Bhatnagar2003}
 Bhatnagar, S., Fu, M.C., Marcus, S.I. and Wang, I., 2003. Two-timescale simultaneous perturbation stochastic approximation using deterministic perturbation sequences. \textit{ACM Transactions on Modeling and Computer Simulation (TOMACS), 13(2)}, pp.180-209.
+
+\bibitem{Farebrother1988}
+Farebrother, R. W. (1988). \textit{Linear least squares computations}. Marcel Dekker, Inc..
 
 \end{thebibliography}
 \end{document}
