@@ -81,7 +81,7 @@ To overcome the curse of dimensionality, Spall~\cite{Spall1992} first introduces
 in both the gradient-free optimization (Kiefer-Wolfowitz) and the
 gradient-based setting (Robbins-Monro).  Wang~\cite{Wang2011} creatively extends SP idea to discrete optimization setting. Later Spall~\cite{Spall2000}
 generalizes the SP idea to \textit{adaptive} simultaneous perturbation (ASP) and demonstrated a stochastic
-analogue of Newton-Raphson's algorithm.  Spall~\cite{Spall2007} and \cite{Spall2009} incorporate a feedback process and an optimal weighting mechanism into the method in Spall~\cite{Spall2000}, providing an
+analogue of Newton-Raphson algorithm.  Spall~\cite{Spall2007} and \cite{Spall2009} incorporate a feedback process and an optimal weighting mechanism into the method in Spall~\cite{Spall2000}, providing an
 \textit{enhanced} second-order algorithm with more accurate Hessian matrix approximations. Chapter 7 of Bhatnagar~\cite{Bhatnagar2012} extensively covers the framework and convergence analysis for some variants of Newton-type ASP algorithms.
 
 The essence of second-order SP algorithm, under the minimization setting,
@@ -447,14 +447,16 @@ by Gaussian-Jordan elimination when computing the term $\ooH_k^{-1}
 \bG_k(\htheta_k)$ in both algorithm (\ref{eq:Adaptation}) and
 (\ref{eq:Enhancement}).
 
-The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) is heuristically faster than the original setting, in the sense that the FLOPS required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$. Assume that the time taken for every computation (addition, multiplication, etc.) are the same, then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in the original setting is:
-\begin{equation*}
-\frac{9p^2+10p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} \frac{3}{2p}.
-\end{equation*}
+Assume that the time taken for every computation (addition, multiplication, etc.) are the same, then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in the original setting is:
+\begin{equation} \label{eq:ratio1}
+\frac{9p^2+10p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} O(\frac{1}{p}).
+\end{equation}
 Similarly, for the enhanced 2SPSA and 2SG setting, the theoretical ratio is
-\begin{equation*}
-\frac{15p^2+13p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} \frac{3}{2p}.
-\end{equation*}
+\begin{equation}\label{eq:ratio2}
+\frac{15p^2+13p}{2/3p^3+11/2p^2-1/6p} \overset{p \to \infty}{\longrightarrow} O(\frac{1}{p}).
+\end{equation}
+
+The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform}\text{--}\ref{eq:SequentialUpdate}) is heuristically faster than the original setting, in the sense that the FLOPS required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$.
 
 
 \section{Numerical Study} \label{Numerical Study}
@@ -525,11 +527,57 @@ Hessian inverse, for A2SPSA and E2SPSA and their efficient implementations, effi
 		\begin{tabular}{l|ccccc|}
 			\input{../res/timing_15.txt}
 		\end{tabular}}
-		\caption{Time Consumed in Each Procedure}
+		\caption{Time Consumed in Each Procedure for $p=15$}
 		\label{tab:time}
 	\end{table}
 
-Only consider the time consumed in the Hessian update recursion at each iteration. The second column in Table \ref{tab:time} shows that, the EA2SPSA only takes $81.82\%$ of the time taken in A2SPSA, and EE2SPSA only takes $77.31\%$ of that in E2SPSA. The \textit{efficient} implementation can save more time with the original setup in Spall \cite{Spall2000} and \cite{Spall2009}, as the dimension $p$ goes up. 
+Only consider the time consumed in the Hessian update recursion at each iteration. The second column in Table \ref{tab:time} shows that, the EA2SPSA only takes $81.82\%$ of the time taken in A2SPSA, and EE2SPSA only takes $77.31\%$ of that in E2SPSA.
+
+The \textit{efficient} implementation can save more time with the original setup in Spall \cite{Spall2000} and \cite{Spall2009}, as the dimension $p$ goes up. To validate the relationship (\ref{eq:ratio1}-\ref{eq:ratio2}), we run the algorithms, using the same parameters tuned for dimension $p=15$, on different dimension $p=15,30,45,60,120$ and $240$.
+
+\begin{table}[htbp]
+	\centering
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{l | c | c || r }
+			
+			 \hline
+			 Dimension &  A2SPSA & EA2SPA & Ratio\\ \hline
+			 15 & 0.363 & 0.297 & 0.8182\\
+			 30 & 0.525 & 0.369 & 0.7029 \\
+		 	 45 & 0.790 & 0.487 & 0.6165\\
+			 60 & 1.094 & 0.654 & 0.5978 \\
+			 120 & 3.575 & 1.844 & 0.5158 \\
+			 240 &  1.881 & 0.942 & 0.5008\\
+			 \hline
+		\end{tabular}}
+		\caption{Time Consumed in Hessian Update Procedure for Different Dimension  $p$
+			\newline {\scriptsize  Ratio is time taken in A2SPSA over time taken in EA2SPSA}}
+		\label{tab:timedifference1}
+	\end{table}
+	
+	\begin{table}[htbp]
+		\centering
+		\resizebox{\columnwidth}{!}{
+			\begin{tabular}{l | c | c || r }
+				
+				\hline
+				Dimension &  E2SPSA & EE2SPA & Ratio\\ \hline
+				15 & 0.432 & 0.334 & 0.7731\\
+				30 & 0.565 & 0.398 & 0.7044 \\
+				45 & 0.844 & 0.519 & 0.6149\\
+				60 & 1.138 & 0.709 & 0.6230 \\
+				120 & 3.517 & 1.899 & 0.5399 \\
+				240 &  1.984 & 0.935 & 0.4713\\
+				\hline
+			\end{tabular}}
+			\caption{Time Consumed in Hessian Update Procedure for Different Dimension  $p$
+				\newline {\scriptsize  Ratio is time taken in E2SPSA over time taken in EE2SPSA}}
+			\label{tab:timedifference2}
+		\end{table}
+
+From table \ref{tab:timedifference1}-\ref{tab:timedifference2}, we can envision the trend that the time consumed in the Hessian update procedure, where the sequential rank-one update \ref{eq:SequentialUpdate} makes a difference, is lesser in the efficient implementations than in the original setup in Spall~\cite{Spall2000} and \cite{Spall2009}. Though the ratio of time taken in efficient implementation over that in original setup is indeed decreasing as the dimension goes up, the ratio isn't decreasing as fast as (\ref{eq:ratio1}-\ref{eq:ratio2}) predict. The slower rate results from the efficiency of mldivide function (equivalently linsolve). The dimensions of our test matrices are far too small to manifest the asymptoptic $O(p^3)$ running time required by Gaussian-Jordan factorization in linsolve. Furthermore, MATLAB will typically be making use of parallel routines for computing the LU factorization. 
+
+In short, this numerical example does show the superiority of the \textit{efficient} implementation of (\ref{eq:Transform}-\ref{eq:SequentialUpdate}), in terms of the running time and accuracy (though small as shown in Fig \ref{fig:dist}). The asymptotic ratio (\ref{eq:ratio1}-\ref{eq:ratio2}) hasn't been fully exploited in this small-dimensional example, though it is theoretically valid.
 
 
 \section{Conclusion and Future Work} In this paper, we discuss
@@ -631,3 +679,4 @@ Bhatnagar, S., Fu, M.C., Marcus, S.I. and Wang, I., 2003. Two-timescale simultan
 
 \end{thebibliography}
 \end{document}
+
