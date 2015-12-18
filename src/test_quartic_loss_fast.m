@@ -1,3 +1,4 @@
+mex('quartic_loss_fast.c');
 p = 10; l = quartic_loss_factory(p);
 time_slow = 0;
 time_fast = 0;

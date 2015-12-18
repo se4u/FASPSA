@@ -1,10 +1,10 @@
 function Hbarbar = adaptivespsa_common_preconditioning(Hbar, k)
 Hbar = (Hbar + Hbar')/2;
 delta_eye = max([1e-6 * exp(-k/2) 1e-10]);
-m = max(max(Hbar));
-Hbar = Hbar / m;
+% Hbar = Hbar / m;
 Hbar_sq = Hbar * Hbar;
-Hbarbar = m * sqrtm(Hbar_sq + delta_eye * eye(size(Hbar)));
+m = max(max(Hbar_sq));
+Hbarbar = sqrt(m) * sqrtm(Hbar_sq/m + delta_eye * eye(size(Hbar)));
 if ~(all(isreal(Hbarbar)))
     disp(eig(Hbar));
     disp(delta_eye);
