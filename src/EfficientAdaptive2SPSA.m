@@ -142,7 +142,6 @@ for k=0:max_iterations-1
         time_preconditioning = time_preconditioning + toc;
     end
 
-    tic
     % if sequence_param_struct.use_hacky_preconditioning
     %     step_direction = Bbar * delta_k;
     %     dot_prod = (step_direction'*delta_k)/norm(step_direction)/norm(delta_k);
@@ -154,7 +153,8 @@ for k=0:max_iterations-1
     %     end
     % else
     % end
-    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude*bbar_max) * cond_bbar * delta_k;
+    tic
+    proposed_theta = theta - (step_length_fn(k)*g_k_magnitude*bbar_max) * (cond_bbar * delta_k);
     time_taken = time_taken + toc;
     tic
     [theta, cur_loss_estimate] = greedy_algorithm_b(...

@@ -87,7 +87,6 @@ for algorithm_idx=[1, 3, 2,4 ]
 end
 fclose(fid);
 %%
-pause;
 exit();
 
 for algorithm_idx=1:length(algorithms)

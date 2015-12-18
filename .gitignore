@@ -19,3 +19,4 @@ tex/faspsa.bbl
 tex/faspsa.blg
 tex/faspsa.log
 src/quartic_loss_fast.mexmaci64
+res/sso_project_*mat
