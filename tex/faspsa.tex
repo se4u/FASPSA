@@ -412,7 +412,7 @@ such that
 \end{equation*}
 
 Although the computation of $\bm{\tilde{u}}_k,
-\bm{\tilde{v}}_k$ requires $6p$ operations, it reduces the number of
+\bm{\tilde{v}}_k$ requires $6p$ operations (addition, multiplication and square root), it reduces the number of
  required matrix vector multiplications from 4 down to 2, and it
 maintains symmetry of updates even under numerical approximations. Here is the update recursion of Hessian inverse $\oH_k^{-1}$:
 \begin{equation} \label{eq:SequentialUpdate}
@@ -593,7 +593,7 @@ In short, this numerical example does show the superiority of the efficient impl
 \section{Conclusion and Future Work} In this paper, we discuss
 an efficient implementation of four Newton-like SP algorithms:
 adaptive 2SPSA, enhanced 2SPSA, adaptive 2SG, and enhanced 2SG. The
-efficiency, in terms of both time taken and the step required to achieved a certain numerical accuracy, is
+efficiency, in terms of both time taken and the steps required to achieved a certain numerical accuracy, is
 attained by a unified sequential (rank-two) update using Woodbury
 matrix identity. Particularly for the case of enhanced 2SG*, the
 usage of symmetric Bernoulli perturbation sequence is required.
