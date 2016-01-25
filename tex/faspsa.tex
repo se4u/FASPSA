@@ -1,5 +1,6 @@
 \documentclass[conference,10.3cpt]{IEEEtran}
 \ifCLASSINFOpdf \usepackage[pdftex]{graphicx} \else \fi
+
 \usepackage{verbatim}
 \usepackage{amsmath}
 \usepackage{tipa}
@@ -17,6 +18,8 @@
 \usepackage{url}
 \usepackage{multirow}
 \usepackage{caption}
+\usepackage{listings}
+\usepackage{color}
 \setlength{\baselineskip}{11pt}
 \hyphenation{op-tical net-works semi-conduc-tor}
 \newcommand{\bD}{\bm{D}}
@@ -33,19 +36,18 @@
 \newcommand{\tD}{\bm{\tilde{D}}}
 \newcommand{\remove}[1]{}
 \newcommand{\ie}{i.e.,\ }
-\newcommand{\bigie}{I.e.,\ }
 \begin{document}
 
 \title{Efficient Implementation of Enhanced Adaptive
-  Simultaneous Perturbation Algorithms}
+  Simultaneous Perturbation Algorithm}
 \author{\IEEEauthorblockN{Pushpendre Rastogi}
   \IEEEauthorblockA{Department of Computer Science\\ The Johns Hopkins
     University\\ Baltimore, MD 21218\\ Email: pushpendre@jhu.edu} \and
   \IEEEauthorblockN{Jingyi Zhu} \IEEEauthorblockA{Department of Applied
     Mathematics and Statistics\\ The Johns Hopkins University\\ Baltimore,
     MD 21218\\ Email: jingyi.zhu@jhu.edu} \and \IEEEauthorblockN{James
-    C. Spall} \IEEEauthorblockA{Applied Physics Laboratory\\ The Johns
-    Hopkins University\\ Laurel, MD 20723\\ Email:
+    C. Spall} \IEEEauthorblockA{The Johns
+    Hopkins University\\Applied Physics Laboratory\\ Laurel, MD 20723\\ Email:
     james.spall@jhuapl.edu}}
 
 \maketitle
@@ -75,14 +77,14 @@
 \label{Introduction}
 
 Stochastic approximation (SA) has been widely applied in minimization and/or
-root-finding problems in noisy environment. The Kiefer-Wolfowitz algorithm in \cite{Kiefer1952} can be viewed as a stochastic analogue of steepest descent method, where the stochastic gradient is approximated by a finite difference. The stochastic analogue of Newton-Raphson algorithm is known to provide a nearly-optimal SA algorithms with almost quadratic convergence rate. However in practice, the exact/noisy Hessian information is mostly unavailable. Many algorithms have been proposed to achieve more accurate Hessian approximations. Fabian~\cite{Fabian1971} provides estimates for both the gradient and Hessian information based on finite-difference approximation using noisy function information. Ruppert~\cite{Ruppert1985} also presents a finite-difference Hessian approximation scheme using noisy gradient information. Such finite-difference formulations can be notoriously costly in high-dimensional cases. 
+root-finding problems in noisy environment. The Kiefer-Wolfowitz algorithm in \cite{Kiefer1952} can be viewed as a stochastic analogue of steepest descent method, where the stochastic gradient is approximated by a finite difference. The stochastic analogue of Newton-Raphson algorithm is known to provide a nearly-optimal SA algorithms with almost quadratic convergence rate. However in practice, the exact/noisy Hessian information is mostly unavailable. Many algorithms have been proposed to achieve more accurate Hessian approximations. Fabian~\cite{Fabian1971} provides estimates for both the gradient and Hessian information based on finite-difference approximation using noisy function information. Ruppert~\cite{Ruppert1985} also presents a finite-difference Hessian approximation scheme using noisy gradient information. Such finite-difference formulations can be notoriously costly in dealing with high-dimensional problems. 
 
 To overcome the curse of dimensionality, Spall~\cite{Spall1992} first introduces the idea of \textit{simultaneous perturbation} (SP), which can be applied
 in both the gradient-free optimization (Kiefer-Wolfowitz) and the
-gradient-based setting (Robbins-Monro).  Wang~\cite{Wang2011} creatively extends SP idea to discrete optimization setting. Later Spall~\cite{Spall2000}
+gradient-based setting (Robbins-Monro).  Wang and Spall~\cite{Wang2011} creatively extends SP idea to discrete optimization setting. Later Spall~\cite{Spall2000}
 generalizes the SP idea to \textit{adaptive} simultaneous perturbation (ASP) and demonstrated a stochastic
 analogue of Newton-Raphson algorithm.  Spall~\cite{Spall2007} and \cite{Spall2009} incorporate a feedback process and an optimal weighting mechanism into the method in Spall~\cite{Spall2000}, providing an
-\textit{enhanced} second-order algorithm with more accurate Hessian matrix approximations. Chapter 7 of Bhatnagar~\cite{Bhatnagar2012} extensively explains the framework and convergence analysis for some variants of Newton-type ASP algorithms.
+\textit{enhanced} second-order algorithm with more accurate Hessian matrix approximations. Chapter 7 of Bhatnagar et al.~\cite{Bhatnagar2012} extensively explains the framework and convergence analysis for some variants of Newton-type ASP algorithms.
 
 The essence of second-order ASP algorithm, under the minimization setting,
 is to approximately and efficiently obtain an estimate of the
@@ -93,7 +95,7 @@ noisy loss function evaluations or from noisy gradient
 evaluations.
 
 Consider the problem of minimizing a
-\textit{differentiable} loss function $ L(\bm{\uptheta}) $ where
+differentiable loss function $ L(\bm{\uptheta}) $ where
 $ \bm{\uptheta} \in \mathbbm{R}^p $ with $ p\ge1 $. Denote
 $\bm{g}(\bm{\uptheta})={\partial L}/{\partial \bm{\uptheta}}$. The
 minimization problem ${\text{min}}_{\bm{\uptheta}}L(\bm{\uptheta})$ is
@@ -105,7 +107,7 @@ noisy measurements of the gradient $\bm{g}(\bm{\uptheta})$, say
 $\bm{Y}(\bm{\uptheta})=\bm{g}(\bm{\uptheta})+\bm{e}(\bm{\uptheta})$. Throughout this paper, we assume that only noisy function
 evaluations are available to 2SPSA algorithms, and that 2SG algorithms use both noisy function and gradient evaluations.
 
-This paper presents an \textit{efficient} way to obtain an accurate inverse of
+This paper presents an efficient way to obtain an accurate inverse of
 estimate of the Hessian matrix $\oH_k^{-1}$, by eliminating the necessity to solve a
 linear system of equations in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}). The basic idea is to maintain and update the
 value of $\oH_k^{-1}$ by applying the Matrix Inversion Lemma (MIL) in Woodbury~\cite{Woodbury1950}:
@@ -114,7 +116,7 @@ value of $\oH_k^{-1}$ by applying the Matrix Inversion Lemma (MIL) in Woodbury~\
 (\bm{A}+\bm{UCV})^{-1}=\bm{A}^{-1}-\bm{A}^{-1}\bm{U}(\bm{C}^{-1}+\bm{V}\bm{A}^{-1}\bm{U})^{-1}\bm{V}\bm{A}^{-1},
 \end{equation}
 where $\bm{A}$, $\bm{U}$, $\bm{C}$ and $\bm{V}$
-are of the correct (comformable) sizes and the denoted matrix inverses
+are of the correct (conformable) sizes and the denoted matrix inverses
 exist.
 
 Using MIL, we recursively update an estimate of the
@@ -130,7 +132,7 @@ Section~\ref{Enhanced 2SG}, is when
 all components in the perturbation sequences (both $ \bDelta_k $ and
 $\tDelta_k $) are symmetric Bernoulli distributed,
 a.k.a. \textit{Rademacher} distributed. Such a perturbation sequence
-is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. However, Cao \cite{Cao2011} points out that the symmetric Bernoulli perturbation sequences might not be optimal in small-sample approximations; however \cite{Cao2011} does not rule out the superior role of symmetric Bernoulli perturbation in high-dimensional and large-sample circumstances. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
+is valid and efficient as shown in Sadegh and Spall~\cite{Sadegh1998}. Every component in the symmetric Bernoulli sequence has a 50\% chance of being either $+1$ or
 $\text{--}1$, such that:
 \begin{equation} \label{eq:symmetry}
 \bDelta_k=\bDelta_k^{-1}, \tDelta_k=\tDelta_k^{-1}.
@@ -139,19 +141,19 @@ where for any vector
 $ \bm{x}\in \mathbbm{R}^p \setminus \{\bm{0}\} $, 
 $\bm{x}^{-1}$ denotes $[1/x_1, \ldots, 1/x_p]^T$ for the ease of following discussion. Additionally, $ \bm{x}^{-T} $ denotes $[1/x_1, \ldots, 1/x_p]$.
 
-Chapter 5 of a recent textbook Bhatnagar~\cite{Bhatnagar2012} comprehensively covers a deterministic perturbation construction based on the particular structure of Hadamard matrix in Sylvester~\cite{Sylvester1867}. Bhatnagar~\cite{Bhatnagar2003} provides some empirical evidences that such a deterministic construction of the
+Chapter 5 of a recent textbook Bhatnagar et al.~\cite{Bhatnagar2012} comprehensively covers a deterministic perturbation construction based on the particular structure of Hadamard matrix in Sylvester~\cite{Sylvester1867}. Bhatnagar et al.~\cite{Bhatnagar2003} provides some empirical evidences that such a deterministic construction of the
 perturbation sequence results in better approximation
 accuracy and speed of convergence than the optimal stochastic
 generation described in Sadegh and Spall~\cite{Sadegh1998}; though
 the superiority of this deterministic formulation has not been proven theoretically yet. However, all the components of
 such deterministic
 Hadamard-matrix-based perturbation are still either $+1$ or $\text{--}1$,
-and therefore relationship (\ref{eq:symmetry}) still holds.
+so (\ref{eq:symmetry}) still holds. In Section ~\ref{Enhanced 2SG}, we shall see the usage of relationship (\ref{eq:symmetry}).
 
-The efficient implementations of ASP algorithms in this paper aims to reduce the number of computation required in the Hessian inverse. The derivations in Section~\ref{2SPSA} to~\ref{2SG} are for the coherent rank-two representation of the Hessian update in Section~\ref{Efficient Update}. The key of reducing the FLOPs in this paper is in Section~\ref{Efficient Update}: the decompose and transform the rank-two update of the Hessian update into a sequential rank-one update of the Hessian inverse. Broadly, the perturbation sequences $\bDelta_k$ and
+The efficient implementations of ASP algorithms in this paper aims to reduce the number of computation required in the Hessian inverse. The derivations in Section~\ref{2SPSA} to~\ref{2SG} are for the coherent rank-two representation of the Hessian update in Section~\ref{Efficient Update}. The key of reducing the FLOPs is presented in Section~\ref{Efficient Update}: the decomposition of the rank-two update of the Hessian update into a sequential rank-one update of the Hessian inverse. Broadly, the perturbation sequences $\bDelta_k$ and
 $\tDelta_k$ in Section~\ref{2SPSA} to~\ref{2SG} can be any sequences
 satisfying the regularity condition C.9 in Spall
-\cite{Spall2009}, except for the enhanced 2SG case in Section~\ref{Enhanced 2SG}. Section~\ref{Numerical Study} further evidences the computational advantage of performing the efficient implementation. 
+\cite{Spall2009}, except that the perturbation sequence in the enhanced 2SG case in Section~\ref{Enhanced 2SG} has to satisfy (\ref{eq:symmetry}). Section~\ref{Numerical Study} further backs up the computational advantage of performing the efficient implementation. 
 
 \section{Adaptive 2SPSA Algorithm}  \label{2SPSA}
 The adaptive 2SPSA algorithm introduced in Spall~\cite{Spall2000} employs the following
@@ -184,7 +186,9 @@ converting the second recursion in algorithm (\ref{eq:Adaptation})
 into a recursion on $\oH_k^{-1}$, and directly pre-conditioning $\oH_k^{-1}$ such that
 \begin{equation} \label{eq:preconditioning}
   \bm{\ooH}_k^{-1}=\bm{f}_k(\oH_k^{-1}).
-\end{equation} A particular form of $\bm{f}_k$ suggested in
+\end{equation}
+
+A particular form of $\bm{f}_k$ suggested in
 Spall~\cite{Spall2009} is $\bm{f}_k:~\mathbb{R}^{p\times p} \to \mathbb{R}^{p\times p}$ defined by
 $\bm{f}_k(\bm{H})=(\bm{H}^{T}\bm{H}+\delta_k \bm{I}_p)^{1/2}$ where
 the square root is the (unique) positive definite matrix square root and
@@ -228,7 +232,7 @@ uses the following two recursions:
 \end{equation}
 where $\bG_k(\htheta_k)$, $\hH_k$,
 $\delta\bG_k$, and $\bG_k^{(1)}(\htheta_k\pm c_k\bDelta_k)$ are
-defined in (\ref{eq:notations}), and notations in (\ref{eq:dy}) and
+defined in (\ref{eq:notations}), and notation in (\ref{eq:dy}) and
 (\ref{eq:HHat}) in Section \ref{2SPSA} apply. The optimal weighting
 parameter, which minimizes the asymptotic variances of the elements in
 $\hH_k$, is proven to be:
@@ -307,7 +311,7 @@ the current Hessian estimate $\oH_k$:
 
 \section{Enhancement for Adaptive 2SG Algorithms}  \label{Enhanced 2SG}
  The enhancement on adaptive 2SG algorithm can be achieved analogously to that on adaptive 2SPSA algorithm, by incorporating a feedback
- mechanism and optimal weighting in (\ref{eq:weighting}). Same as section \ref{2SG}, enhanced 2SG algorithms have access
+ mechanism and optimal weighting in (\ref{eq:weighting}). Same as Section \ref{2SG}, enhanced 2SG algorithms have access
  to the noisy measurement of the gradient information,
  $\bG_k(\htheta_k)$, $\bG_k^{(1)}(\htheta_k+ c_k\bDelta_k)$ and
  $\bG_k^{(1)}(\htheta_k- c_k\bDelta_k)$ at each iteration $k$.
@@ -357,11 +361,11 @@ Denote
 		\captionsetup{justification=centering}
 		\caption{
 			{ 
-				Expressions for Terms in Eq. (\ref{eq:CoherentRecursion}).}
+				Expressions for Terms in eq. (\ref{eq:CoherentRecursion}).}
 			\newline
-			{\footnotesize  In original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}), Eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.}
+			{\footnotesize  In original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}), eq. (\ref{eq:CoherentRecursion}) needs to be updated for all four algorithms.}
 			\newline
-			{\footnotesize  In efficient implementation, Eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}
+			{\footnotesize  In efficient implementation, eq. (\ref{eq:CoherentRecursion}) needs to be updated only for Enhanced 2SPSA and 2SG *.}
 			\newline
 			{\scriptsize  Enhanced 2SG * requires symmetric Bernoulli perturbation sequences. }}
 		\label{tab:Summary}
@@ -371,7 +375,7 @@ Denote
 
 \section{Efficient Update for Hessian Inverse} \label{Efficient Update}
 As described in Section~\ref{2SPSA}--\ref{Enhanced 2SG}, the
-Hessian updates in \textit{efficient} implementations can be described as rank-two updates in all variants of adaptive simultaneous perturbation algorithms. The Hessian update (either with or without feedback term) can be generalized as:
+Hessian updates in efficient implementations can be described as rank-two updates in all variants of adaptive simultaneous perturbation algorithms. The Hessian update (either with or without feedback term) can be generalized as:
 \begin{equation}
 \label{eq:CoherentRecursion}
   \oH_{k}=d_k\oH_{k-1}+b_k(\bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T}).
@@ -380,21 +384,27 @@ where the detailed expressions for scalar terms $d_k$ and $b_k$, and vectors $\b
 condition~(\ref{eq:symmetry}) is only required for the
 enhanced 2SG case marked by *.
 
-The procedure described in equation
-(\ref{eq:CoherentRecursion}) requires $4p^2 + p$ operations. Recursion
+The procedure in eq.
+(\ref{eq:CoherentRecursion}) requires at least $4p^2 + p$ operations (scalar addition and multiplication). Recursion
 (\ref{eq:CoherentRecursion}) has to be updated in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement})
-for all four cases. However, in the \textit{efficient} implementation
+for all four cases. However, in the efficient implementation
 setting, it needs to be updated only for enhanced 2SPSA in
 Section \ref{Enhanced 2SPSA} and enhanced 2SG in Section
 \ref{Enhanced 2SG}, as evidenced in Table \ref{tab:Summary}.
 
-Recognizing the rank-two structure of the Hessian updates in Eq. (\ref{eq:CoherentRecursion}) leads to
-an \textit{efficient} update recursion for the Hessian inverse by applying the MIL (\ref{eq:MatrixInversion}). First compute
+Recognizing the rank-two structure of the Hessian updates in eq. (\ref{eq:CoherentRecursion}) leads to
+an efficient update recursion for the Hessian inverse by applying the MIL (\ref{eq:MatrixInversion}). First compute
+
 \begin{equation} \label{eq:Transform}
- \bm{\tilde{u}}_k, \bm{\tilde{v}}_k =
-  \sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k \pm
-  \frac{|\bm{u}_k|}{|\bm{v}_k|}\bm{v}_k),
+\begin{dcases}
+\bm{\tilde{u}}_k=\sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k +
+\frac{|\bm{u}_k|}{|\bm{v}_k|}\bm{v}_k)\\
+\bm{\tilde{v}}_k =
+\sqrt{\frac{|\bm{v}_k|}{2|\bm{u}_k|}} (\bm{u}_k -
+\frac{|\bm{u}_k|}{|\bm{v}_k|}\bm{v}_k)\\
+\end{dcases}
 \end{equation}
+
 such that
 \begin{equation*} \bm{u}_k \bm{v}_k^{T}+\bm{v}_k \bm{u}_k^{T}
   = \bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T} - \bm{\tilde{v}}_k
@@ -403,22 +413,22 @@ such that
 
 Although the computation of $\bm{\tilde{u}}_k,
 \bm{\tilde{v}}_k$ requires $6p$ operations, it reduces the number of
-matrix vector multiplications required from 4 down to 2, and it
+ required matrix vector multiplications from 4 down to 2, and it
 maintains symmetry of updates even under numerical approximations. Here is the update recursion of Hessian inverse $\oH_k^{-1}$:
 \begin{equation} \label{eq:SequentialUpdate}
-  \begin{dcases} \bm{B}_k^{-1} &= d_k^{-1}\oH_{k-1}^{-1}
+  \begin{cases} \bm{B}_k^{-1} &= d_k^{-1}\oH_{k-1}^{-1}
     -
     \frac{d_k^{-2}}{b_k^{-1}+\bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1}\bm{\tilde{u}}_k}
     \oH_{k-1}^{-1}\bm{\tilde{u}}_k \bm{\tilde{u}}_k^{T}\oH_{k-1}^{-1},\\
     \oH_k^{-1} &=\bm{B}_k^{-1} +
     \frac{1}{b_k^{-1}-\bm{\tilde{v}}_k^{T}\bm{B}_k^{-1}\bm{\tilde{v}}_k}
     \bm{B}_k^{-1}\bm{\tilde{v}}_k \bm{\tilde{v}}_k^{T}\bm{B}_{k}^{-1}.
-  \end{dcases}
+  \end{cases}
 \end{equation}
 where $\bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k  \bm{\tilde{u}}_k^{T}$.
 
 \begin{table} [!hbp] \centering 
-	\resizebox{0.8\columnwidth}{!}{
+	\resizebox{0.75\columnwidth}{!}{
 		\begin{tabular}{| c | c |} \hline
 			Algorithms &  FLOPS \\ \hline
 			Adaptive 2SPSA & $9p^2+10p$\\
@@ -427,7 +437,7 @@ where $\bm{B}_k=d_k\oH_{k-1}+b_k\bm{\tilde{u}}_k  \bm{\tilde{u}}_k^{T}$.
 			Enhanced 2SG* & $15p^2 + 13p$\\
 			\hline
 		\end{tabular}}\\[2pt]
-		\caption{FLOPS Required in Eq. (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) \newline {\scriptsize  Enhanced 2SG* requires symmetric Bernoulli perturbation sequences.} }
+		\caption{FLOPS required in eq. (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) \newline {\scriptsize  Enhanced 2SG* requires symmetric Bernoulli perturbation sequences.} }
 		\label{tab:FLOPS}
 	\end{table}
 
@@ -435,34 +445,36 @@ The rank-two update (two sequential rank-1 updates) in
 equation (\ref{eq:SequentialUpdate}) requires $9p^2 + 4p$ operations
 per iteration. The total number of operations required to perform all four
 efficient implementations from Section \ref{2SPSA} to \ref{Enhanced
-  2SG} are listed in of Table \ref{tab:FLOPS}.
+  2SG} are listed in Table \ref{tab:FLOPS}. Now we can proceed to do the FLOPs comparison between the efficient implementation (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) to the Hessian (inverse) update (including computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, excluding preconditioning step) in original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}).
 
-
-Now we can proceed to do the FLOPs comparison between the efficient implementation (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) to the Hessian (inverse) update (including computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, excluding preconditioning step) in original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}).
-
-In algorithm \ref{eq:Adaptation} and \ref{eq:Enhancement}, we need to compute $\ooH_k^{-1} \bG_k(\htheta_k)$, where $\ooH_k$ is expected to be symmetric positive definite due to the symmetric update and the preconditioning step $\bm{f}_k$. The fastest algorithm of handling linear system $\ooH_k\bm{x}=\bG_k(\htheta_k)$ is Cholesky factorization. In fact, when solving system $\bm{Ax}=\bm{b}$ with the mldivide function (equivalently linsolve), MATLAB will switch to Cholesky solver when $\bm{A}$ is positive definite. Page 63 in Hämmerlin and Hoffmann \cite{Hämmerlin2012} provides the complexity of Cholesky decomposition: $(p^3+3p^2-p)/3$. Page 602 in Datta \cite{Datta2008} states that after the Cholesky factorization (system $\bm{Ax}=\bm{b}$ replaced by $\bm{R}^T\bm{Rx}=\bm{b}$), the mldivide (backslash operator) recognizes triangular systems. So the converted system is then solved by backward and forward substitution as $\bm{x} = \bm{R} \backslash (\bm{R}^T \backslash \bm{b})$ with $2p^2$ FLOPs. So the total FLOPs for Hessian update, including the computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}) is
+In algorithm (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}), we need to compute $\ooH_k^{-1} \bG_k(\htheta_k)$, where $\ooH_k$ is expected to be symmetric positive definite due to the symmetric update and the preconditioning step $\bm{f}_k$. The fastest algorithm of handling linear system $\ooH_k\bm{x}=\bG_k(\htheta_k)$ is Cholesky factorization. In fact, when solving system $\bm{Ax}=\bm{b}$ with the mldivide function (equivalently linsolve), MATLAB will switch to Cholesky solver when $\bm{A}$ is positive definite. This can be evidenced by the command setup below that produces information about choice of algorithm based on matrix structure, and about storage allocation.
+\begin{verbatim} 
+spparms('spumoni',1);
+\end{verbatim}
+ Page 63 in H{\"a}mmerlin and Hoffmann \cite{Hämmerlin2012} provides the complexity of Cholesky decomposition: $(p^3+3p^2-p)/3$. Page 602 in Datta \cite{Datta2008} states that after the Cholesky factorization (system $\bm{Ax}=\bm{b}$ replaced by $\bm{R}^T\bm{Rx}=\bm{b}$), the mldivide (backslash operator) recognizes triangular systems. So the converted system is then solved by backward and forward substitution as $\bm{x} = \bm{R} \backslash (\bm{R}^T \backslash \bm{b})$ with $2p^2$ FLOPs. So the total FLOPs for Hessian update as shown in eq. (\ref{eq:CoherentRecursion}) Hessian (inverse) update (including computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, excluding preconditioning step) in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}) is
 \begin{equation}
-	\frac{1}{3}(p^3+3p^2-p)+2p^2+4p^2+p=\frac{1}{3}p^3+7p^2+p
+	4p^2+p+\frac{1}{3}(p^3+3p^2-p)+2p^2=\frac{1}{3}p^3+7p^2+\frac{2}{3}p
 \end{equation}
 
-When $p\ge9$ in applying basic \textit{adaptive} algorithms, or when $p>25$ in applying \textit{enhanced} algorithms, the corresponding number
-of operations is fewer than $p^3/3+7p^2+p$ in original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}).
+When $p>9$ in applying basic \textit{adaptive} algorithms, or when $p>25$ in applying \textit{enhanced} algorithms, the corresponding number
+of operations is fewer than $p^3/3+7p^2+2p/3$ as required in original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}).
 
-Assume that the time taken for every computation (addition, multiplication, etc.) are the same, then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in Hessian (inverse) update (including computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, excluding preconditioning step) in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}) is:
+Assume that the time taken for every computation (addition, multiplication, etc.) is the same. Then for the adaptive 2SPSA and 2SG setting, the theoretical ratio of time taken in the efficient implementation over the time taken in Hessian (inverse) update (including computation of $\ooH_k^{-1} \bG_k(\htheta_k)$, excluding preconditioning step) in the algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}) is at least:
 \begin{equation} \label{eq:ratio1}
-\frac{9p^2+10p}{p^3/3+7p^2+p} = O(\frac{1}{p}).
+\frac{9p^2+10p}{p^3/3+7p^2+2p/3} = O\left(\frac{1}{p}\right).
 \end{equation}
+
 Similarly, for the enhanced 2SPSA and 2SG setting, the theoretical ratio is
 \begin{equation}\label{eq:ratio2}
-\frac{15p^2+13p}{p^3/3+7p^2+p} = O(\frac{1}{p}).
+\frac{15p^2+13p}{p^3/3+7p^2+2p/3} = O\left(\frac{1}{p}\right).
 \end{equation}
 
-The \textit{efficient} implementation on the Hessian inverse update (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) is heuristically faster than the original setup, in the sense that the FLOPs required in computing the Hessian inverse is reduced down to $O(p^2)$ from $O(p^3)$.
+The efficient implementation on the Hessian inverse update (\ref{eq:Transform})\text{--}(\ref{eq:SequentialUpdate}) is faster than the original setup, in the sense that the FLOPs required in computing the Hessian inverse is reduced  from $O(p^3)$ to $O(p^2)$.
 
 
 \section{Numerical Study} \label{Numerical Study}
 We now present an empirical study of the runtime performance of the
-proposed updates for the case of adaptive 2SPSA in \ref{2SPSA} and enhanced 2SPSA in \ref{Enhanced 2SPSA}, on the
+proposed updates for the case of adaptive 2SPSA in Section~\ref{2SPSA} and enhanced 2SPSA in Section~\ref{Enhanced 2SPSA}, on the
 skewed-quartic function in Spall~\cite{Spall2009}.
 \begin{equation*}
   L(\bm{\uptheta})=\bm{\uptheta}^{T}\bm{B}^{T}\bm{B}\bm{\uptheta}+0.1
@@ -481,13 +493,12 @@ Easily we can derive
 
 It can be shown that that $L(\bm{\uptheta})$ is a
 strictly convex function, and its minimizer is
-$\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=\bm{0}$.
+$\bm{\uptheta}^{*}=\bm{0}$, which gives $L(\bm{\uptheta}^{*})=0$.
 
 Both adaptive 2SPSA (A2SPSA) algorithm and its enhancement (E2SPSA) require a choice of
 the gain sequence $a_k$, the averaging sequence $w_k$,
 the perturbation size sequences $c_k, \tilde{c}_k$, the preconditioning
-sequence $\delta_k$ and the number of iterations $N$. We use empirical priori to
-set the budget to be $20,000$ noisy loss evaluations per iteration. Accordingly, set $n=5000$, $a_k = {a}/{(A + k + 1)^\alpha}$, $w_k = {w}/{(k+1)^d}$, $c_k = \tilde{c}_k = {c}/{(k+1)^\gamma}$ and $\delta_k = 10^{-8}e^{-k}$ where the values of $a, A, w, d, \alpha, \gamma$ are determined following the practical guidelines in Spall~\cite{Spall2000} and/or via tuning process. Particularly, $a=1, w=0.1, d=0.501, \alpha=1, A=50, \gamma=1/6$. Additionally, the heuristic of bounding is applied: the iterate at each step is restricted within a $L_{\infty}$-ball, centering at the current estimate, with a fixed radius set to be 10.
+sequence $\delta_k$ and the number of iterations $N$. We set the budget to be $20,000$ noisy loss evaluations per iteration. Accordingly, set $n=5000$, $a_k = {a}/{(A + k + 1)^\alpha}$, $w_k = {w}/{(k+1)^d}$, $c_k = \tilde{c}_k = {c}/{(k+1)^\gamma}$ and $\delta_k = 10^{-8}e^{-k}$ where the values of $a, A, w, d, \alpha, \gamma$ are determined following the practical guidelines in Spall~\cite{Spall2000} and/or via tuning process. Particularly, $a=1, w=0.1, d=0.501, \alpha=1, A=50, \gamma=1/6$. Additionally, the heuristic of bounding (discribed in Section II in \cite{Spall2000}) is applied: the iterate at each step is restricted within a ball (in Euclidean norm), centered at the current estimate, with a radius set to be 10.
 
 \begin{figure}[htbp]
   \centering
@@ -518,9 +529,7 @@ $\htheta_k$ and $\bm{\uptheta}^{*}$ against iteration $k$ averaging
 over \nruns simulation runs.
 
 
-Below is the table showing the time consumed in each step for $p=15$ case:
-loss function evaluation, Hessian inverse update, pre-conditioning on
-Hessian inverse, for A2SPSA and E2SPSA and their efficient implementations, efficient adaptive 2SPSA (EA2SPSA) and efficient enhanced 2SPSA (EE2SPSA).
+Below is the table showing the time consumed in each step for $p=15$ case: Hessian (inverse) update, pre-conditioning on Hessian (inverse), blocking step, and loss function evaluation, for A2SPSA and E2SPSA and their efficient implementations, efficient adaptive 2SPSA (EA2SPSA) and efficient enhanced 2SPSA (EE2SPSA).
 
 \begin{table}[htbp]
 	\centering
@@ -528,7 +537,8 @@ Hessian inverse, for A2SPSA and E2SPSA and their efficient implementations, effi
 		\begin{tabular}{l|ccccc|}
 			\input{../res/timing_15.txt}
 		\end{tabular}}
-		\caption{Time Consumed in Each Procedure for $p=15$}
+		\caption{Time Consumed in Each Procedure for $p=15$
+		\newline {\scriptsize The unit of time is second.} }
 		\label{tab:time}
 	\end{table}
 
@@ -575,21 +585,21 @@ The \textit{efficient} implementation can save more time with the original algor
 			\label{tab:timedifference2}
 		\end{table}
 
-From tables \ref{tab:timedifference1}--\ref{tab:timedifference2}, we can envision the trend that the time consumed in the Hessian update procedure, where the sequential rank-one update (\ref{eq:SequentialUpdate}) makes a difference, is lesser in the efficient implementations than in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}). Though the ratio of time taken in efficient implementation over that in original setup is indeed decreasing as the dimension goes up, the ratio is not decreasing as fast as (\ref{eq:ratio1})--(\ref{eq:ratio2}) predict. The slower rate results from the efficiency of mldivide function (equivalently linsolve). The dimensions of our test matrices are far too small to manifest the asymptoptic $p^3/3$ running time. Furthermore, MATLAB will typically be making use of parallel routines for computing the Cholesky factorization, which saves more time in computation. 
+From tables \ref{tab:timedifference1}--\ref{tab:timedifference2}, we can envision the trend that the time consumed in the Hessian update procedure, where the sequential rank-one update (\ref{eq:SequentialUpdate}) makes a difference, is lesser in the efficient implementations than in the original algorithms (\ref{eq:Adaptation}) and (\ref{eq:Enhancement}). Though the ratio of time taken in efficient implementation over that in original setup is indeed decreasing as the dimension goes up, the ratio is not decreasing as fast as (\ref{eq:ratio1})--(\ref{eq:ratio2}) predict. The slower rate results from the efficiency of mldivide function (equivalently linsolve). The dimensions of our test matrices are far too small to manifest the asymptotic $p^3/3$ running time. Furthermore, MATLAB will typically be making use of parallel routines for computing the Cholesky factorization, which saves more time in computation. 
 
-In short, this numerical example does show the superiority of the \textit{efficient} implementation of (\ref{eq:Transform})--(\ref{eq:SequentialUpdate}), in terms of the running time and accuracy (though small as shown in Fig \ref{fig:dist}). The asymptotic ratio (\ref{eq:ratio1})--(\ref{eq:ratio2}) has not been fully exploited in this small-dimensional example, though it is theoretically valid.
+In short, this numerical example does show the superiority of the efficient implementation of (\ref{eq:Transform})--(\ref{eq:SequentialUpdate}), in terms of the running time and accuracy (though small as shown in Fig \ref{fig:dist}). The asymptotic ratio (\ref{eq:ratio1})--(\ref{eq:ratio2}) has not been fully exploited in this small-dimensional example, though it is theoretically valid.
 
 
 \section{Conclusion and Future Work} In this paper, we discuss
-a coherent efficient implementation of four Newton-like SP algorithms:
+an efficient implementation of four Newton-like SP algorithms:
 adaptive 2SPSA, enhanced 2SPSA, adaptive 2SG, and enhanced 2SG. The
-efficiency, in terms of both time taken and numerical accuracy, is
-achieved by a unified sequential (rank-two) update using Woodbury
+efficiency, in terms of both time taken and the step required to achieved a certain numerical accuracy, is
+attained by a unified sequential (rank-two) update using Woodbury
 matrix identity. Particularly for the case of enhanced 2SG*, the
 usage of symmetric Bernoulli perturbation sequence is required.
 
 As discovered from practical experience, the time taken in the
-stochastic optimization(minimization) problem is dominated by the
+stochastic optimization (minimization) problem is dominated by the
 noisy function/gradient evaluation and the preconditioning part. We
 are gathering ideas in speeding up the preconditioning step in the
 algorithm, so as to magnify the contribution of this paper in
@@ -625,12 +635,15 @@ N00024-13-D6400).
 
 
 \bibitem{Wang2011}
-Wang, Q. (2011). Stochastic approximation for discrete optimization of noisy loss measurements. In \textit{2011 45th Annual Conference on Information Sciences and Systems} (pp. 1-4).  IEEE.
+Wang, Q., and Spall, J. C. (2011). Discrete simultaneous perturbation stochastic approximation on loss function with noisy measurements. In \textit{Proceedings of the American Control Conference, San Francisco}, Vol. 29, pp. 4520-4525.
 
-
+\remove{\bibitem{Wang2011}
+	Wang, Q. (2011). Stochastic approximation for discrete optimization of noisy loss measurements. In \textit{2011 45th Annual Conference on Information Sciences and Systems} (pp. 1-4).  IEEE.
+	
+}
 
 \bibitem{Spall2007}
-Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm. In \textit{2007 41st Annual Conference on Information Sciences and Systems} (pp. 35-40). IEEE.
+Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Estimates in the Adaptive Simultaneous Perturbation Algorithm. In \textit{41st Annual Conference on Information Sciences and Systems} (pp. 35-40). IEEE.
 
 
 \bibitem{Spall2009} Spall, J. C. (2009). Feedback and
@@ -653,8 +666,8 @@ Spall, J. C. (2007). Feedback and Weighting Mechanisms for Improving Jacobian Es
   approximation using a simultaneous perturbation gradient
   approximation. \textit{IEEE Transactions on Automatic Control}, vol. 43, pp. 1480-1484 (correction to references: vol. 44, pp. 231-232).
 
-\bibitem{Cao2011}
-Cao, X. (2011, March). Effective perturbation distributions for small samples in simultaneous perturbation stochastic approximation. In \textit{2011 45th Annual Conference on Information Sciences and Systems} (pp. 1-5). IEEE.
+\remove {\bibitem{Cao2011}
+Cao, X. (2011, March). Effective perturbation distributions for small samples in simultaneous perturbation stochastic approximation. In \textit{2011 45th Annual Conference on Information Sciences and Systems} (pp. 1-5). IEEE.}
 
 
 \bibitem{Bhatnagar2012} Bhatnagar, S., Prasad,
@@ -673,11 +686,10 @@ Cao, X. (2011, March). Effective perturbation distributions for small samples in
 Bhatnagar, S., Fu, M.C., Marcus, S.I. and Wang, I., 2003. Two-timescale simultaneous perturbation stochastic approximation using deterministic perturbation sequences. \textit{ACM Transactions on Modeling and Computer Simulation (TOMACS), 13(2)}, pp.180-209.
 
 \bibitem{Hämmerlin2012}
-Hämmerlin, G., and Hoffmann, K. H. (2012). \textit{Numerical mathematics}. Springer Science \& Business Media.
+H{\"a}mmerlin, G., and Hoffmann, K. H. (2012). \textit{Numerical mathematics}. Springer Science \& Business Media.
 
 \bibitem{Datta2008}
 Datta, K. B. (2008). \textit{Matrix And Linear Algebra, Edition 2: AIDED WITH MATLAB}. PHI Learning Pvt. Ltd..
 
 \end{thebibliography}
 \end{document}
-
